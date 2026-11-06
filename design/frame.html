@@ -1,0 +1,22 @@
+<!doctype html><html><head><meta charset="utf-8">
+<link rel="stylesheet" href="../www/fonts/fonts.css">
+<style>
+html,body{margin:0}
+.f{background:#B3F1BE;display:flex;flex-direction:column;align-items:center;overflow:hidden;box-sizing:border-box}
+.t{font-family:"Fraunces";font-variation-settings:"opsz" 72;font-weight:900;color:#0A4521;text-align:center;line-height:1.05;letter-spacing:-.01em}
+.s{font-family:"Roboto";font-weight:500;color:#0A4521;opacity:.85;text-align:center}
+.ph{background:#1B180F;box-shadow:0 30px 60px rgba(10,69,33,.25)}
+.ph img{display:block;width:100%;height:100%;object-fit:cover;object-position:top}
+</style></head><body>
+<div class="f" id="f"><div class="t" id="t"></div><div class="s" id="s"></div><div class="ph" id="ph"><img id="img"></div></div>
+<script>
+const p=new URLSearchParams(location.search),W=+p.get('w'),H=+p.get('h');
+const f=document.getElementById('f');f.style.width=W+'px';f.style.height=H+'px';
+const u=W/1080; // unit
+document.getElementById('t').innerHTML=p.get('t');document.getElementById('s').textContent=p.get('s');
+Object.assign(document.getElementById('t').style,{fontSize:96*u+'px',marginTop:120*u*(H/W>2?1.25:1)+'px'});
+Object.assign(document.getElementById('s').style,{fontSize:44*u+'px',marginTop:28*u+'px'});
+const topY=(H/W>2?560:470)*u, pw=W*0.78, bez=18*u, ph=H-topY+200*u;
+Object.assign(document.getElementById('ph').style,{width:pw+'px',height:ph+'px',marginTop:(H/W>2?110:60)*u+'px',borderRadius:70*u+'px',padding:bez+'px',boxSizing:'border-box'});
+const im=document.getElementById('img');im.style.borderRadius=54*u+'px';im.src=p.get('img');
+</script></body></html>

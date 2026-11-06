@@ -1,0 +1,897 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#FBF5EC">
+<meta name="format-detection" content="telephone=no">
+<title>Raf Avcısı</title>
+<!-- Store build: fonts are bundled (fonts/fonts.css) so the game works offline and looks the same on iOS and Android -->
+<link rel="stylesheet" href="fonts/fonts.css">
+<script src="native.js"></script>
+<style>
+/* Layout: PickyList app shell. Light-green "reyon" banner on top (as in the app's aisle walk), list rows with checkboxes, shelves in the middle, grey bottom bar with pill-highlighted actions. Colors sampled from the PickyList screenshots. */
+:root{
+  --cream:#FBF5EC;      /* PickyList store-card / page background */
+  --surface:#FFFFFF;    /* app screen */
+  --row:#F7F7F7;        /* list row card */
+  --bar:#F2F2F2;        /* bottom nav bar */
+  --green:#1F9D55;      /* primary button, checkbox, logo */
+  --green-d:#178246;
+  --mint:#B3F1BE;       /* reyon banner */
+  --pill:#D2E8D3;       /* active nav pill */
+  --forest:#0A4521;     /* banner text */
+  --ink:#1B1B1F;
+  --muted:#5F665F;
+  --line:#747C74;       /* outlined button border */
+  --wood:#1B180F;       /* wordmark */
+  --red:#D93A3A;
+  --f-brand:"Fraunces", Georgia, "Times New Roman", serif;
+  --f-ui:"Roboto", system-ui, -apple-system, "Segoe UI", sans-serif;
+  color-scheme: light;
+}
+[hidden]{display:none!important}
+html,body{height:100%}
+body{margin:0;background:var(--cream);color:var(--ink);font-family:var(--f-ui);overflow:hidden;-webkit-tap-highlight-color:transparent;-webkit-touch-callout:none;overscroll-behavior:none;user-select:none;-webkit-user-select:none;touch-action:manipulation}
+#app{height:100%;max-width:520px;margin:0 auto;display:flex;flex-direction:column;background:var(--surface);box-sizing:border-box}
+.pad{padding-left:max(16px, env(safe-area-inset-left,0px));padding-right:max(16px, env(safe-area-inset-right,0px))}
+
+/* app bar */
+.appbar{display:flex;align-items:center;gap:12px;padding-block:10px;padding-top:max(10px, env(safe-area-inset-top,0px))}
+.appbar .mark{width:30px;height:30px;flex:none}
+.appbar h1{margin:0;font-size:16px;font-weight:700;flex:1}
+.score{display:flex;flex-direction:column;align-items:center;font-size:11px;color:var(--ink)}
+.score b{font-size:17px;color:var(--green);font-variant-numeric:tabular-nums;line-height:1.1}
+.iconbtn{font-family:"Noto Color Emoji","Apple Color Emoji",sans-serif;border:0;background:none;width:36px;height:36px;border-radius:50%;font-size:18px;cursor:pointer;color:var(--ink)}
+.iconbtn:focus-visible,.navbtn:focus-visible,.btn:focus-visible{outline:3px solid var(--green);outline-offset:2px}
+
+/* reyon banner */
+.banner{background:var(--mint);color:var(--forest);display:flex;align-items:center;gap:12px;padding-block:10px}
+.banner .shapes{width:24px;height:24px;flex:none}
+.banner .t{flex:1;min-width:0}
+.banner .t b{display:block;font-size:17px;font-weight:500}
+.banner .t small{font-size:12px;font-weight:500}
+.timer{display:flex;align-items:center;gap:6px;font-size:20px;font-weight:700;font-variant-numeric:tabular-nums;background:rgba(255,255,255,.55);padding:4px 10px;border-radius:20px}
+.timer svg{width:18px;height:18px}
+.timer.low{background:var(--red);color:#fff}
+
+/* shopping list rows */
+.list{display:grid;grid-template-columns:1fr 1fr;gap:6px;padding-block:8px}
+.row{background:var(--row);border-radius:14px;display:flex;align-items:center;gap:10px;padding:7px 10px;min-width:0}
+.cb{width:18px;height:18px;border:2px solid #3b3f3b;border-radius:3px;flex:none;display:flex;align-items:center;justify-content:center;box-sizing:border-box}
+.row.done .cb{background:var(--green);border-color:var(--green)}
+.row.done .cb::after{content:"";width:9px;height:5px;border-left:2px solid #fff;border-bottom:2px solid #fff;transform:translateY(-1px) rotate(-45deg)}
+.row .nm{min-width:0;display:flex;flex-direction:column}
+.row .nm span{font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.row .nm small{font-size:11px;color:var(--muted)}
+.row.done .nm span{text-decoration:line-through;color:var(--muted)}
+.row .em{font-size:16px}
+
+/* board */
+.board{flex:1;min-height:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px 10px;align-content:center;padding-block:8px}
+.shelf{position:relative;padding:0 4px 10px;border-radius:10px;cursor:pointer;transition:background .15s}
+.shelf .back{position:absolute;left:4px;right:4px;top:-9px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));pointer-events:none}
+.shelf .back span{text-align:center;font-size:20px;filter:grayscale(.8) brightness(.7);opacity:.45;transform:scale(.8)}
+.shelf .slots{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));position:relative;z-index:1;min-height:46px;align-items:end}
+.slot{height:46px;display:flex;align-items:flex-end;justify-content:center}
+.item{font-size:clamp(22px,7.6vw,30px);line-height:1;display:block;transition:transform .15s ease;transform-origin:50% 100%;filter:drop-shadow(0 2px 0 rgba(0,0,0,.15))}
+.item.sel{transform:translateY(-8px) scale(1.12);filter:drop-shadow(0 6px 4px rgba(0,0,0,.22))}
+.item.hint{animation:wob .6s ease-in-out 3}
+@keyframes wob{0%,100%{transform:rotate(0)}25%{transform:rotate(-12deg)}75%{transform:rotate(12deg)}}
+.item.pop{animation:pop .32s ease-in forwards}
+@keyframes pop{to{transform:translateY(-18px) scale(1.5);opacity:0}}
+.item.in{animation:in .2s ease-out}
+@keyframes in{from{transform:translateY(-10px) scale(.85);opacity:.4}}
+.plank{height:8px;background:#D9DED9;border-radius:4px;position:absolute;left:0;right:0;bottom:0;box-shadow:0 2px 0 #C3C9C3}
+.layers{position:absolute;right:4px;bottom:-12px;font-size:10px;font-weight:700;color:var(--green);z-index:2}
+.shelf.target{background:var(--pill)}
+.shelf.target .plank{background:var(--green);box-shadow:0 2px 0 var(--green-d)}
+.shelf.clear .plank{animation:flash .45s}
+@keyframes flash{50%{background:var(--mint)}}
+
+.combo{position:fixed;left:50%;top:40%;transform:translate(-50%,-50%);font-family:var(--f-brand);font-weight:900;font-size:34px;color:var(--green);pointer-events:none;opacity:0;text-shadow:0 2px 0 #fff,0 0 12px rgba(255,255,255,.9);z-index:5}
+.combo.show{animation:combo .8s ease-out}
+@keyframes combo{0%{opacity:0;transform:translate(-50%,-30%) scale(.6)}25%{opacity:1;transform:translate(-50%,-50%) scale(1.1)}100%{opacity:0;transform:translate(-50%,-90%) scale(1)}}
+
+/* bottom bar, styled like the app's nav */
+.nav{background:var(--bar);display:flex;justify-content:space-around;padding-top:8px;padding-bottom:calc(8px + env(safe-area-inset-bottom,0px))}
+.navbtn{border:0;background:none;display:flex;flex-direction:column;align-items:center;gap:4px;font-family:var(--f-ui);font-size:13px;color:var(--ink);cursor:pointer;position:relative;min-width:72px}
+.navbtn .ic{font-size:20px;line-height:28px;width:60px;border-radius:16px;text-align:center}
+.navbtn:not(:disabled):active .ic{background:var(--pill)}
+.navbtn .n{position:absolute;top:-2px;right:8px;background:var(--green);color:#fff;border-radius:10px;font-size:10px;min-width:16px;height:16px;line-height:16px;padding:0 3px;font-weight:700}
+.navbtn:disabled{opacity:.4;cursor:default}
+
+/* buttons */
+.btn{border:0;border-radius:14px;font-family:var(--f-ui);font-weight:500;font-size:15px;padding:14px;cursor:pointer;background:var(--green);color:#fff;width:100%}
+.btn:active{background:var(--green-d)}
+.btn.out{background:#fff;color:var(--green);border:1px solid var(--line)}
+.btns{display:flex;gap:10px}
+
+/* overlays */
+.ov{position:fixed;inset:0;background:rgba(27,24,15,.45);display:flex;align-items:center;justify-content:center;z-index:10;
+  padding-left:max(16px, env(safe-area-inset-left,0px));padding-right:max(16px, env(safe-area-inset-right,0px));padding-block:16px}
+.card{max-height:calc(100vh - 32px);overflow:auto;background:var(--cream);border-radius:24px;padding:24px 20px;width:100%;max-width:360px;box-sizing:border-box;display:flex;flex-direction:column;gap:14px}
+.brand{display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center}
+.brand svg{width:84px;height:84px}
+.wordmark{font-family:var(--f-brand);font-weight:900;font-size:36px;line-height:1;color:var(--wood);margin:0;letter-spacing:-.01em}
+.sub{font-size:18px;font-weight:700;color:var(--green);margin:0}
+.card p{margin:0;color:var(--muted);line-height:1.45;font-size:15px;text-align:center}
+.how{display:grid;gap:6px;margin:0;padding:0;list-style:none}
+.how li{background:#fff;border-radius:14px;padding:9px 12px;display:flex;gap:10px;align-items:center;font-size:14px;line-height:1.35}
+.how li .cb{border-color:var(--green)}
+.how li:nth-child(-n+2) .cb{background:var(--green)}
+.how li:nth-child(-n+2) .cb::after{content:"";width:9px;height:5px;border-left:2px solid #fff;border-bottom:2px solid #fff;transform:translateY(-1px) rotate(-45deg)}
+.link{background:none;border:0;color:var(--muted);font-family:var(--f-ui);font-size:14px;cursor:pointer;text-decoration:underline}
+.endtitle{font-family:var(--f-brand);font-weight:900;font-size:28px;color:var(--wood);margin:0;text-align:center}
+
+/* receipt */
+.receipt{font-family:"Courier New",ui-monospace,monospace;background:#fff;text-align:left;padding:14px 16px 20px;font-size:13px;line-height:1.5;
+  -webkit-mask:radial-gradient(circle 5px at 50% 100%,transparent 98%,#000) 0 0/12px 100% repeat-x;mask:radial-gradient(circle 5px at 50% 100%,transparent 98%,#000) 0 0/12px 100%}
+.receipt .c{text-align:center}
+.receipt .r{display:flex;justify-content:space-between;gap:8px;font-variant-numeric:tabular-nums}
+.receipt hr{border:0;border-top:1px dashed #999;margin:6px 0}
+.receipt .tot{font-weight:700;font-size:15px}
+.barcode{height:34px;margin-top:8px;background:repeating-linear-gradient(90deg,#111 0 2px,transparent 2px 3px,#111 3px 4px,transparent 4px 7px,#111 7px 10px,transparent 10px 11px)}
+.stars{font-size:30px;letter-spacing:4px;color:var(--green);text-align:center}
+.stars .off{color:#D9DED9}
+
+@media (max-height:680px){.item{font-size:26px}.slot{height:40px}.shelf .slots{min-height:40px}.board{gap:12px 8px}.row{padding:5px 8px}.list{gap:4px}}
+
+/* product icons: PickyList renders product emoji in the Android (Noto) style; load it so iOS shows the same set */
+.item,.em,.shelf .back span,.navbtn .ic,.how li .e,#mute{font-family:"Noto Color Emoji","Apple Color Emoji","Segoe UI Emoji",sans-serif}
+html.ios body{font-family:var(--f-ui),"Raf Emoji"}
+html.ios .item,html.ios .em,html.ios .shelf .back span,html.ios .navbtn .ic,html.ios .how li .e,html.ios #mute{font-family:"Raf Emoji","Apple Color Emoji",sans-serif}
+.row .nm small{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.row .em{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;flex:none}
+.applink{display:flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;box-sizing:border-box}
+.applink svg{width:22px;height:22px}
+.gift{background:var(--mint);color:var(--forest);border-radius:16px;padding:12px 14px;display:flex;flex-direction:column;gap:4px;font-size:14px;line-height:1.4}
+.gift b{font-size:15px}
+.gift .imp{font-size:13px}
+.x2{display:inline-block;background:var(--green);color:#fff;border-radius:8px;font-size:11px;font-weight:700;padding:1px 6px;margin-left:6px;vertical-align:2px}
+.promo{font-size:13px;color:var(--muted);text-align:center;margin:0}
+/* coach (tutorial) */
+.coach{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--forest);color:#fff;border-radius:16px;padding:10px 16px;font-size:14px;font-weight:500;z-index:6;max-width:min(340px,calc(100vw - 32px));text-align:center;box-shadow:0 6px 16px rgba(0,0,0,.18);pointer-events:none}
+.coach::after{content:"";position:absolute;left:50%;top:-6px;width:12px;height:12px;margin-left:-6px;background:var(--forest);transform:rotate(45deg)}
+.item.guide{animation:guide 1s ease-in-out infinite}
+@keyframes guide{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px) scale(1.08)}}
+.shelf.guide{background:var(--pill);box-shadow:0 0 0 2px var(--green) inset}
+/* map */
+.mapcard{max-height:calc(100vh - 32px);overflow:auto}
+.maphead{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.maphead h2{margin:0;font-size:18px}
+.tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.tile{background:#fff;border:0;border-radius:14px;padding:10px 8px 0;display:flex;flex-direction:column;align-items:flex-start;gap:2px;font-family:var(--f-ui);cursor:pointer;overflow:hidden;text-align:left;min-width:0;color:var(--ink)}
+.tile .te{font-size:18px;font-family:"Noto Color Emoji","Apple Color Emoji",sans-serif}
+.tile b{font-size:13px;font-weight:700}
+.tile small{font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.tile .st{font-size:12px;color:var(--green);letter-spacing:1px;min-height:16px}
+.tile .bar{height:4px;width:100%;margin-top:6px;border-radius:2px 2px 0 0}
+.tile.cur{box-shadow:0 0 0 2px var(--green) inset}
+.tile:disabled{opacity:.45;cursor:default}
+.daily{display:flex;align-items:center;gap:12px;background:#fff;border-radius:16px;padding:12px 14px;border:0;font-family:var(--f-ui);cursor:pointer;text-align:left;color:var(--ink);width:100%}
+.daily .cal{width:40px;height:40px;border-radius:10px;background:var(--pill);color:var(--forest);display:flex;flex-direction:column;align-items:center;justify-content:center;flex:none;line-height:1}
+.daily .cal b{font-size:16px}.daily .cal small{font-size:9px;text-transform:uppercase;letter-spacing:.06em}
+.daily .dt{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.daily .dt b{font-size:15px}.daily .dt small{font-size:12px;color:var(--muted)}
+.daily .chev{color:var(--muted);font-size:20px}
+.rowbtns{display:flex;gap:8px}
+.rowbtns .btn{padding:12px 8px;font-size:14px}
+/* badges */
+.badges{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.badge{display:flex;flex-direction:column;align-items:center;gap:4px;text-align:center;font-size:11px;line-height:1.2;color:var(--ink)}
+.badge .bi{width:46px;height:46px;border-radius:50%;background:var(--pill);display:flex;align-items:center;justify-content:center;font-size:22px;font-family:"Noto Color Emoji","Apple Color Emoji",sans-serif}
+.badge.off{color:var(--muted)}
+.badge.off .bi{background:#ECECEC;filter:grayscale(1);opacity:.5}
+.sect{margin:4px 0 0;font-size:14px;font-weight:700}
+.missions{display:flex;flex-direction:column;gap:6px;text-align:left}
+.missions .sect{margin:0 0 2px}
+.mis{display:flex;align-items:center;gap:10px;background:#fff;border-radius:12px;padding:8px 10px;font-size:13px;color:var(--ink)}
+.mis .me{font-family:"Noto Color Emoji","Apple Color Emoji",sans-serif;font-size:20px;width:24px;text-align:center}
+.mis .mt{flex:1;min-width:0;display:flex;flex-direction:column;gap:5px}
+.mis .mt b{font-weight:500;line-height:1.25}
+.mbar{display:block;height:6px;border-radius:3px;background:#E6E6E6;overflow:hidden}
+.mbar i{display:block;height:100%;background:var(--green);border-radius:3px}
+.mis .mr{font-size:12px;color:var(--muted);white-space:nowrap;font-family:var(--f-ui),"Noto Color Emoji",sans-serif}
+.mis.ok{background:var(--mint)}.mis.ok .mr{color:var(--forest);font-weight:700}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.sr{display:flex;flex-direction:column;background:#fff;border-radius:12px;padding:8px 10px;font-size:12px;color:var(--muted);text-align:left}
+.sr b{font-size:17px;color:var(--ink)}
+.sr.fav{grid-column:1/-1}.sr.fav b{font-family:var(--f-ui),"Noto Color Emoji",sans-serif;font-size:15px}
+.toast{position:fixed;left:50%;top:calc(12px + env(safe-area-inset-top,0px));transform:translate(-50%,-200%);visibility:hidden;background:#fff;border-radius:16px;box-shadow:0 8px 24px rgba(0,0,0,.18);padding:10px 14px;display:flex;align-items:center;gap:10px;z-index:20;transition:transform .35s ease;max-width:calc(100vw - 32px)}
+.toast.show{transform:translate(-50%,0);visibility:visible}
+.toast .bi{width:36px;height:36px;border-radius:50%;background:var(--pill);display:flex;align-items:center;justify-content:center;font-size:18px;font-family:"Noto Color Emoji","Apple Color Emoji",sans-serif;flex:none}
+.toast b{display:block;font-size:14px}.toast small{font-size:12px;color:var(--muted)}
+.streak{color:var(--green);font-weight:700}
+/* basket */
+.basketbar{display:flex;align-items:center;justify-content:center;gap:10px;padding-block:6px}
+.basket{display:flex;align-items:center;gap:10px;background:var(--row);border:0;border-radius:22px;padding:4px 6px 4px 14px;font-family:var(--f-ui);font-size:13px;font-weight:500;color:var(--ink);cursor:pointer}
+.basket .bslot{width:44px;height:36px;border-radius:18px;background:#fff;border:2px dashed #C3C9C3;display:flex;align-items:center;justify-content:center;font-size:24px;box-sizing:border-box;font-family:"Noto Color Emoji","Apple Color Emoji",sans-serif}
+.basket.full .bslot{border-style:solid;border-color:var(--pill)}
+.basket.ready .bslot{border-color:var(--green);background:var(--pill)}
+.basket.sel .bslot{border-color:var(--green);transform:translateY(-3px)}
+/* sale tag */
+.slot{position:relative}
+.item.sale::after{content:"%";position:absolute;right:-2px;top:-4px;background:var(--red);color:#fff;font-family:var(--f-ui);font-size:10px;font-weight:700;width:16px;height:16px;border-radius:50%;display:flex;align-items:center;justify-content:center;line-height:1}
+.item{position:relative}
+.saleinfo{font-size:11px;color:var(--red);font-weight:700}
+.item.box{filter:drop-shadow(0 2px 0 rgba(0,0,0,.15)) saturate(.9);cursor:not-allowed}
+.item.opened{animation:unbox .45s ease-out}
+@keyframes unbox{0%{transform:scale(.5) rotate(-12deg);opacity:.2}60%{transform:scale(1.2)}100%{transform:none}}
+@media (prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="logo" viewBox="0 0 100 100">
+    <rect x="2" y="2" width="96" height="96" rx="34" fill="#1F9D55"/>
+    <rect x="20" y="26" width="11" height="11" rx="2.5" fill="#fff"/><path d="M22.5 31.5l2.3 2.3 4-4.6" stroke="#1F9D55" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    <rect x="20" y="44.5" width="11" height="11" rx="2.5" fill="#fff"/><path d="M22.5 50l2.3 2.3 4-4.6" stroke="#1F9D55" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    <rect x="21.2" y="64.2" width="8.6" height="8.6" rx="2" fill="none" stroke="#fff" stroke-width="2.4"/>
+    <rect x="38" y="29.5" width="44" height="4" rx="2" fill="#fff"/><rect x="38" y="48" width="44" height="4" rx="2" fill="#fff"/><rect x="38" y="66.5" width="30" height="4" rx="2" fill="#fff"/>
+  </symbol>
+</svg>
+
+<div id="app">
+  <div class="appbar pad">
+    <svg class="mark" aria-hidden="true"><use href="#logo"/></svg>
+    <h1>Raf Avcısı</h1>
+    <div class="score"><b id="score">0</b>Puan</div>
+    <button class="iconbtn" id="pause" aria-label="Duraklat">⏸️</button>
+    <button class="iconbtn" id="mute" aria-label="Sesi kapat">🔊</button>
+  </div>
+  <div class="banner pad">
+    <svg class="shapes" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l5 8H7z" fill="#0A4521"/><rect x="3" y="13" width="8" height="8" rx="1.5" fill="#0A4521"/><circle cx="17" cy="17" r="4" fill="#0A4521"/></svg>
+    <div class="t"><b><span id="lvlPre">Reyon </span><span id="lvl">1</span><span id="lvlName"></span></b><small id="lvlSub">Listeyi tamamla</small></div>
+    <div class="timer" id="tag"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13" r="8" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M12 9v4l3 2M9 2h6" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round"/></svg><span id="time">0:00</span></div>
+  </div>
+  <div class="list pad" id="listItems" aria-label="Alışveriş listesi"></div>
+  <div class="board pad" id="board" aria-label="Raflar"></div>
+  <div class="basketbar pad"><button class="basket" id="basket" aria-label="Sepet"><span>🛒 Sepet</span><span class="bslot" id="bslot"></span></button><span class="saleinfo" id="saleinfo"></span></div>
+  <div class="nav">
+    <button class="navbtn" id="bUndo"><span class="ic">↩️</span>Geri al<span class="n" id="nUndo">3</span></button>
+    <button class="navbtn" id="bHint"><span class="ic">🔍</span>İpucu<span class="n" id="nHint">2</span></button>
+    <button class="navbtn" id="bShuffle"><span class="ic">🔀</span>Karıştır<span class="n" id="nShuffle">1</span></button>
+  </div>
+</div>
+<div class="combo" id="combo"></div>
+<div class="coach" id="coach" hidden></div>
+
+<div class="ov" id="ovStart">
+  <div class="card">
+    <div class="brand">
+      <svg aria-hidden="true"><use href="#logo"/></svg>
+      <h2 class="wordmark">PickyList</h2>
+      <p class="sub">Raf Avcısı</p>
+    </div>
+    <p>Listedeki ürünleri raflarda bul, aynı üçünü yan yana diz, süre bitmeden listeyi tamamla.</p>
+    <div class="gift" id="gift" hidden></div>
+    <button class="daily" id="dailyBtn"><span class="cal"><b id="calDay">6</b><small id="calMon">Kas</small></span><span class="dt"><b>Günün listesi</b><small id="dailyInfo">Herkese aynı liste, her gün yenisi</small></span><span class="chev">›</span></button>
+    <button class="btn" id="play">Alışverişe başla</button>
+    <button class="btn out" id="mapBtn">Reyon haritası</button>
+    <div class="missions"><p class="sect">Bugünün görevleri</p><div id="misList"></div></div>
+    <a class="btn out applink" id="appLinkStart" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#logo"/></svg>Listeni PickyList'te hazırla</a>
+    <button class="link" id="reset" hidden>Baştan başla</button>
+  </div>
+</div>
+<div class="ov" id="ovEnd" hidden><div class="card" id="endCard"></div></div>
+<div class="ov" id="ovMap" hidden><div class="card mapcard"><div class="maphead"><h2>Reyon haritası</h2><button class="iconbtn" id="mapClose" aria-label="Kapat">✕</button></div><div class="tiles" id="tiles"></div><p class="sect">Rozetler</p><div class="badges" id="badges"></div><p class="sect">İstatistikler</p><div class="stats" id="stats"></div></div></div>
+<div class="toast" id="toast" aria-live="polite"></div>
+<div class="ov" id="ovPause" hidden><div class="card"><h2 class="endtitle">Mola</h2><p id="pauseInfo"></p><div class="missions" id="pauseMis"></div>
+  <button class="btn" id="pResume">Devam et</button>
+  <div class="rowbtns"><button class="btn out" id="pRestart">Yeniden başla</button><button class="btn out" id="pMap">Harita</button></div>
+  <button class="btn out" id="pMusic">Müzik: Açık</button>
+  <button class="link" id="pHome">Ana ekran</button></div></div>
+
+<script>
+(function(){
+const CATS={
+  sebze:["Sebzeler","🥕","#F1F5D8"],meyve:["Meyveler","🍎","#FBE3E1"],et:["Et","🥩","#FBE0E6"],
+  sut:["Süt Ürünleri","🥛","#E4EEF9"],temel:["Temel gıda","🌾","#EFE7DA"],icecek:["İçecekler","☕","#ECE4F6"],
+  temizlik:["Temizlik","🧴","#DDEFF5"],firin:["Fırın","🍞","#F7EAD7"]
+};
+const PRODUCTS=[
+  ["🍅","Domates","sebze"],["🥒","Salatalık","sebze"],["🥕","Havuç","sebze"],["🧅","Soğan","sebze"],["🥔","Patates","sebze"],
+  ["🍋","Limon","meyve"],["🍎","Elma","meyve"],["🍌","Muz","meyve"],
+  ["🥩","Kıyma","et"],["🍗","Tavuk göğsü","et"],
+  ["🥛","Süt","sut"],["🧀","Beyaz peynir","sut"],["🥚","Yumurta","sut"],["🧈","Tereyağı","sut"],
+  ["🍯","Bal","temel"],["🍝","Makarna","temel"],["🍚","Pirinç","temel"],["🫒","Zeytinyağı","temel"],
+  ["☕","Kahve","icecek"],["🧃","Meyve suyu","icecek"],
+  ["🧴","Çamaşır deterjanı","temizlik"],["🧻","Kağıt havlu","temizlik"],
+  ["🍞","Ekmek","firin"]
+];
+const $=id=>document.getElementById(id);
+const store={get(k,d){try{const v=localStorage.getItem("raf_"+k);return v==null?d:JSON.parse(v)}catch(e){return d}},
+             set(k,v){try{localStorage.setItem("raf_"+k,JSON.stringify(v))}catch(e){}}};
+
+let S={}; // game state
+let timerId=null, comboTimer=null, muted=store.get("muted",false);
+
+/* ---------- audio ---------- */
+let ac=null;
+function tone(f,d=.08,type="sine",vol=.12,delay=0){
+  if(muted)return;
+  try{ac=ac||new (window.AudioContext||window.webkitAudioContext)();
+    const t=ac.currentTime+delay,o=ac.createOscillator(),g=ac.createGain();
+    o.type=type;o.frequency.setValueAtTime(f,t);g.gain.setValueAtTime(vol,t);g.gain.exponentialRampToValueAtTime(.001,t+d);
+    o.connect(g).connect(ac.destination);o.start(t);o.stop(t+d+.02);}catch(e){}
+}
+let musicOn=store.get("music",true),musicTimer=null,musicStep=0;
+const MELODY=[523,659,784,659,587,698,880,698,523,659,784,1047,988,784,659,587];
+const BASS=[131,131,175,175,147,147,196,196];
+function musicTick(){
+  if(muted||!musicOn||!ac||S.over||S.paused)return;
+  const t=ac.currentTime;
+  const n=MELODY[musicStep%MELODY.length];
+  if(musicStep%2===0||Math.random()<.5){const o=ac.createOscillator(),g=ac.createGain();o.type="triangle";o.frequency.value=n;g.gain.setValueAtTime(.0001,t);g.gain.linearRampToValueAtTime(.025,t+.02);g.gain.exponentialRampToValueAtTime(.0001,t+.28);o.connect(g).connect(ac.destination);o.start(t);o.stop(t+.3)}
+  if(musicStep%4===0){const o=ac.createOscillator(),g=ac.createGain();o.type="sine";o.frequency.value=BASS[(musicStep/4|0)%BASS.length];g.gain.setValueAtTime(.0001,t);g.gain.linearRampToValueAtTime(.04,t+.03);g.gain.exponentialRampToValueAtTime(.0001,t+.6);o.connect(g).connect(ac.destination);o.start(t);o.stop(t+.65)}
+  musicStep++;
+}
+function startMusic(){try{ac=ac||new (window.AudioContext||window.webkitAudioContext)();if(ac.state==="suspended")ac.resume()}catch(e){}if(!musicTimer)musicTimer=setInterval(musicTick,300)}
+const sfx={
+  pick:()=>tone(660,.06,"triangle"),
+  drop:()=>tone(440,.07,"triangle"),
+  clear:(c)=>{const b=520+c*60;tone(b,.1,"square",.07);tone(b*1.25,.1,"square",.07,.08);tone(b*1.5,.16,"square",.07,.16)},
+  bad:()=>tone(160,.15,"sawtooth",.06),
+  win:()=>[523,659,784,1046].forEach((f,i)=>tone(f,.18,"triangle",.1,i*.12)),
+  lose:()=>[392,330,262].forEach((f,i)=>tone(f,.22,"sawtooth",.06,i*.16))
+};
+
+/* ---------- PickyList link ---------- */
+// The app opens the game with #pickylist (bonus) or #pl-domates-kiyma-kahve (bonus + that list).
+// When the game is self-hosted, ?from=pickylist&list=domates,kiyma also works.
+const PLAY_URL="https://play.google.com/store/apps/details?id=com.listeal.app";
+const APPSTORE_URL=""; // fill in when known
+function appUrl(){const pf=window.RAF_NATIVE?RAF_NATIVE.platform:"";const ios=pf==="ios"||(!pf&&/iPhone|iPad|iPod/.test(navigator.userAgent));return (ios&&APPSTORE_URL)?APPSTORE_URL:PLAY_URL}
+function slug(t){return t.toLocaleLowerCase("tr-TR").replace(/ç/g,"c").replace(/ğ/g,"g").replace(/ı/g,"i").replace(/ö/g,"o").replace(/ş/g,"s").replace(/ü/g,"u").replace(/[^a-z0-9]/g,"")}
+function readLink(){
+  let from=false,names=[];
+  try{
+    const h=decodeURIComponent((location.hash||"").slice(1)).toLowerCase();
+    if(h==="pickylist"){from=true}
+    else if(h.startsWith("pl-")||h==="pl"){from=true;names=h.slice(3).split("-")}
+    const q=new URLSearchParams(location.search);
+    if(q.get("from")==="pickylist"||q.get("list")){from=true;if(q.get("list"))names=q.get("list").split(",")}
+  }catch(e){}
+  const want=[];
+  names.map(slug).filter(Boolean).forEach(n=>{
+    const i=PRODUCTS.findIndex(p=>slug(p[1])===n)>=0?PRODUCTS.findIndex(p=>slug(p[1])===n):PRODUCTS.findIndex(p=>slug(p[1]).startsWith(n)||n.startsWith(slug(p[1])));
+    if(i>=0&&!want.includes(i))want.push(i);
+  });
+  return {from,want:want.slice(0,6)};
+}
+const LINK=readLink();
+const today=new Date().toISOString().slice(0,10);
+let bonusPending=LINK.from&&store.get("bonusDay","")!==today;
+let importPending=LINK.want.length?LINK.want:null;
+
+/* ---------- level generation ---------- */
+let RNG=Math.random;
+function seeded(seed){let a=seed>>>0;return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+function rnd(n){return Math.floor(RNG()*n)}
+const THEMES=[
+  {name:"Manav",e:"🥕",cats:["sebze","meyve"],bar:"#7CB342"},
+  {name:"Kahvaltılık",e:"🧀",cats:["sut","firin","temel"],bar:"#F9A825"},
+  {name:"Kasap ve şarküteri",e:"🥩",cats:["et","sut"],bar:"#E57373"},
+  {name:"Temel gıda",e:"🍝",cats:["temel","icecek"],bar:"#A1887F"},
+  {name:"Temizlik",e:"🧴",cats:["temizlik","icecek"],bar:"#4FC3F7"},
+  {name:"Haftalık market",e:"🛒",cats:null,bar:"#1F9D55"}
+];
+function themeOf(l){return THEMES[(l-1)%THEMES.length]}
+const BADGES=[
+  {id:"first",e:"🛒",n:"İlk liste",d:"İlk reyonu bitir"},
+  {id:"combo3",e:"⚡",n:"Kombo ustası",d:"3'lü kombo yap"},
+  {id:"perfect",e:"⭐",n:"Kusursuz",d:"Bir reyonu 3 yıldızla bitir"},
+  {id:"nohelp",e:"💪",n:"Yardımsız",d:"Hiç yardım kullanmadan bitir"},
+  {id:"daily",e:"📅",n:"Günün alışverişi",d:"Günün listesini bitir"},
+  {id:"streak3",e:"🔥",n:"3 gün seri",d:"Günün listesini 3 gün üst üste bitir"},
+  {id:"pickylist",e:"✅",n:"PickyList'li",d:"Oyuna PickyList'ten gel"},
+  {id:"lvl10",e:"🏪",n:"Market müdavimi",d:"Reyon 10'a ulaş"}
+];
+const toastQ=[];let toastBusy=false;
+function showToast(e,title,sub){toastQ.push([e,title,sub]);if(!toastBusy)nextToast()}
+function nextToast(){
+  const x=toastQ.shift();if(!x){toastBusy=false;return}toastBusy=true;
+  const t=document.getElementById("toast");
+  t.innerHTML=`<span class="bi">${x[0]}</span><span><b>${x[1]}</b><small>${x[2]}</small></span>`;
+  t.classList.add("show");tone(880,.12,"triangle",.08);tone(1175,.16,"triangle",.08,.1);
+  setTimeout(()=>{t.classList.remove("show");setTimeout(nextToast,350)},2600);
+}
+function award(id){
+  const got=store.get("badges",{});if(got[id])return;
+  got[id]=dayKey();store.set("badges",got);
+  const b=BADGES.find(x=>x.id===id);if(!b)return;
+  showToast(b.e,"Rozet: "+b.n,b.d);
+}
+/* daily missions */
+const MISSIONS=[
+  {id:"clears",n:15,e:"🧺",d:n=>n+" raf temizle"},
+  {id:"combo",n:2,e:"⚡",d:n=>n+" kez 3'lü kombo yap"},
+  {id:"sale",n:2,e:"🏷️",d:n=>n+" indirimli ürün yakala"},
+  {id:"wins",n:2,e:"🛒",d:n=>n+" reyon bitir"},
+  {id:"stars3",n:1,e:"⭐",d:()=>"Bir reyonu 3 yıldızla bitir"},
+  {id:"daily",n:1,e:"📅",d:()=>"Günün listesini bitir"},
+  {id:"nohelp",n:1,e:"💪",d:()=>"Yardım kullanmadan bir reyon bitir"},
+  {id:"boxes",n:3,e:"📦",d:n=>n+" koli aç"}
+];
+const REWARDS=[["undo","↩️","Geri al"],["hint","🔍","İpucu"],["shuf","🔀","Karıştır"]];
+function missionsToday(){
+  const k=dayKey();let m=store.get("missions",null);
+  if(!m||m.day!==k){
+    const r=seeded(+k.replace(/-/g,"")*7+3);const lvl=store.get("level",1);
+    const pool=MISSIONS.filter(x=>x.id!=="boxes"||lvl>=7);
+    const pick=[];while(pick.length<3){const x=pool[Math.floor(r()*pool.length)];if(!pick.includes(x.id))pick.push(x.id)}
+    m={day:k,ids:pick,prog:{},done:{}};store.set("missions",m);
+  }
+  return m;
+}
+function track(id,n){
+  n=n||1;
+  const m=missionsToday();
+  if(m.ids.includes(id)&&!m.done[id]){
+    const def=MISSIONS.find(x=>x.id===id);
+    m.prog[id]=Math.min(def.n,(m.prog[id]||0)+n);
+    if(m.prog[id]>=def.n){
+      m.done[id]=true;const rw=REWARDS[m.ids.indexOf(id)%3];
+      const ex=store.get("extra",{});ex[rw[0]]=(ex[rw[0]]||0)+1;store.set("extra",ex);
+      showToast("🎯","Görev tamam: "+def.d(def.n),"Ödül: +1 "+rw[2]+" (sonraki reyonda)");
+    }
+    store.set("missions",m);
+  }
+}
+function missionsHtml(){
+  const m=missionsToday();
+  return m.ids.map((id,i)=>{const d=MISSIONS.find(x=>x.id===id),p=m.prog[id]||0,ok=m.done[id],rw=REWARDS[i%3];
+    return `<div class="mis${ok?" ok":""}"><span class="me">${ok?"✅":d.e}</span><span class="mt"><b>${d.d(d.n)}</b><span class="mbar"><i style="width:${Math.round(p/d.n*100)}%"></i></span></span><span class="mr" title="Ödül: ${rw[2]}">${ok?"Alındı":p+"/"+d.n+" · "+rw[1]}</span></div>`}).join("");
+}
+/* lifetime stats */
+function stat(k,n){const st=store.get("stats",{});st[k]=(st[k]||0)+(n==null?1:n);store.set("stats",st)}
+function statMax(k,v){const st=store.get("stats",{});if(!(st[k]>=v)){st[k]=v;store.set("stats",st)}}
+function statsHtml(){
+  const st=store.get("stats",{}),pc=store.get("prodCount",{});
+  let fav=-1,fn=0;Object.keys(pc).forEach(t=>{if(pc[t]>fn){fn=pc[t];fav=+t}});
+  const sk=store.get("streak",{n:0});const dl=Object.keys(store.get("daily",{})).length;
+  const rows=[["Biten reyon",st.wins||0],["Temizlenen raf",st.clears||0],["Toplam hamle",st.moves||0],["En iyi kombo",st.maxCombo?"x"+st.maxCombo:"-"],
+    ["Açılan koli",st.boxes||0],["Yakalanan indirim",st.sales||0],["Günün listesi",dl+" gün"],["En iyi puan",store.get("best",0)]];
+  return rows.map(r=>`<div class="sr"><span>${r[0]}</span><b>${r[1]}</b></div>`).join("")+
+    (fav>=0?`<div class="sr fav"><span>En çok topladığın</span><b>${PRODUCTS[fav][0]} ${PRODUCTS[fav][1]} · ${fn}</b></div>`:"");
+}
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=rnd(i+1);[a[i],a[j]]=[a[j],a[i]]}return a}
+
+function levelSpec(l){
+  // tuned with a simulated player: enough free shelf space that most boards stay solvable
+  const types=Math.min(3+Math.floor(l*1.1),PRODUCTS.length);
+  const layers=Math.min(1+Math.floor((l+1)/3),3);
+  const items=types*3;
+  let shelves=Math.ceil(items/(3*layers))+3;
+  shelves=Math.max(4,Math.min(shelves,12));
+  const listCount=Math.min(2+Math.floor(l/2),6);
+  const time=Math.round(40+items*2.3);
+  return {types,layers,items,shelves,listCount,time,theme:themeOf(l)};
+}
+function buildLevel(l,forced){
+  const sp=levelSpec(l);
+  if(forced){sp.listCount=forced.length;}
+  const th=sp.theme;
+  const rest=[...PRODUCTS.keys()].filter(i=>!(forced||[]).includes(i));
+  const pool=th&&th.cats?[...shuffle(rest.filter(i=>th.cats.includes(PRODUCTS[i][2]))),...shuffle(rest.filter(i=>!th.cats.includes(PRODUCTS[i][2])))]:shuffle(rest);
+  const typeIdx=[...(forced||[]),...pool].slice(0,Math.max(sp.types,(forced||[]).length));
+  if(typeIdx.length!==sp.types){sp.types=typeIdx.length;sp.items=sp.types*3;sp.shelves=Math.max(4,Math.min(Math.ceil(sp.items/(3*sp.layers))+2,12));}
+  const items=shuffle(typeIdx.flatMap(t=>[t,t,t]));
+  const sh=Array.from({length:sp.shelves},()=>({layers:Array.from({length:sp.layers},()=>[null,null,null])}));
+  const cap=sp.shelves*sp.layers*3, empties=cap-sp.items;
+  const front=[],back=[];
+  sh.forEach((s,si)=>s.layers.forEach((L,li)=>L.forEach((_,k)=>(li===0?front:back).push([si,li,k]))));
+  shuffle(front);shuffle(back);
+  let fe=Math.min(empties,Math.max(3,Math.ceil(sp.shelves*0.7)));
+  let be=empties-fe; if(be>back.length){fe+=be-back.length;be=back.length}
+  const emptySet=new Set([...front.slice(0,fe),...back.slice(0,be)].map(p=>p.join()));
+  let i=0;
+  sh.forEach((s,si)=>s.layers.forEach((L,li)=>{for(let k=0;k<3;k++){if(!emptySet.has([si,li,k].join()))L[k]=items[i++]}}));
+  // remove empty layers, avoid ready triples in front
+  sh.forEach(s=>{s.layers=s.layers.filter(L=>L.some(x=>x!=null)); if(!s.layers.length)s.layers=[[null,null,null]]});
+  for(let tries=0;tries<200;tries++){
+    const bad=sh.findIndex(s=>{const f=s.layers[0];return f[0]!=null&&f[0]===f[1]&&f[1]===f[2]});
+    if(bad<0)break;
+    const o=sh[rnd(sh.length)], L=o.layers[rnd(o.layers.length)], k=rnd(3);
+    [sh[bad].layers[0][0],L[k]]=[L[k],sh[bad].layers[0][0]];
+  }
+  // boxes (koli) from level 7: some items start boxed and open as shelves clear
+  if(l>=7){const pos=[];sh.forEach((s2,si)=>s2.layers.forEach((L,li)=>L.forEach((x,k)=>{if(x!=null&&li>0)pos.push([si,li,k])})));
+    shuffle(pos).slice(0,Math.min(1+Math.floor((l-7)/3),4)).forEach(([si,li,k])=>{const x=sh[si].layers[li][k];sh[si].layers[li][k]=-(x+1)});}
+  const list=(forced?[...forced]:shuffle(typeIdx.slice(0,Math.max(sp.listCount,Math.ceil(typeIdx.length*0.6)))).slice(0,sp.listCount)).map(t=>({t,done:false}));
+  return {sp,shelves:sh,list};
+}
+
+/* ---------- game ---------- */
+function dayKey(){const d=new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}
+function newGame(l,mode){
+  mode=mode||"level";
+  const forced=mode==="level"?importPending:null;if(mode==="level")importPending=null;
+  let lv;
+  if(mode==="daily"){const k=dayKey();RNG=seeded(+k.replace(/-/g,""));lv=buildLevel(4);lv.sp.theme=THEMES[5];RNG=Math.random;}
+  else lv=buildLevel(l,forced);
+  const base=mode==="daily"?0:store.get("score",0);
+  S={level:l,mode,theme:mode==="daily"?THEMES[5]:themeOf(l),shelves:lv.shelves,list:lv.list,time:lv.sp.time,total:lv.sp.time,score:base,startScore:base,
+     sel:null,hist:[],undo:3,hint:2,shuf:1,combo:0,clears:0,moves:0,over:false,mult:1,fromList:!!forced,
+     tut:mode==="level"&&l===1&&!store.get("tutDone",false),basket:null,sale:-1,paused:false};
+  if(l>=2||mode==="daily"){const types=[...new Set(S.shelves.flatMap(x=>x.layers.flat()).filter(x=>x!=null).map(x=>x<0?-x-1:x))];S.sale=types[(mode==="daily"?(+dayKey().replace(/-/g,""))%types.length:Math.floor(Math.random()*types.length))];}
+  {const ex=store.get("extra",{});if(ex.undo||ex.hint||ex.shuf){S.undo+=ex.undo||0;S.hint+=ex.hint||0;S.shuf+=ex.shuf||0;store.set("extra",{});
+    setTimeout(()=>flashCombo("Görev ödülü!"),500);}}
+  if(LINK.from)setTimeout(()=>award("pickylist"),900);
+  if(bonusPending){bonusPending=false;store.set("bonusDay",today);S.time+=30;S.total+=30;S.undo++;S.hint++;S.shuf++;S.mult=2;
+    setTimeout(()=>flashCombo("PickyList bonusu!"),300);}
+  render(true);startTimer();
+  const tips=[];
+  if(S.mode!=="daily"&&l>=2&&!store.get("tip_basket",false)){tips.push("Yeni: Sepet! Bir ürüne, sonra alttaki sepete dokunarak onu kenara park edebilirsin.");store.set("tip_basket",true)}
+  if(S.sale>=0&&!store.get("tip_sale",false)){tips.push("Kırmızı % etiketli ürün indirimde. Üçlüsünü temizlersen +10 saniye kazanırsın.");store.set("tip_sale",true)}
+  if(S.shelves.some(x=>x.layers.flat().some(v=>v!=null&&v<0))&&!store.get("tip_box",false)){tips.push("Yeni: Koliler! 📦 kapalı ürünler taşınamaz. Her raf temizlendiğinde bir koli açılır.");store.set("tip_box",true)}
+  tips.forEach((t,i)=>setTimeout(()=>{if(!S.over&&!S.paused)coach(t,4200)},600+i*4600));
+}
+function startTimer(){clearInterval(timerId);timerId=setInterval(()=>{if(S.over||S.paused)return;S.time--;renderTop();if(S.time%5===0)saveGame();if(S.time<=0)lose("Süre doldu","Kasa kapandı, listede eksikler kaldı.")},1000)}
+
+function front(si){return S.shelves[si].layers[0]}
+function buzz(p){try{if(window.RAF_NATIVE)RAF_NATIVE.haptic(p);else if(navigator.vibrate)navigator.vibrate(p)}catch(e){}}
+const SAVE_KEYS=["level","mode","shelves","list","time","total","score","startScore","undo","hint","shuf","clears","moves","mult","fromList","basket","sale","used"];
+function saveGame(){
+  if(!S||S.over||!S.shelves||!S.mode)return;
+  const o={day:dayKey()};SAVE_KEYS.forEach(k=>o[k]=S[k]);store.set("save",o);
+}
+function loadSave(){const sv=store.get("save",null);if(!sv)return null;if(sv.mode==="daily"&&sv.day!==dayKey())return null;return sv}
+function resumeGame(sv){
+  clearInterval(timerId);
+  S={};SAVE_KEYS.forEach(k=>S[k]=sv[k]);
+  Object.assign(S,{sel:null,hist:[],combo:0,over:false,paused:false,tut:false,theme:sv.mode==="daily"?THEMES[5]:themeOf(sv.level)});
+  render();startTimer();
+}
+function pauseGame(){
+  if(S.over||S.paused)return;S.paused=true;S.sel=null;saveGame();render();coach("");
+  $("pauseInfo").textContent=(S.mode==="daily"?"Günün listesi":"Reyon "+S.level+" · "+S.theme.name)+" · kalan süre "+fmt(S.time);
+  $("pauseMis").innerHTML=missionsHtml();
+  $("ovPause").hidden=false;
+}
+function flyFrom(rect,el){
+  if(!rect||!el||!el.animate)return;
+  const r=el.getBoundingClientRect();const dx=rect.left+rect.width/2-(r.left+r.width/2),dy=rect.top+rect.height/2-(r.top+r.height/2);
+  if(Math.abs(dx)+Math.abs(dy)<2)return;
+  el.animate([{transform:`translate(${dx}px,${dy}px) scale(1.1)`},{transform:"translate(0,0) scale(1)"}],{duration:200,easing:"cubic-bezier(.2,.8,.3,1)"});
+}
+function slotRect(si,k){const sh=$("board").children[si];if(!sh)return null;const sl=sh.querySelectorAll(".slot")[k];return sl?sl.getBoundingClientRect():null}
+function snapshot(){return JSON.stringify({sh:S.shelves,list:S.list,score:S.score,basket:S.basket})}
+function tapBasket(){
+  if(S.over)return;
+  if(S.sel&&S.sel[0]==="b"){S.sel=null;render();return}
+  if(S.sel){ // park selected item
+    if(S.basket!=null){sfx.bad();return}
+    const [fs,fk]=S.sel;S.hist.push(snapshot());if(S.hist.length>20)S.hist.shift();
+    const srcRect=slotRect(fs,fk);
+    S.basket=front(fs)[fk];front(fs)[fk]=null;S.sel=null;S.moves++;sfx.drop();advance(fs);render();
+    const bs=$("bslot");if(bs.animate&&srcRect){const r=bs.getBoundingClientRect();bs.animate([{transform:`translate(${srcRect.left-r.left}px,${srcRect.top-r.top}px)`},{transform:"none"}],{duration:200,easing:"cubic-bezier(.2,.8,.3,1)"})}
+    checkEnd();return;
+  }
+  if(S.basket!=null){S.sel=["b",0];sfx.pick();render();}
+}
+
+function tapItem(si,k){
+  if(S.over)return;
+  const f=front(si);
+  if(f[k]==null){ if(S.sel)place(si,k); return; }
+  if(S.sel&&S.sel[0]==="b"){sfx.bad();shake(si);return}
+  if(f[k]<0){sfx.bad();buzz(40);shake(si);if(!S.sel)coach("Koli kapalı. Bir raf temizlenince açılır.",2200);return}
+  if(S.sel&&S.sel[0]===si&&S.sel[1]===k){S.sel=null;render();return}
+  S.sel=[si,k];sfx.pick();render();
+}
+function tapShelf(si){
+  if(S.over||!S.sel)return;
+  const f=front(si);const k=f.indexOf(null);
+  if(k<0){sfx.bad();buzz(40);shake(si);return}
+  place(si,k);
+}
+function place(si,k){
+  const [fs,fk]=S.sel;
+  if(fs===si){ // rearrange within shelf
+    const f=front(si);[f[fk],f[k]]=[f[k],f[fk]];S.sel=null;sfx.drop();render();return;
+  }
+  S.hist.push(snapshot());if(S.hist.length>20)S.hist.shift();
+  let t;const srcRect=fs==="b"?$("bslot").getBoundingClientRect():slotRect(fs,fk);
+  if(fs==="b"){t=S.basket;S.basket=null;}else{t=front(fs)[fk];front(fs)[fk]=null;}
+  front(si)[k]=t;S.sel=null;S.moves++;sfx.drop();
+  const cleared=checkClear(si);
+  if(fs!=="b")advance(fs);
+  render();
+  const tgt=$("board").children[si].querySelectorAll(".slot")[k].querySelector(".item");flyFrom(srcRect,tgt);
+  if(cleared!=null)afterClear(si,cleared);
+  checkEnd();
+}
+function checkClear(si){
+  const f=front(si);
+  if(f[0]!=null&&f[0]>=0&&f[0]===f[1]&&f[1]===f[2]){return f[0]}
+  return null;
+}
+function afterClear(si,t){
+  const el=$("board").children[si];
+  el.classList.add("clear");
+  el.querySelectorAll(".item").forEach(x=>x.classList.add("pop"));
+  S.combo++;clearTimeout(comboTimer);comboTimer=setTimeout(()=>S.combo=0,4000);
+  if(S.combo>=3)award("combo3");
+  if(S.combo===3)track("combo");
+  track("clears");stat("clears");statMax("maxCombo",S.combo);{const pc=store.get("prodCount",{});pc[t]=(pc[t]||0)+1;store.set("prodCount",pc)}
+  const onList=S.list.find(x=>x.t===t&&!x.done);
+  const pts=(onList?150:100)*S.combo*(S.mult||1);S.score+=pts;S.clears++;
+  if(onList)onList.done=true;
+  if(t===S.sale){track("sale");stat("sales");S.time+=10;S.total+=10;S.sale=-1;setTimeout(()=>flashCombo("İndirim! +10 sn"),450);renderTop();}
+  sfx.clear(S.combo);buzz(25);
+  if(S.tut){S.tut=false;store.set("tutDone",true);coach("Harika! Raf temizlendi, listedeki ürün işaretlendi.",2600);}
+  if(S.combo>1)flashCombo("Kombo x"+S.combo);
+  else if(onList)flashCombo("+"+pts);
+  front(si).fill(null);
+  openBox();
+  setTimeout(()=>{advance(si);render();checkEnd()},330);
+}
+function openBox(){
+  for(const li of [0,1,2,3]){for(let si=0;si<S.shelves.length;si++){const L=S.shelves[si].layers[li];if(!L)continue;const k=L.findIndex(x=>x!=null&&x<0);
+    if(k>=0){L[k]=-L[k]-1;S.opened=[si,li,k];track("boxes");stat("boxes");if(li===0)setTimeout(()=>{flashCombo("Koli açıldı!");const t=checkClear(si);if(t!=null){render();afterClear(si,t)}},360);return}}}
+}
+function advance(si){
+  const s=S.shelves[si];
+  while(s.layers.length>1&&s.layers[0].every(x=>x==null)){
+    s.layers.shift();
+    const t=checkClear(si);
+    if(t!=null){ // free triple from back row
+      setTimeout(()=>{render();afterClear(si,t)},60);break;
+    }
+  }
+}
+function itemsLeft(){return S.shelves.reduce((n,s)=>n+s.layers.reduce((m,L)=>m+L.filter(x=>x!=null).length,0),0)}
+function checkEnd(){
+  if(S.over)return;
+  if(S.list.every(x=>x.done)){win();return}
+  const anyEmpty=S.shelves.some(s=>s.layers[0].includes(null))||S.basket==null;
+  const pending=document.querySelector(".item.pop");
+  if(!anyEmpty&&!pending){
+    if(S.undo>0||S.shuf>0){flashCombo("Raflar dolu!");}
+    else lose("Raflar tıkandı","Hiç boş yer kalmadı.");
+  }
+}
+function win(){
+  S.over=true;clearInterval(timerId);store.set("save",null);buzz([30,40,30]);
+  const timeBonus=S.time*5, frac=S.time/S.total;
+  const stars=frac>.5?3:frac>.25?2:1;
+  S.score+=timeBonus;
+  if(S.mode==="daily"){const k=dayKey(),prev=store.get("daily",{});if(!prev[k]||prev[k].score<S.score){prev[k]={score:S.score,stars};store.set("daily",prev)}
+    const st=store.get("streak",{n:0,last:""});
+    if(st.last!==k){const y=new Date();y.setDate(y.getDate()-1);const yk=y.getFullYear()+"-"+String(y.getMonth()+1).padStart(2,"0")+"-"+String(y.getDate()).padStart(2,"0");
+      st.n=st.last===yk?st.n+1:1;st.last=k;store.set("streak",st);}
+    S.streak=st.n;}
+  else{store.set("score",S.score);store.set("level",Math.max(store.get("level",1),S.level+1));
+    const st=store.get("stars",{});st[S.level]=Math.max(st[S.level]||0,stars);store.set("stars",st);
+    const best=Math.max(store.get("best",0),S.score);store.set("best",best);}
+  sfx.win();
+  stat("wins");stat("moves",S.moves);track("wins");if(stars===3)track("stars3");if(!S.used)track("nohelp");if(S.mode==="daily")track("daily");
+  const awards=["first"];if(stars===3)awards.push("perfect");if(!S.used)awards.push("nohelp");
+  if(S.mode==="daily"){awards.push("daily");if(S.streak>=3)awards.push("streak3");}
+  if(store.get("level",1)>=10)awards.push("lvl10");
+  setTimeout(()=>awards.forEach(award),700);
+  const rows=S.list.map(x=>`<div class="r"><span>${PRODUCTS[x.t][1]} x3</span><span>✓</span></div>`).join("");
+  $("endCard").innerHTML=`
+    <div class="stars">${[1,2,3].map(i=>i<=stars?"★":'<span class="off">★</span>').join("")}</div>
+    <div class="receipt">
+      <div class="c"><b>PICKYLIST · RAF AVCISI</b><br>${S.mode==="daily"?"Günün listesi":"Reyon "+S.level+" · "+S.theme.name} · ${new Date().toLocaleDateString("tr-TR")}</div><hr>
+      ${rows}<hr>
+      <div class="r"><span>Temizlenen raf</span><span>${S.clears}</span></div>
+      <div class="r"><span>Hamle</span><span>${S.moves}</span></div>
+      <div class="r"><span>Süre bonusu</span><span>+${timeBonus}</span></div>
+      ${S.mult>1?'<div class="r"><span>PickyList bonusu</span><span>2x</span></div>':""}<hr>
+      ${S.mode==="daily"?`<div class="r"><span>Günlük seri</span><span>${S.streak} gün</span></div>`:""}
+      <div class="r tot"><span>TOPLAM PUAN</span><span>${S.score}</span></div>
+      <div class="barcode"></div>
+    </div>
+    ${S.mode==="daily"?'<p class="promo">Yarın yeni bir liste seni bekliyor.</p><div class="rowbtns"><button class="btn out" id="toMenu">Ana ekran</button><button class="btn" id="next">Reyonlara devam</button></div>':'<div class="rowbtns"><button class="btn out" id="toMap">Harita</button><button class="btn" id="next">Sonraki reyon</button></div>'}
+    <a class="btn out applink" href="${appUrl()}" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#logo"/></svg>${S.fromList?"PickyList'e dön":"Gerçek alışverişin için PickyList"}</a>
+    <button class="link" id="share">Sonucu kopyala</button>
+    <p class="promo">PickyList'ten oyuna her gün girişte: +30 sn, her yardımdan +1, 2x puan.</p>`;
+  const shareText=`PickyList · Raf Avcısı\n${S.mode==="daily"?"Günün listesi "+new Date().toLocaleDateString("tr-TR"):"Reyon "+S.level+" · "+S.theme.name}\n${S.list.map(x=>PRODUCTS[x.t][0]).join("")} ✅ ${"⭐".repeat(stars)}\n${S.score} puan${S.mode==="daily"&&S.streak>1?" · 🔥 "+S.streak+" gün":""}`;
+  $("share").onclick=()=>{
+    const done=()=>{$("share").textContent="Kopyalandı";};
+    try{navigator.clipboard.writeText(shareText).then(done,()=>fallbackCopy(shareText,done));}catch(e){fallbackCopy(shareText,done)}
+  };
+  $("ovEnd").hidden=false;
+  $("next").onclick=()=>{$("ovEnd").hidden=true;newGame(S.mode==="daily"?store.get("level",1):S.level+1)};
+  if($("toMap"))$("toMap").onclick=()=>{$("ovEnd").hidden=true;openMap()};
+  if($("toMenu"))$("toMenu").onclick=()=>{$("ovEnd").hidden=true;showStart()};
+}
+function lose(title,msg){
+  S.over=true;clearInterval(timerId);sfx.lose();stat("losses");stat("moves",S.moves);store.set("save",null);buzz(120);
+  const miss=S.list.filter(x=>!x.done).map(x=>PRODUCTS[x.t][0]).join(" ");
+  $("endCard").innerHTML=`<h2 class="endtitle">${title}</h2><p>${msg}</p>
+    ${miss?`<p>Eksik kalanlar: <span style="font-size:24px">${miss}</span></p>`:""}
+    <button class="btn" id="retry">Tekrar dene</button>`;
+  $("ovEnd").hidden=false;
+  $("retry").onclick=()=>{$("ovEnd").hidden=true;if(S.mode!=="daily")store.set("score",S.startScore);newGame(S.level,S.mode)};
+}
+
+function fallbackCopy(t,done){
+  const ta=document.createElement("textarea");ta.value=t;ta.setAttribute("readonly","");ta.style.position="fixed";ta.style.opacity="0";document.body.appendChild(ta);ta.select();
+  let ok=false;try{ok=document.execCommand("copy")}catch(e){}document.body.removeChild(ta);
+  if(ok)done();else{$("share").textContent="Kopyalanamadı";}
+}
+/* boosters */
+function doUndo(){
+  if(S.over||!S.undo||!S.hist.length)return;
+  const h=JSON.parse(S.hist.pop());S.shelves=h.sh;S.list=h.list;S.score=h.score;S.basket=h.basket==null?null:h.basket;S.undo--;S.used=true;S.sel=null;sfx.drop();render();
+}
+function doShuffle(){
+  if(S.over||!S.shuf)return;
+  S.hist.push(snapshot());
+  const pool=[];S.shelves.forEach(s=>s.layers[0].forEach(x=>{if(x!=null&&x>=0)pool.push(x)}));
+  shuffle(pool);
+  const slots=[];S.shelves.forEach((s,si)=>[0,1,2].forEach(k=>{if(!(s.layers[0][k]<0))slots.push([si,k])}));
+  shuffle(slots);
+  S.shelves.forEach(s=>s.layers[0].forEach((x,k)=>{if(!(x<0))s.layers[0][k]=null}));
+  // keep at least 3 empty front slots when possible by spreading items
+  pool.forEach((t,i)=>{const [si,k]=slots[i];S.shelves[si].layers[0][k]=t});
+  S.shuf--;S.used=true;S.sel=null;sfx.pick();render();
+  S.shelves.forEach((_,si)=>{const t=checkClear(si);if(t!=null)afterClear(si,t)});
+}
+function findMove(){
+  for(const pass of [0,1]){
+    for(let si=0;si<S.shelves.length;si++){
+      const f=front(si);const counts={};f.forEach(x=>{if(x!=null&&x>=0)counts[x]=(counts[x]||0)+1});
+      for(const t in counts){
+        if(counts[t]!==2)continue;const tt=+t;
+        if(pass===0&&!f.includes(null))continue;
+        for(let sj=0;sj<S.shelves.length;sj++){if(sj===si)continue;const k=front(sj).indexOf(tt);if(k>=0)return {from:[sj,k],to:si}}
+      }
+    }
+  }
+  // fallback: move any item next to one of its kind on a shelf with room
+  for(let si=0;si<S.shelves.length;si++){const f=front(si);if(!f.includes(null))continue;
+    for(const t of f){if(t==null||t<0)continue;for(let sj=0;sj<S.shelves.length;sj++){if(sj===si)continue;const k=front(sj).indexOf(t);if(k>=0)return {from:[sj,k],to:si}}}}
+  return null;
+}
+function coach(t,ms){const c=$("coach");if(!t){c.hidden=true;return}c.textContent=t;c.hidden=false;clearTimeout(coach._t);if(ms)coach._t=setTimeout(()=>{c.hidden=true},ms)}
+function applyTutorial(){
+  if(!S.tut||S.over)return;
+  const m=findMove();if(!m){coach("Bir ürüne dokun, sonra boş yeri olan rafa dokun.");return}
+  const b=$("board");
+  if(!S.sel){const it=b.children[m.from[0]].querySelectorAll(".slot")[m.from[1]].querySelector(".item");if(it)it.classList.add("guide");coach("Zıplayan ürüne dokun.");}
+  else{
+    if(S.sel[0]==="b")return;
+    const t=front(S.sel[0])[S.sel[1]];let to=-1;
+    for(let si=0;si<S.shelves.length;si++){if(si===S.sel[0])continue;const f=front(si);if(f.includes(null)&&f.includes(t)){to=si;break}}
+    if(to<0)to=m.to;
+    b.children[to].classList.add("guide");coach("Şimdi yeşil çerçeveli rafa dokun.");
+  }
+}
+function doHint(){
+  if(S.over||!S.hint)return;
+  // find a shelf with 2 same + 1 empty, and the third visible elsewhere; else a shelf with 2 same + another visible
+  for(const pass of [0,1]){
+    for(let si=0;si<S.shelves.length;si++){
+      const f=front(si);
+      const counts={};f.forEach(x=>{if(x!=null&&x>=0)counts[x]=(counts[x]||0)+1});
+      for(const t in counts){
+        if(counts[t]!==2)continue;
+        const tt=+t;
+        if(pass===0&&!f.includes(null))continue;
+        for(let sj=0;sj<S.shelves.length;sj++){
+          if(sj===si)continue;
+          const k=front(sj).indexOf(tt);
+          if(k>=0){S.hint--;S.used=true;S.sel=[sj,k];render();
+            const el=$("board").children[sj].querySelectorAll(".slot")[k].querySelector(".item");
+            if(el)el.classList.add("hint");$("board").children[si].classList.add("target");sfx.pick();return}
+        }
+      }
+    }
+  }
+  flashCombo("İpucu yok");
+}
+
+/* ---------- render ---------- */
+function fmt(s){s=Math.max(0,s);return Math.floor(s/60)+":"+String(s%60).padStart(2,"0")}
+function renderTop(){
+  $("time").textContent=fmt(S.time);$("score").textContent=S.score;
+  $("tag").classList.toggle("low",S.time<=10);
+}
+function render(){
+  renderTop();
+  $("lvl").innerHTML=(S.mode==="daily"?"":S.level)+(S.mult>1?'<span class="x2">2x</span>':"");
+  $("lvlPre").hidden=S.mode==="daily";
+  $("lvlName").textContent=S.mode==="daily"?"Günün listesi":(S.theme?" · "+S.theme.name:"");
+  $("listItems").innerHTML=S.list.map(x=>`<div class="row${x.done?" done":""}"><span class="cb"></span><span class="em" style="background:${CATS[PRODUCTS[x.t][2]][2]}">${PRODUCTS[x.t][0]}</span><span class="nm"><span>${PRODUCTS[x.t][1]}</span><small>3 adet · ${CATS[PRODUCTS[x.t][2]][0]}</small></span></div>`).join("");
+  $("lvlSub").textContent=S.list.length+" üründen "+S.list.filter(x=>x.done).length+" tamam";
+  const b=$("board");b.innerHTML="";
+  S.shelves.forEach((s,si)=>{
+    const el=document.createElement("div");el.className="shelf";
+    if(!S.tut&&S.sel&&front(si).includes(null)&&S.sel[0]!==si)el.classList.add("target");
+    const backL=s.layers[1];
+    el.innerHTML=(backL?`<div class="back">${backL.map(x=>`<span>${x==null?"":x<0?"📦":PRODUCTS[x][0]}</span>`).join("")}</div>`:"")+
+      `<div class="slots">${s.layers[0].map((x,k)=>`<div class="slot" data-k="${k}">${x!=null&&x<0?`<span class="item box" role="img" aria-label="Kapalı koli">📦</span>`:x!=null?`<span class="item${x===S.sale?" sale":""}${S.sel&&S.sel[0]===si&&S.sel[1]===k?" sel":""}${S.justIn&&S.justIn[0]===si&&S.justIn[1]===k?" in":""}" role="button" aria-label="${PRODUCTS[x][1]}">${PRODUCTS[x][0]}</span>`:""}</div>`).join("")}</div>
+      <div class="plank"></div>${s.layers.length>1?`<span class="layers">+${s.layers.length-1}</span>`:""}`;
+    el.addEventListener("pointerup",e=>{
+      const slot=e.target.closest(".slot");
+      if(slot){const k=+slot.dataset.k; if(front(si)[k]!=null||S.sel){ if(front(si)[k]==null){place(si,k)}else tapItem(si,k); return;} }
+      tapShelf(si);
+    });
+    b.appendChild(el);
+  });
+  S.justIn=null;
+  if(S.opened){const [oi,ol,ok]=S.opened;S.opened=null;if(ol===0){const it=b.children[oi]&&b.children[oi].querySelectorAll(".slot")[ok].querySelector(".item");if(it)it.classList.add("opened")}}
+  const bk=$("basket");$("bslot").textContent=S.basket!=null?PRODUCTS[S.basket][0]:"";
+  bk.classList.toggle("full",S.basket!=null);bk.classList.toggle("sel",!!(S.sel&&S.sel[0]==="b"));
+  bk.classList.toggle("ready",!!(S.sel&&S.sel[0]!=="b"&&S.basket==null));
+  $("saleinfo").textContent=S.sale!=null&&S.sale>=0?"% "+PRODUCTS[S.sale][1]+": +10 sn":"";
+  if(S.tut)applyTutorial();
+  if(!S.over)saveGame();
+  $("nUndo").textContent=S.undo;$("nHint").textContent=S.hint;$("nShuffle").textContent=S.shuf;
+  $("bUndo").disabled=!S.undo||!S.hist.length;$("bHint").disabled=!S.hint;$("bShuffle").disabled=!S.shuf;
+}
+function shake(si){const el=$("board").children[si];el.animate([{transform:"translateX(0)"},{transform:"translateX(-5px)"},{transform:"translateX(5px)"},{transform:"translateX(0)"}],{duration:220})}
+function flashCombo(t){const c=$("combo");c.textContent=t;c.classList.remove("show");void c.offsetWidth;c.classList.add("show")}
+
+/* ---------- wiring ---------- */
+$("basket").onclick=tapBasket;$("bUndo").onclick=doUndo;$("bHint").onclick=doHint;$("bShuffle").onclick=doShuffle;
+function setMute(){$("mute").textContent=muted?"🔇":"🔊";$("mute").setAttribute("aria-label",muted?"Sesi aç":"Sesi kapat")}
+$("mute").onclick=()=>{muted=!muted;store.set("muted",muted);setMute()};setMute();
+$("appLinkStart").href=appUrl();
+if(LINK.from){
+  const g=$("gift");g.hidden=false;
+  const names=LINK.want.map(i=>PRODUCTS[i][0]+" "+PRODUCTS[i][1]).join(", ");
+  g.innerHTML=(bonusPending?"<b>PickyList'ten hoş geldin!</b><span>Bugünkü bonusun: +30 saniye, her yardımdan +1 ve bu reyonda 2x puan.</span>":"<b>PickyList'ten hoş geldin!</b><span>Bugünkü bonusunu aldın, yarın tekrar gel.</span>")+
+    (names?`<span class="imp">Listen bu reyona geldi: ${names}</span>`:"");
+  $("appLinkStart").hidden=true;
+}else{
+  $("gift").hidden=false;$("gift").innerHTML="<b>PickyList kullanıyor musun?</b><span>Uygulamadan oyuna gelince her gün +30 saniye, ekstra yardımlar ve 2x puan kazanırsın.</span>";
+}
+const MONTHS=["Oca","Şub","Mar","Nis","May","Haz","Tem","Ağu","Eyl","Eki","Kas","Ara"];
+function showStart(){
+  clearInterval(timerId);coach("");
+  const lv=store.get("level",1);
+  const sv=loadSave();
+  $("play").textContent=sv?("Yarım kalanı bitir · "+(sv.mode==="daily"?"Günün listesi":"Reyon "+sv.level)):(lv>1?"Devam et · Reyon "+lv:"Alışverişe başla");$("reset").hidden=lv<=1;
+  const d=new Date();$("calDay").textContent=d.getDate();$("calMon").textContent=MONTHS[d.getMonth()];
+  const r=store.get("daily",{})[dayKey()];
+  const sk=store.get("streak",{n:0,last:""});
+  $("dailyInfo").innerHTML=(r?"Bugünkü en iyi: "+r.score+" puan · "+"★".repeat(r.stars):"Herkese aynı liste, her gün yenisi")+(sk.n>1?` · <span class="streak">🔥 ${sk.n} gün</span>`:"");
+  $("misList").innerHTML=missionsHtml();
+  $("ovStart").hidden=false;
+}
+function openMap(){
+  clearInterval(timerId);coach("");
+  const lv=store.get("level",1),st=store.get("stars",{});
+  const n=Math.max(12,Math.ceil((lv+3)/3)*3);
+  let h="";
+  for(let i=1;i<=n;i++){const th=themeOf(i),locked=i>lv;
+    h+=`<button class="tile${i===lv?" cur":""}" data-l="${i}" ${locked?"disabled":""}><span class="te">${locked?"🔒":th.e}</span><b>Reyon ${i}</b><small>${th.name}</small><span class="st">${st[i]?"★".repeat(st[i]):""}</span><span class="bar" style="background:${th.bar}"></span></button>`}
+  $("tiles").innerHTML=h;
+  const got=store.get("badges",{});
+  $("stats").innerHTML=statsHtml();
+  $("badges").innerHTML=BADGES.map(b=>`<div class="badge${got[b.id]?"":" off"}" title="${b.d}"><span class="bi">${b.e}</span>${b.n}</div>`).join("");
+  $("tiles").querySelectorAll(".tile:not(:disabled)").forEach(b=>b.onclick=()=>{$("ovMap").hidden=true;$("ovStart").hidden=true;tone(1,.01);startMusic();newGame(+b.dataset.l)});
+  $("ovMap").hidden=false;
+}
+$("mapBtn").onclick=()=>{$("ovStart").hidden=true;openMap()};
+$("mapClose").onclick=()=>{$("ovMap").hidden=true;showStart()};
+$("dailyBtn").onclick=()=>{$("ovStart").hidden=true;tone(1,.01);startMusic();newGame(0,"daily")};
+const savedLevel=store.get("level",1);
+showStart();
+$("play").onclick=()=>{$("ovStart").hidden=true;tone(1,.01);startMusic();const sv=loadSave();if(sv)resumeGame(sv);else newGame(store.get("level",1))};
+$("pause").onclick=pauseGame;
+function setMusicLabel(){$("pMusic").textContent="Müzik: "+(musicOn?"Açık":"Kapalı")}setMusicLabel();
+$("pMusic").onclick=()=>{musicOn=!musicOn;store.set("music",musicOn);setMusicLabel();if(musicOn)startMusic()};
+$("pResume").onclick=()=>{$("ovPause").hidden=true;S.paused=false;render();startTimer()};
+$("pRestart").onclick=()=>{$("ovPause").hidden=true;if(S.mode!=="daily")store.set("score",S.startScore);newGame(S.level,S.mode)};
+$("pMap").onclick=()=>{$("ovPause").hidden=true;openMap()};
+$("pHome").onclick=()=>{$("ovPause").hidden=true;showStart()};
+$("reset").onclick=()=>{store.set("level",1);store.set("score",0);store.set("stars",{});$("ovStart").hidden=true;newGame(1)};
+// draw a board behind the start card
+S={level:savedLevel,theme:themeOf(savedLevel),score:store.get("score",0),time:levelSpec(savedLevel).time,total:1,undo:3,hint:2,shuf:1,hist:[],over:true,sel:null};
+const pre=buildLevel(savedLevel);S.shelves=pre.shelves;S.list=pre.list;render();
+window.RAF_ONPAUSE=()=>{if(S&&!S.over&&S.mode&&$("ovStart").hidden&&$("ovMap").hidden)pauseGame();clearInterval(timerId);try{ac&&ac.suspend()}catch(e){}};
+window.RAF_ONRESUME=()=>{try{ac&&ac.resume()}catch(e){}};
+document.addEventListener("visibilitychange",()=>{if(document.hidden)RAF_ONPAUSE();else RAF_ONRESUME()});
+})();
+</script>
+</body>
+</html>

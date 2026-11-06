@@ -1,0 +1,28 @@
+{
+  "appId": "com.listeal.rafavcisi",
+  "appName": "Raf Avcısı",
+  "webDir": "www",
+  "backgroundColor": "#FBF5EC",
+  "android": {
+    "allowMixedContent": false,
+    "webContentsDebuggingEnabled": false
+  },
+  "ios": {
+    "contentInset": "never",
+    "scrollEnabled": false,
+    "backgroundColor": "#FBF5EC"
+  },
+  "plugins": {
+    "SplashScreen": {
+      "launchAutoHide": false,
+      "launchShowDuration": 3000,
+      "backgroundColor": "#FBF5EC",
+      "showSpinner": false,
+      "androidScaleType": "CENTER_CROP"
+    },
+    "StatusBar": {
+      "overlaysWebView": true,
+      "style": "LIGHT"
+    }
+  }
+}

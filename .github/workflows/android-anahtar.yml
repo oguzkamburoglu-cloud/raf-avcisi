@@ -1,0 +1,35 @@
+name: Android imza anahtarı üret (bir kez)
+
+# Creates the Google Play upload key with random passwords and offers it as a
+# downloadable file for 1 day. Run it ONCE, download, store safely, add the secrets.
+on: workflow_dispatch
+
+jobs:
+  keystore:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+      - name: Anahtar üret
+        run: |
+          mkdir out && cd out
+          PW=$(openssl rand -base64 24 | tr -d '/+=' | cut -c1-24)
+          keytool -genkeypair -v -keystore raf-avcisi-upload.jks -alias upload -keyalg RSA -keysize 2048 -validity 10000 \
+            -storepass "$PW" -keypass "$PW" -dname "CN=MoguzK, O=MoguzK, C=TR"
+          base64 -w0 raf-avcisi-upload.jks > ANDROID_KEYSTORE_BASE64.txt
+          cat > SECRETS.txt <<TXT
+          GitHub › Settings › Secrets and variables › Actions › New repository secret
+          ANDROID_KEYSTORE_BASE64 = ANDROID_KEYSTORE_BASE64.txt dosyasının içeriği
+          ANDROID_KEYSTORE_PASSWORD = $PW
+          ANDROID_KEY_ALIAS = upload
+          ANDROID_KEY_PASSWORD = $PW
+
+          raf-avcisi-upload.jks dosyasını ve bu şifreyi bir şifre yöneticisinde sakla.
+          TXT
+      - uses: actions/upload-artifact@v4
+        with:
+          name: android-imza-anahtari
+          path: out
+          retention-days: 1

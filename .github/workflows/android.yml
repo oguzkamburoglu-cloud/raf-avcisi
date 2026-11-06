@@ -1,0 +1,73 @@
+name: Android (Google Play)
+
+# Builds a signed Android App Bundle (.aab) for Google Play.
+# Manual: Actions › Android (Google Play) › Run workflow. Also runs on tags like v1.0.1.
+on:
+  workflow_dispatch:
+    inputs:
+      version_name:
+        description: "Sürüm adı (ör. 1.0.1)"
+        required: true
+        default: "1.0"
+      play_track:
+        description: "Play'e otomatik yükle (boş = yükleme). Ör: internal, alpha, production"
+        required: false
+        default: ""
+  push:
+    tags: ["v*"]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+      - uses: android-actions/setup-android@v3
+
+      - run: npm ci
+      - run: npm run sync
+
+      - name: İmza anahtarını yerleştir
+        env:
+          KEYSTORE_B64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          STORE_PW: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          KEY_PW: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          if [ -z "$KEYSTORE_B64" ]; then echo "::error::ANDROID_KEYSTORE_BASE64 secret yok. MAGAZA_REHBERI.md › Otomatik derleme bölümüne bak."; exit 1; fi
+          echo "$KEYSTORE_B64" | base64 -d > "$RUNNER_TEMP/upload.jks"
+          cat > android/keystore.properties <<PROPS
+          storeFile=$RUNNER_TEMP/upload.jks
+          storePassword=$STORE_PW
+          keyAlias=$KEY_ALIAS
+          keyPassword=$KEY_PW
+          PROPS
+
+      - name: AAB derle
+        working-directory: android
+        run: |
+          VERSION_NAME="${{ github.event.inputs.version_name }}"
+          if [ -z "$VERSION_NAME" ]; then VERSION_NAME="${GITHUB_REF_NAME#v}"; fi
+          ./gradlew bundleRelease -PversionCode=${{ github.run_number }} -PversionName="$VERSION_NAME"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: raf-avcisi-aab-${{ github.run_number }}
+          path: android/app/build/outputs/bundle/release/app-release.aab
+
+      - name: Google Play'e yükle (isteğe bağlı)
+        if: ${{ github.event.inputs.play_track != '' }}
+        uses: r0adkll/upload-google-play@v1
+        with:
+          serviceAccountJsonPlainText: ${{ secrets.PLAY_SERVICE_ACCOUNT_JSON }}
+          packageName: com.listeal.rafavcisi
+          releaseFiles: android/app/build/outputs/bundle/release/app-release.aab
+          track: ${{ github.event.inputs.play_track }}
+          status: draft
