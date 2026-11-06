@@ -35,13 +35,18 @@ jobs:
       - run: npm run sync
 
       - name: İmza anahtarını yerleştir
+        id: sign
         env:
           KEYSTORE_B64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
           STORE_PW: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
           KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
           KEY_PW: ${{ secrets.ANDROID_KEY_PASSWORD }}
         run: |
-          if [ -z "$KEYSTORE_B64" ]; then echo "::error::ANDROID_KEYSTORE_BASE64 secret yok. MAGAZA_REHBERI.md › Otomatik derleme bölümüne bak."; exit 1; fi
+          if [ -z "$KEYSTORE_B64" ]; then
+            echo "::warning::ANDROID_KEYSTORE_BASE64 secret yok: mağaza dosyası (AAB) yerine telefonda denemelik APK derleniyor. MAGAZA_REHBERI.md › 6. bölüm."
+            echo "signed=false" >> "$GITHUB_OUTPUT"; exit 0
+          fi
+          echo "signed=true" >> "$GITHUB_OUTPUT"
           echo "$KEYSTORE_B64" | base64 -d > "$RUNNER_TEMP/upload.jks"
           cat > android/keystore.properties <<PROPS
           storeFile=$RUNNER_TEMP/upload.jks
@@ -50,7 +55,19 @@ jobs:
           keyPassword=$KEY_PW
           PROPS
 
+      - name: Denemelik APK derle (imza anahtarı yoksa)
+        if: steps.sign.outputs.signed != 'true'
+        working-directory: android
+        run: ./gradlew assembleDebug -PversionCode=${{ github.run_number }}
+
+      - uses: actions/upload-artifact@v4
+        if: steps.sign.outputs.signed != 'true'
+        with:
+          name: raf-avcisi-deneme-apk-${{ github.run_number }}
+          path: android/app/build/outputs/apk/debug/app-debug.apk
+
       - name: AAB derle
+        if: steps.sign.outputs.signed == 'true'
         working-directory: android
         run: |
           VERSION_NAME="${{ github.event.inputs.version_name }}"
@@ -58,12 +75,13 @@ jobs:
           ./gradlew bundleRelease -PversionCode=${{ github.run_number }} -PversionName="$VERSION_NAME"
 
       - uses: actions/upload-artifact@v4
+        if: steps.sign.outputs.signed == 'true'
         with:
           name: raf-avcisi-aab-${{ github.run_number }}
           path: android/app/build/outputs/bundle/release/app-release.aab
 
       - name: Google Play'e yükle (isteğe bağlı)
-        if: ${{ github.event.inputs.play_track != '' }}
+        if: ${{ steps.sign.outputs.signed == 'true' && github.event.inputs.play_track != '' }}
         uses: r0adkll/upload-google-play@v1
         with:
           serviceAccountJsonPlainText: ${{ secrets.PLAY_SERVICE_ACCOUNT_JSON }}
