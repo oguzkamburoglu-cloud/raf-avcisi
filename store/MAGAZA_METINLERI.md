@@ -97,3 +97,33 @@ Sıra ve başlıklar:
 5. PickyList listen oyuna gelsin (PickyList bonusu)
 
 Uygulama yalnızca iPhone için ayarlı, bu yüzden iPad ekran görüntüsü gerekmez.
+
+## İngilizce mağaza girişi (English listing)
+
+Play Console: Ana mağaza girişi › **Çevirileri yönet** › İngilizce (en-US) ekle. App Store Connect: sağ üstteki dil menüsünden **English (U.S.)** ekle.
+
+**Name (30):** Shelf Hunter: Grocery Puzzle
+
+**Subtitle, App Store (30):** Sort the shelves, finish lists
+
+**Short description, Play (80):** Match three on supermarket shelves and finish your shopping list in time!
+
+**Keywords, App Store (100):** puzzle,grocery,supermarket,shelf,match3,sort,shopping,list,brain,casual,offline,pickylist
+
+**Description:**
+Shelf Hunter is the supermarket shelf puzzle from PickyList, the shopping list app.
+
+Every aisle comes with a shopping list. Tap a product, then tap a shelf with a free spot. Put three of the same product on one shelf to clear it, and the back row moves forward. Tick off everything on your list before time runs out and collect your receipt.
+
+FEATURES
+• Familiar groceries: tomatoes, coffee, bread, detergent and more
+• Aisles that get trickier as you go, with back rows, a basket, sale items and sealed boxes
+• Daily list: the same puzzle for everyone, a new one every day
+• Daily missions, badges, streaks and an aisle map
+• Undo, hint and shuffle helpers, combo points and a starred receipt
+• Plays offline, no ads, no account
+
+PLAY WITH PICKYLIST
+Open the game from PickyList and get a daily bonus: +30 seconds, an extra helper of each kind and 2x points. Your real shopping list shows up in the first aisle.
+
+Note: the game is currently in Turkish.
