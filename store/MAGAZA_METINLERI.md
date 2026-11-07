@@ -8,7 +8,7 @@ Metinler Türkçe. Karakter sınırları parantez içinde, hepsi sınırın alt�
 | --- | --- |
 | Uygulama kimliği (Android `applicationId` / iOS Bundle ID) | `com.listeal.rafavcisi` |
 | Kategori | Oyunlar › Bulmaca (Apple: Games › Puzzle, ikincil: Games › Casual) |
-| Fiyat | Ücretsiz, uygulama içi satın alma yok, reklam yok |
+| Fiyat | Ücretsiz. İlk sürüm (aab-9) reklamsız; reklamlı sürümde ödüllü reklam + uygulama içi satın alma (aşağıda) |
 | Destek / pazarlama sitesi | `https://ailiste.web.app/oyun/` |
 | Gizlilik politikası adresi | `https://ailiste.web.app/oyun/gizlilik.html` (dosya: `store/gizlilik.html`) |
 | İletişim e-postası | oguz.kamburoglu@gmail.com |
@@ -45,7 +45,7 @@ NASIL OYNANIR
 • Sepet, indirimli ürünler ve açılmayı bekleyen koliler
 • Geri al, ipucu ve karıştır yardımları, kombo puanları
 • Bölüm sonunda yıldızlı market fişi, yarıda kalan bölüme devam
-• İnternetsiz oynanır, reklam yok, hesap gerekmez
+• İnternetsiz oynanır, zorunlu reklam yok, hesap gerekmez
 
 PICKYLIST İLE DAHA EĞLENCELİ
 PickyList uygulamasından oyuna geçince her gün +30 saniye, her yardımdan +1 hak ve 2x puan kazanırsın. Üstelik gerçek alışveriş listendeki ürünler oyundaki ilk reyona gelir.
@@ -153,3 +153,40 @@ Play Console'da "Çevirileri yönet", App Store Connect'te dil menüsünden her 
 | 简体中文 | 货架猎人：超市益智游戏 | 货架猎人 |
 
 Ana ekran adları `scripts/app-names.py` içinde; değiştirip çalıştırınca Android ve iOS dosyaları güncellenir.
+
+
+## Reklamlı sürüm (ödüllü reklam + satın alma) yayınlanırken değişecek cevaplar
+
+İlk sürümü (aab-9) yukarıdaki "reklam yok / veri toplanmıyor" cevaplarıyla gönder. Reklamlı sürümü yüklediğin gün bu cevaplara geç.
+
+**Ürünler (Play Console › Para kazanma › Uygulama içi ürünler · App Store Connect › Uygulama İçi Satın Almalar):**
+
+| Ürün kimliği | Tür | Ad | Açıklama | Önerilen fiyat |
+| --- | --- | --- | --- | --- |
+| `yardim_paketi_5` | Tüketilebilir (consumable) | Yardım paketi | 5 Geri al, 5 İpucu, 5 Karıştır | 0,99 $ (Türkiye ~29,99 ₺) |
+| `premium` | Tüketilemez (non-consumable) | Premium | Reklam izlemeden tüm ödüller ve 10'ar yardım | 2,99 $ (Türkiye ~99,99 ₺) |
+
+Kimlikler kodda bu haliyle yazılı, birebir aynı girilmeli.
+
+**Play › Reklam içeriyor mu:** Evet.
+
+**Play › Veri güvenliği formu (Google AdMob'un belgelerine göre):**
+- Veri topluyor ya da paylaşıyor mu? → Evet
+- Aktarım sırasında şifreleniyor mu? → Evet
+- Kullanıcı veri silinmesini isteyebilir mi? → Hayır (geliştirici veri tutmuyor; Google'ın kendi araçları geçerli)
+- Toplanan ve paylaşılan veri türleri (hepsi için amaç: Reklam veya pazarlama, Analiz, Sahtekarlığı önleme / güvenlik; işleme: geçici değil, isteğe bağlı değil):
+  - Konum › Yaklaşık konum
+  - Uygulama etkinliği › Uygulama etkileşimleri
+  - Uygulama bilgileri ve performans › Kilitlenme günlükleri, Tanılama
+  - Cihaz veya diğer kimlikler › Cihaz veya diğer kimlikler
+- Satın alma geçmişini işaretlemene gerek yok (ödemeyi Google Play işliyor, geliştiriciye gelmiyor).
+
+**Play › İçerik derecelendirmesi:** "Dijital ürün satın alma imkânı var mı?" → Evet. Diğerleri aynı. (Sonuç PEGI 3 kalır, mağazada "Uygulama içi satın alma" etiketi çıkar.)
+
+**Play › Hedef kitle:** 13 yaş ve üzeri olarak kalsın. 13 altını seçersen AdMob'un çocuk ayarları ve Aileler politikası gerekir.
+
+**App Store › Uygulama Gizliliği:** Veri toplanıyor → Evet. "Seni izlemek için kullanılan veri": yok (oyun ATT izni istemiyor). "Sana bağlı olmayan veri": Tanımlayıcılar (Cihaz kimliği), Kullanım verileri (Reklam verileri, Ürün etkileşimi), Tanılama, Konum (Yaklaşık). Amaç: Üçüncü taraf reklamcılık, Analiz.
+
+**App Store › Yaş sınırı:** aynı (4+); "Uygulama içi satın alma" Connect'te ürünler eklenince otomatik görünür.
+
+**Sürüm notu (Bu sürümde yenilikler):** Yardımların bittiğinde ya da süre dolduğunda istersen kısa bir reklam izleyip devam edebilirsin. Yeni: Yardım paketi ve Premium.
