@@ -27,6 +27,8 @@ const pick = [
   ["roboto", "latin-400.css"], ["roboto", "latin-ext-400.css"],
   ["roboto", "latin-500.css"], ["roboto", "latin-ext-500.css"],
   ["roboto", "latin-700.css"], ["roboto", "latin-ext-700.css"],
+  // Cyrillic for the Russian translation
+  ["roboto", "cyrillic-400.css"], ["roboto", "cyrillic-500.css"], ["roboto", "cyrillic-700.css"],
   // variable Fraunces with the optical-size axis, same as the web version (opsz 9..144)
   ["../@fontsource-variable/fraunces", "opsz.css"],
   ["noto-color-emoji", "400.css", true]
@@ -41,7 +43,7 @@ for (const [pkg, file, filter] of pick) {
     const range = (block.match(/unicode-range:\s*([^;]+);/) || [])[1];
     if (filter && range && !inRange(range)) continue;
     const woff2 = block.match(/url\(\.\/files\/([^)]+\.woff2)\)/)[1];
-    if (/vietnamese|cyrillic|greek/.test(woff2)) continue;
+    if (/vietnamese|greek/.test(woff2)) continue;
     fs.copyFileSync(path.join(dir, "files", woff2), path.join(fontsOut, woff2));
     bytes += fs.statSync(path.join(fontsOut, woff2)).size;
     css += block
