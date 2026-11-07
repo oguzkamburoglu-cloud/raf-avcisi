@@ -127,3 +127,29 @@ PLAY WITH PICKYLIST
 Open the game from PickyList and get a daily bonus: +30 seconds, an extra helper of each kind and 2x points. Your real shopping list shows up in the first aisle.
 
 Note: the game is currently in Turkish.
+
+## Diğer dillerde mağaza adı (30 karakter sınırı)
+
+Play Console'da "Çevirileri yönet", App Store Connect'te dil menüsünden her dili ekleyip adı yaz. Açıklamalar için Play Console'un "Google çevirisi" seçeneği kullanılabilir; App Store'da çevirisi olmayan dillerde İngilizce sayfa gösterilir.
+
+| Dil | Mağaza adı | Ana ekran adı |
+| --- | --- | --- |
+| Türkçe | Raf Avcısı: Market Bulmacası | Raf Avcısı |
+| English | Shelf Hunter: Grocery Puzzle | Shelf Hunter |
+| Azərbaycanca | Rəf Ovçusu: Market Tapmacası | Rəf Ovçusu |
+| Deutsch | Regaljäger: Supermarkt-Puzzle | Regaljäger |
+| Français | Chasse Rayon : Puzzle Courses | Chasse Rayon |
+| Español | Caza Estantes: Puzle Súper | Caza Estantes |
+| Italiano | Caccia Scaffali: Puzzle Spesa | Caccia Scaffali |
+| Português | Caça Prateleira: Supermercado | Caça Prateleira |
+| Nederlands | Schappenjager: Winkelpuzzel | Schappenjager |
+| Polski | Łowca Półek: Gra Sklepowa | Łowca Półek |
+| Русский | Охотник за полками: Магазин | Охотник за полками |
+| Українська | Мисливець полиць: Супермаркет | Мисливець полиць |
+| العربية | صياد الرفوف: لغز السوبرماركت | صياد الرفوف |
+| Ελληνικά | Κυνηγός Ραφιών: Παζλ Σούπερ | Κυνηγός Ραφιών |
+| 日本語 | 棚ハンター：スーパーパズル | 棚ハンター |
+| 한국어 | 선반 헌터: 마트 퍼즐 | 선반 헌터 |
+| 简体中文 | 货架猎人：超市益智游戏 | 货架猎人 |
+
+Ana ekran adları `scripts/app-names.py` içinde; değiştirip çalıştırınca Android ve iOS dosyaları güncellenir.
