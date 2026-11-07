@@ -219,6 +219,8 @@ html.ios .item,html.ios .em,html.ios .shelf .back span,html.ios .navbtn .ic,html
 .item.opened{animation:unbox .45s ease-out}
 @keyframes unbox{0%{transform:scale(.5) rotate(-12deg);opacity:.2}60%{transform:scale(1.2)}100%{transform:none}}
 @media (prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+:root:lang(ru){--f-brand:"Fraunces","Roboto",sans-serif}
+.appbar h1{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}:root:lang(ru) .appbar h1{font-size:14px}
 </style>
 </head>
 <body>
@@ -286,10 +288,29 @@ html.ios .item,html.ios .em,html.ios .shelf .back span,html.ios .navbtn .ic,html
 
 <script>
 (function(){
+/* ---------- languages: Turkish is the source text, others are looked up by it ---------- */
+const I18N={"en":{"Raf Avcısı":"Shelf Hunter","Domates":"Tomatoes","Salatalık":"Cucumbers","Havuç":"Carrots","Soğan":"Onions","Patates":"Potatoes","Limon":"Lemons","Elma":"Apples","Muz":"Bananas","Kıyma":"Ground beef","Tavuk göğsü":"Chicken breast","Süt":"Milk","Beyaz peynir":"Feta cheese","Yumurta":"Eggs","Tereyağı":"Butter","Bal":"Honey","Makarna":"Pasta","Pirinç":"Rice","Zeytinyağı":"Olive oil","Kahve":"Coffee","Meyve suyu":"Juice","Çamaşır deterjanı":"Laundry detergent","Kağıt havlu":"Paper towels","Ekmek":"Bread","Sebzeler":"Vegetables","Meyveler":"Fruit","Et":"Meat","Süt Ürünleri":"Dairy","Temel gıda":"Pantry","İçecekler":"Drinks","Temizlik":"Cleaning","Fırın":"Bakery","Manav":"Produce","Kahvaltılık":"Breakfast","Kasap ve şarküteri":"Butcher & deli","Haftalık market":"Weekly shop","İlk liste":"First list","İlk reyonu bitir":"Finish your first aisle","Kombo ustası":"Combo master","3'lü kombo yap":"Make a 3x combo","Kusursuz":"Flawless","Bir reyonu 3 yıldızla bitir":"Finish an aisle with 3 stars","Yardımsız":"No help","Hiç yardım kullanmadan bitir":"Finish without using any help","Günün alışverişi":"Daily shopper","Günün listesini bitir":"Finish the daily list","3 gün seri":"3-day streak","Günün listesini 3 gün üst üste bitir":"Finish the daily list 3 days in a row","PickyList'li":"PickyLister","Oyuna PickyList'ten gel":"Open the game from PickyList","Market müdavimi":"Regular","Reyon 10'a ulaş":"Reach aisle 10","Rozet: {x}":"Badge: {x}","{n} raf temizle":"Clear {n} shelves","{n} kez 3'lü kombo yap":"Make a 3x combo {n} times","{n} indirimli ürün yakala":"Catch {n} sale items","{n} reyon bitir":"Finish {n} aisles","Yardım kullanmadan bir reyon bitir":"Finish an aisle without help","{n} koli aç":"Open {n} boxes","Geri al":"Undo","İpucu":"Hint","Karıştır":"Shuffle","Görev tamam: {x}":"Mission done: {x}","Ödül: +1 {x} (sonraki reyonda)":"Reward: +1 {x} (next aisle)","Ödül: {x}":"Reward: {x}","Alındı":"Claimed","Biten reyon":"Aisles finished","Temizlenen raf":"Shelves cleared","Toplam hamle":"Total moves","En iyi kombo":"Best combo","Açılan koli":"Boxes opened","Yakalanan indirim":"Sales caught","Günün listesi":"Daily list","En iyi puan":"Best score","En çok topladığın":"Most collected","{n} gün":{"one":"{n} day","other":"{n} days"},"{n} puan":{"one":"{n} point","other":"{n} points"},"Görev ödülü!":"Mission reward!","PickyList bonusu!":"PickyList bonus!","PickyList bonusu":"PickyList bonus","Yeni: Sepet! Bir ürüne, sonra alttaki sepete dokunarak onu kenara park edebilirsin.":"New: the basket! Tap an item, then the basket below to set it aside.","Kırmızı % etiketli ürün indirimde. Üçlüsünü temizlersen +10 saniye kazanırsın.":"The item with the red % tag is on sale. Clear its three for +10 seconds.","Yeni: Koliler! 📦 kapalı ürünler taşınamaz. Her raf temizlendiğinde bir koli açılır.":"New: boxes! 📦 Boxed items can't be moved. Each cleared shelf opens one box.","Süre doldu":"Time's up","Kasa kapandı, listede eksikler kaldı.":"The checkout closed with items still missing.","Reyon {n}":"Aisle {n}","Reyon":"Aisle","kalan süre {t}":"time left {t}","Koli kapalı. Bir raf temizlenince açılır.":"This box is closed. It opens when a shelf is cleared.","İndirim! +10 sn":"Sale! +10 s","Harika! Raf temizlendi, listedeki ürün işaretlendi.":"Great! Shelf cleared and the item is checked off your list.","Kombo x{n}":"Combo x{n}","Koli açıldı!":"Box opened!","Raflar dolu!":"Shelves are full!","Raflar tıkandı":"Shelves jammed","Hiç boş yer kalmadı.":"There's no free space left.","Hamle":"Moves","Süre bonusu":"Time bonus","Günlük seri":"Daily streak","TOPLAM PUAN":"TOTAL SCORE","Yarın yeni bir liste seni bekliyor.":"A new list is waiting for you tomorrow.","Ana ekran":"Home","Reyonlara devam":"Back to aisles","Harita":"Map","Sonraki reyon":"Next aisle","PickyList'e dön":"Back to PickyList","Gerçek alışverişin için PickyList":"PickyList for your real shopping","Sonucu kopyala":"Copy result","PickyList'ten oyuna her gün girişte: +30 sn, her yardımdan +1, 2x puan.":"Open the game from PickyList each day: +30 s, +1 of every help, 2x points.","Kopyalandı":"Copied","Kopyalanamadı":"Couldn't copy","Eksik kalanlar:":"Still missing:","Tekrar dene":"Try again","Bir ürüne dokun, sonra boş yeri olan rafa dokun.":"Tap an item, then tap a shelf with free space.","Zıplayan ürüne dokun.":"Tap the bouncing item.","Şimdi yeşil çerçeveli rafa dokun.":"Now tap the shelf with the green outline.","İpucu yok":"No hint","{n} adet":"{n} pcs","{n} üründen {d} tamam":"{d} of {n} items done","Kapalı koli":"Closed box","% {p}: +10 sn":"% {p}: +10 s","Sesi aç":"Unmute","Sesi kapat":"Mute","PickyList'ten hoş geldin!":"Welcome from PickyList!","Bugünkü bonusun: +30 saniye, her yardımdan +1 ve bu reyonda 2x puan.":"Today's bonus: +30 seconds, +1 of every help and 2x points in this aisle.","Bugünkü bonusunu aldın, yarın tekrar gel.":"You've had today's bonus. Come back tomorrow.","Listen bu reyona geldi: {x}":"Your list came to this aisle: {x}","PickyList kullanıyor musun?":"Do you use PickyList?","Uygulamadan oyuna gelince her gün +30 saniye, ekstra yardımlar ve 2x puan kazanırsın.":"Open the game from the app to get +30 seconds, extra helps and 2x points every day.","Yarım kalanı bitir":"Resume","Devam et":"Continue","Alışverişe başla":"Start shopping","Bugünkü en iyi: {x}":"Today's best: {x}","Herkese aynı liste, her gün yenisi":"Same list for everyone, a new one every day","Müzik: {s}":"Music: {s}","Açık":"On","Kapalı":"Off","Puan":"Score","Duraklat":"Pause","Listeyi tamamla":"Complete the list","Alışveriş listesi":"Shopping list","Raflar":"Shelves","Sepet":"Basket","Listedeki ürünleri raflarda bul, aynı üçünü yan yana diz, süre bitmeden listeyi tamamla.":"Find the items on your list on the shelves, line up three of a kind and finish the list before time runs out.","Reyon haritası":"Aisle map","Bugünün görevleri":"Today's missions","Listeni PickyList'te hazırla":"Make your list in PickyList","Baştan başla":"Start over","Kapat":"Close","Rozetler":"Badges","İstatistikler":"Stats","Mola":"Break","Yeniden başla":"Restart","🛒 Sepet":"🛒 Basket"},"de":{"Raf Avcısı":"Regaljäger","Domates":"Tomaten","Salatalık":"Gurken","Havuç":"Karotten","Soğan":"Zwiebeln","Patates":"Kartoffeln","Limon":"Zitronen","Elma":"Äpfel","Muz":"Bananen","Kıyma":"Hackfleisch","Tavuk göğsü":"Hähnchenbrust","Süt":"Milch","Beyaz peynir":"Schafskäse","Yumurta":"Eier","Tereyağı":"Butter","Bal":"Honig","Makarna":"Nudeln","Pirinç":"Reis","Zeytinyağı":"Olivenöl","Kahve":"Kaffee","Meyve suyu":"Saft","Çamaşır deterjanı":"Waschmittel","Kağıt havlu":"Küchenrolle","Ekmek":"Brot","Sebzeler":"Gemüse","Meyveler":"Obst","Et":"Fleisch","Süt Ürünleri":"Milchprodukte","Temel gıda":"Grundnahrung","İçecekler":"Getränke","Temizlik":"Haushalt","Fırın":"Bäckerei","Manav":"Obst & Gemüse","Kahvaltılık":"Frühstück","Kasap ve şarküteri":"Metzgerei","Haftalık market":"Wocheneinkauf","İlk liste":"Erste Liste","İlk reyonu bitir":"Schließe deinen ersten Gang ab","Kombo ustası":"Kombo-Meister","3'lü kombo yap":"Schaffe eine 3er-Kombo","Kusursuz":"Makellos","Bir reyonu 3 yıldızla bitir":"Schließe einen Gang mit 3 Sternen ab","Yardımsız":"Ohne Hilfe","Hiç yardım kullanmadan bitir":"Schließe ohne Hilfe ab","Günün alışverişi":"Tageseinkauf","Günün listesini bitir":"Schließe die Tagesliste ab","3 gün seri":"3 Tage in Folge","Günün listesini 3 gün üst üste bitir":"Schließe die Tagesliste 3 Tage in Folge ab","PickyList'li":"PickyList-Fan","Oyuna PickyList'ten gel":"Starte das Spiel aus PickyList","Market müdavimi":"Stammkunde","Reyon 10'a ulaş":"Erreiche Gang 10","Rozet: {x}":"Abzeichen: {x}","{n} raf temizle":"Räume {n} Regale ab","{n} kez 3'lü kombo yap":"Schaffe {n}-mal eine 3er-Kombo","{n} indirimli ürün yakala":"Schnapp dir {n} Angebote","{n} reyon bitir":"Schließe {n} Gänge ab","Yardım kullanmadan bir reyon bitir":"Schließe einen Gang ohne Hilfe ab","{n} koli aç":"Öffne {n} Kartons","Geri al":"Zurück","İpucu":"Tipp","Karıştır":"Mischen","Görev tamam: {x}":"Aufgabe erledigt: {x}","Ödül: +1 {x} (sonraki reyonda)":"Belohnung: +1 {x} (nächster Gang)","Ödül: {x}":"Belohnung: {x}","Alındı":"Erhalten","Biten reyon":"Gänge geschafft","Temizlenen raf":"Regale geleert","Toplam hamle":"Züge gesamt","En iyi kombo":"Beste Kombo","Açılan koli":"Kartons geöffnet","Yakalanan indirim":"Angebote","Günün listesi":"Tagesliste","En iyi puan":"Bestwert","En çok topladığın":"Am meisten gesammelt","{n} gün":{"one":"{n} Tag","other":"{n} Tage"},"{n} puan":{"one":"{n} Punkt","other":"{n} Punkte"},"Görev ödülü!":"Aufgabenbelohnung!","PickyList bonusu!":"PickyList-Bonus!","PickyList bonusu":"PickyList-Bonus","Yeni: Sepet! Bir ürüne, sonra alttaki sepete dokunarak onu kenara park edebilirsin.":"Neu: der Korb! Tippe auf ein Produkt und dann unten auf den Korb, um es dort abzulegen.","Kırmızı % etiketli ürün indirimde. Üçlüsünü temizlersen +10 saniye kazanırsın.":"Das Produkt mit dem roten %-Schild ist im Angebot. Räume alle drei ab und du bekommst +10 Sekunden.","Yeni: Koliler! 📦 kapalı ürünler taşınamaz. Her raf temizlendiğinde bir koli açılır.":"Neu: Kartons! 📦 Verpackte Produkte lassen sich nicht bewegen. Jedes geleerte Regal öffnet einen Karton.","Süre doldu":"Zeit abgelaufen","Kasa kapandı, listede eksikler kaldı.":"Die Kasse hat geschlossen, auf der Liste fehlt noch etwas.","Reyon {n}":"Gang {n}","Reyon":"Gang","kalan süre {t}":"Restzeit {t}","Koli kapalı. Bir raf temizlenince açılır.":"Der Karton ist zu. Er öffnet sich, wenn ein Regal geleert wird.","İndirim! +10 sn":"Angebot! +10 s","Harika! Raf temizlendi, listedeki ürün işaretlendi.":"Super! Regal geleert, das Produkt ist auf der Liste abgehakt.","Kombo x{n}":"Kombo x{n}","Koli açıldı!":"Karton geöffnet!","Raflar dolu!":"Regale sind voll!","Raflar tıkandı":"Regale blockiert","Hiç boş yer kalmadı.":"Es ist kein Platz mehr frei.","Hamle":"Züge","Süre bonusu":"Zeitbonus","Günlük seri":"Tagesserie","TOPLAM PUAN":"GESAMTPUNKTE","Yarın yeni bir liste seni bekliyor.":"Morgen wartet eine neue Liste auf dich.","Ana ekran":"Start","Reyonlara devam":"Weiter zu den Gängen","Harita":"Karte","Sonraki reyon":"Nächster Gang","PickyList'e dön":"Zurück zu PickyList","Gerçek alışverişin için PickyList":"PickyList für deinen echten Einkauf","Sonucu kopyala":"Ergebnis kopieren","PickyList'ten oyuna her gün girişte: +30 sn, her yardımdan +1, 2x puan.":"Täglich aus PickyList starten: +30 s, +1 jede Hilfe, 2x Punkte.","Kopyalandı":"Kopiert","Kopyalanamadı":"Kopieren fehlgeschlagen","Eksik kalanlar:":"Es fehlen noch:","Tekrar dene":"Nochmal versuchen","Bir ürüne dokun, sonra boş yeri olan rafa dokun.":"Tippe auf ein Produkt, dann auf ein Regal mit freiem Platz.","Zıplayan ürüne dokun.":"Tippe auf das hüpfende Produkt.","Şimdi yeşil çerçeveli rafa dokun.":"Tippe jetzt auf das grün umrandete Regal.","İpucu yok":"Kein Tipp","{n} adet":"{n} Stück","{n} üründen {d} tamam":"{d} von {n} Produkten erledigt","Kapalı koli":"Geschlossener Karton","% {p}: +10 sn":"% {p}: +10 s","Sesi aç":"Ton an","Sesi kapat":"Ton aus","PickyList'ten hoş geldin!":"Willkommen aus PickyList!","Bugünkü bonusun: +30 saniye, her yardımdan +1 ve bu reyonda 2x puan.":"Dein Bonus heute: +30 Sekunden, +1 jede Hilfe und 2x Punkte in diesem Gang.","Bugünkü bonusunu aldın, yarın tekrar gel.":"Den Bonus für heute hast du schon. Komm morgen wieder.","Listen bu reyona geldi: {x}":"Deine Liste ist in diesem Gang: {x}","PickyList kullanıyor musun?":"Nutzt du PickyList?","Uygulamadan oyuna gelince her gün +30 saniye, ekstra yardımlar ve 2x puan kazanırsın.":"Startest du das Spiel aus der App, bekommst du täglich +30 Sekunden, extra Hilfen und 2x Punkte.","Yarım kalanı bitir":"Weiterspielen","Devam et":"Weiter","Alışverişe başla":"Einkauf starten","Bugünkü en iyi: {x}":"Heute bester Wert: {x}","Herkese aynı liste, her gün yenisi":"Für alle dieselbe Liste, jeden Tag eine neue","Müzik: {s}":"Musik: {s}","Açık":"An","Kapalı":"Aus","Puan":"Punkte","Duraklat":"Pause","Listeyi tamamla":"Erledige die Liste","Alışveriş listesi":"Einkaufsliste","Raflar":"Regale","Sepet":"Korb","Listedeki ürünleri raflarda bul, aynı üçünü yan yana diz, süre bitmeden listeyi tamamla.":"Finde die Produkte deiner Liste in den Regalen, stelle drei gleiche nebeneinander und erledige die Liste, bevor die Zeit abläuft.","Reyon haritası":"Gangplan","Bugünün görevleri":"Heutige Aufgaben","Listeni PickyList'te hazırla":"Erstelle deine Liste in PickyList","Baştan başla":"Von vorn beginnen","Kapat":"Schließen","Rozetler":"Abzeichen","İstatistikler":"Statistik","Mola":"Pause","Yeniden başla":"Neu starten","🛒 Sepet":"🛒 Korb"},"es":{"Raf Avcısı":"Caza Estantes","Domates":"Tomates","Salatalık":"Pepinos","Havuç":"Zanahorias","Soğan":"Cebollas","Patates":"Patatas","Limon":"Limones","Elma":"Manzanas","Muz":"Plátanos","Kıyma":"Carne picada","Tavuk göğsü":"Pechuga de pollo","Süt":"Leche","Beyaz peynir":"Queso feta","Yumurta":"Huevos","Tereyağı":"Mantequilla","Bal":"Miel","Makarna":"Pasta","Pirinç":"Arroz","Zeytinyağı":"Aceite de oliva","Kahve":"Café","Meyve suyu":"Zumo","Çamaşır deterjanı":"Detergente","Kağıt havlu":"Papel de cocina","Ekmek":"Pan","Sebzeler":"Verduras","Meyveler":"Frutas","Et":"Carne","Süt Ürünleri":"Lácteos","Temel gıda":"Despensa","İçecekler":"Bebidas","Temizlik":"Limpieza","Fırın":"Panadería","Manav":"Frutería","Kahvaltılık":"Desayuno","Kasap ve şarküteri":"Carnicería","Haftalık market":"Compra semanal","İlk liste":"Primera lista","İlk reyonu bitir":"Termina tu primer pasillo","Kombo ustası":"Rey del combo","3'lü kombo yap":"Haz un combo x3","Kusursuz":"Impecable","Bir reyonu 3 yıldızla bitir":"Termina un pasillo con 3 estrellas","Yardımsız":"Sin ayuda","Hiç yardım kullanmadan bitir":"Termina sin usar ayudas","Günün alışverişi":"Compra del día","Günün listesini bitir":"Termina la lista del día","3 gün seri":"Racha de 3 días","Günün listesini 3 gün üst üste bitir":"Termina la lista del día 3 días seguidos","PickyList'li":"De PickyList","Oyuna PickyList'ten gel":"Entra al juego desde PickyList","Market müdavimi":"Cliente fiel","Reyon 10'a ulaş":"Llega al pasillo 10","Rozet: {x}":"Insignia: {x}","{n} raf temizle":"Vacía {n} estantes","{n} kez 3'lü kombo yap":"Haz {n} combos x3","{n} indirimli ürün yakala":"Atrapa {n} ofertas","{n} reyon bitir":"Termina {n} pasillos","Yardım kullanmadan bir reyon bitir":"Termina un pasillo sin ayuda","{n} koli aç":"Abre {n} cajas","Geri al":"Deshacer","İpucu":"Pista","Karıştır":"Mezclar","Görev tamam: {x}":"Misión cumplida: {x}","Ödül: +1 {x} (sonraki reyonda)":"Premio: +1 {x} (próximo pasillo)","Ödül: {x}":"Premio: {x}","Alındı":"Conseguido","Biten reyon":"Pasillos terminados","Temizlenen raf":"Estantes vaciados","Toplam hamle":"Movimientos","En iyi kombo":"Mejor combo","Açılan koli":"Cajas abiertas","Yakalanan indirim":"Ofertas atrapadas","Günün listesi":"Lista del día","En iyi puan":"Mejor puntuación","En çok topladığın":"Lo que más recoges","{n} gün":{"one":"{n} día","other":"{n} días"},"{n} puan":{"one":"{n} punto","other":"{n} puntos"},"Görev ödülü!":"¡Premio de misión!","PickyList bonusu!":"¡Bonus de PickyList!","PickyList bonusu":"Bonus de PickyList","Yeni: Sepet! Bir ürüne, sonra alttaki sepete dokunarak onu kenara park edebilirsin.":"¡Nuevo: la cesta! Toca un producto y luego la cesta de abajo para dejarlo aparte.","Kırmızı % etiketli ürün indirimde. Üçlüsünü temizlersen +10 saniye kazanırsın.":"El producto con la etiqueta roja % está de oferta. Junta los tres y ganas +10 segundos.","Yeni: Koliler! 📦 kapalı ürünler taşınamaz. Her raf temizlendiğinde bir koli açılır.":"¡Nuevo: cajas! 📦 Los productos en caja no se pueden mover. Cada estante vaciado abre una caja.","Süre doldu":"Se acabó el tiempo","Kasa kapandı, listede eksikler kaldı.":"La caja cerró y faltan cosas de la lista.","Reyon {n}":"Pasillo {n}","Reyon":"Pasillo","kalan süre {t}":"quedan {t}","Koli kapalı. Bir raf temizlenince açılır.":"La caja está cerrada. Se abre al vaciar un estante.","İndirim! +10 sn":"¡Oferta! +10 s","Harika! Raf temizlendi, listedeki ürün işaretlendi.":"¡Genial! Estante vaciado y producto tachado de la lista.","Kombo x{n}":"Combo x{n}","Koli açıldı!":"¡Caja abierta!","Raflar dolu!":"¡Estantes llenos!","Raflar tıkandı":"Estantes atascados","Hiç boş yer kalmadı.":"No queda ningún hueco libre.","Hamle":"Movimientos","Süre bonusu":"Bonus de tiempo","Günlük seri":"Racha diaria","TOPLAM PUAN":"PUNTUACIÓN TOTAL","Yarın yeni bir liste seni bekliyor.":"Mañana te espera una lista nueva.","Ana ekran":"Inicio","Reyonlara devam":"Seguir con los pasillos","Harita":"Mapa","Sonraki reyon":"Siguiente pasillo","PickyList'e dön":"Volver a PickyList","Gerçek alışverişin için PickyList":"PickyList para tu compra real","Sonucu kopyala":"Copiar resultado","PickyList'ten oyuna her gün girişte: +30 sn, her yardımdan +1, 2x puan.":"Entra cada día desde PickyList: +30 s, +1 de cada ayuda, puntos x2.","Kopyalandı":"Copiado","Kopyalanamadı":"No se pudo copiar","Eksik kalanlar:":"Faltan:","Tekrar dene":"Reintentar","Bir ürüne dokun, sonra boş yeri olan rafa dokun.":"Toca un producto y luego un estante con hueco libre.","Zıplayan ürüne dokun.":"Toca el producto que salta.","Şimdi yeşil çerçeveli rafa dokun.":"Ahora toca el estante con borde verde.","İpucu yok":"Sin pistas","{n} adet":"{n} uds.","{n} üründen {d} tamam":"{d} de {n} productos listos","Kapalı koli":"Caja cerrada","% {p}: +10 sn":"% {p}: +10 s","Sesi aç":"Activar sonido","Sesi kapat":"Silenciar","PickyList'ten hoş geldin!":"¡Bienvenido desde PickyList!","Bugünkü bonusun: +30 saniye, her yardımdan +1 ve bu reyonda 2x puan.":"Tu bonus de hoy: +30 segundos, +1 de cada ayuda y puntos x2 en este pasillo.","Bugünkü bonusunu aldın, yarın tekrar gel.":"Ya tienes el bonus de hoy. Vuelve mañana.","Listen bu reyona geldi: {x}":"Tu lista llegó a este pasillo: {x}","PickyList kullanıyor musun?":"¿Usas PickyList?","Uygulamadan oyuna gelince her gün +30 saniye, ekstra yardımlar ve 2x puan kazanırsın.":"Si entras al juego desde la app, ganas cada día +30 segundos, ayudas extra y puntos x2.","Yarım kalanı bitir":"Continuar","Devam et":"Continuar","Alışverişe başla":"Empezar a comprar","Bugünkü en iyi: {x}":"Mejor de hoy: {x}","Herkese aynı liste, her gün yenisi":"La misma lista para todos, una nueva cada día","Müzik: {s}":"Música: {s}","Açık":"Sí","Kapalı":"No","Puan":"Puntos","Duraklat":"Pausa","Listeyi tamamla":"Completa la lista","Alışveriş listesi":"Lista de la compra","Raflar":"Estantes","Sepet":"Cesta","Listedeki ürünleri raflarda bul, aynı üçünü yan yana diz, süre bitmeden listeyi tamamla.":"Encuentra en los estantes los productos de tu lista, junta tres iguales y completa la lista antes de que se acabe el tiempo.","Reyon haritası":"Mapa de pasillos","Bugünün görevleri":"Misiones de hoy","Listeni PickyList'te hazırla":"Prepara tu lista en PickyList","Baştan başla":"Empezar de nuevo","Kapat":"Cerrar","Rozetler":"Insignias","İstatistikler":"Estadísticas","Mola":"Descanso","Yeniden başla":"Reiniciar","🛒 Sepet":"🛒 Cesta"},"fr":{"Raf Avcısı":"Chasse Rayon","Domates":"Tomates","Salatalık":"Concombres","Havuç":"Carottes","Soğan":"Oignons","Patates":"Pommes de terre","Limon":"Citrons","Elma":"Pommes","Muz":"Bananes","Kıyma":"Viande hachée","Tavuk göğsü":"Blanc de poulet","Süt":"Lait","Beyaz peynir":"Feta","Yumurta":"Œufs","Tereyağı":"Beurre","Bal":"Miel","Makarna":"Pâtes","Pirinç":"Riz","Zeytinyağı":"Huile d'olive","Kahve":"Café","Meyve suyu":"Jus de fruits","Çamaşır deterjanı":"Lessive","Kağıt havlu":"Essuie-tout","Ekmek":"Pain","Sebzeler":"Légumes","Meyveler":"Fruits","Et":"Viande","Süt Ürünleri":"Produits laitiers","Temel gıda":"Épicerie","İçecekler":"Boissons","Temizlik":"Entretien","Fırın":"Boulangerie","Manav":"Primeur","Kahvaltılık":"Petit-déj","Kasap ve şarküteri":"Boucherie","Haftalık market":"Courses de la semaine","İlk liste":"Première liste","İlk reyonu bitir":"Termine ton premier rayon","Kombo ustası":"Roi du combo","3'lü kombo yap":"Fais un combo x3","Kusursuz":"Sans faute","Bir reyonu 3 yıldızla bitir":"Termine un rayon avec 3 étoiles","Yardımsız":"Sans aide","Hiç yardım kullanmadan bitir":"Termine sans utiliser d'aide","Günün alışverişi":"Courses du jour","Günün listesini bitir":"Termine la liste du jour","3 gün seri":"Série de 3 jours","Günün listesini 3 gün üst üste bitir":"Termine la liste du jour 3 jours de suite","PickyList'li":"Fan de PickyList","Oyuna PickyList'ten gel":"Viens au jeu depuis PickyList","Market müdavimi":"Habitué","Reyon 10'a ulaş":"Atteins le rayon 10","Rozet: {x}":"Badge : {x}","{n} raf temizle":"Vide {n} étagères","{n} kez 3'lü kombo yap":"Fais {n} combos x3","{n} indirimli ürün yakala":"Attrape {n} promos","{n} reyon bitir":"Termine {n} rayons","Yardım kullanmadan bir reyon bitir":"Termine un rayon sans aide","{n} koli aç":"Ouvre {n} cartons","Geri al":"Annuler","İpucu":"Indice","Karıştır":"Mélanger","Görev tamam: {x}":"Mission accomplie : {x}","Ödül: +1 {x} (sonraki reyonda)":"Récompense : +1 {x} (rayon suivant)","Ödül: {x}":"Récompense : {x}","Alındı":"Obtenu","Biten reyon":"Rayons terminés","Temizlenen raf":"Étagères vidées","Toplam hamle":"Coups au total","En iyi kombo":"Meilleur combo","Açılan koli":"Cartons ouverts","Yakalanan indirim":"Promos attrapées","Günün listesi":"Liste du jour","En iyi puan":"Meilleur score","En çok topladığın":"Le plus ramassé","{n} gün":{"one":"{n} jour","other":"{n} jours"},"{n} puan":{"one":"{n} point","other":"{n} points"},"Görev ödülü!":"Récompense de mission !","PickyList bonusu!":"Bonus PickyList !","PickyList bonusu":"Bonus PickyList","Yeni: Sepet! Bir ürüne, sonra alttaki sepete dokunarak onu kenara park edebilirsin.":"Nouveau : le panier ! Touche un produit, puis le panier en bas pour le mettre de côté.","Kırmızı % etiketli ürün indirimde. Üçlüsünü temizlersen +10 saniye kazanırsın.":"Le produit à l'étiquette rouge % est en promo. Aligne les trois pour gagner +10 secondes.","Yeni: Koliler! 📦 kapalı ürünler taşınamaz. Her raf temizlendiğinde bir koli açılır.":"Nouveau : les cartons ! 📦 Les produits emballés ne bougent pas. Chaque étagère vidée ouvre un carton.","Süre doldu":"Temps écoulé","Kasa kapandı, listede eksikler kaldı.":"La caisse a fermé, il manque encore des articles.","Reyon {n}":"Rayon {n}","Reyon":"Rayon","kalan süre {t}":"temps restant {t}","Koli kapalı. Bir raf temizlenince açılır.":"Ce carton est fermé. Il s'ouvre quand une étagère est vidée.","İndirim! +10 sn":"Promo ! +10 s","Harika! Raf temizlendi, listedeki ürün işaretlendi.":"Bravo ! Étagère vidée, le produit est coché sur la liste.","Kombo x{n}":"Combo x{n}","Koli açıldı!":"Carton ouvert !","Raflar dolu!":"Étagères pleines !","Raflar tıkandı":"Étagères bloquées","Hiç boş yer kalmadı.":"Il n'y a plus de place libre.","Hamle":"Coups","Süre bonusu":"Bonus de temps","Günlük seri":"Série quotidienne","TOPLAM PUAN":"SCORE TOTAL","Yarın yeni bir liste seni bekliyor.":"Une nouvelle liste t'attend demain.","Ana ekran":"Accueil","Reyonlara devam":"Continuer les rayons","Harita":"Carte","Sonraki reyon":"Rayon suivant","PickyList'e dön":"Retour à PickyList","Gerçek alışverişin için PickyList":"PickyList pour tes vraies courses","Sonucu kopyala":"Copier le résultat","PickyList'ten oyuna her gün girişte: +30 sn, her yardımdan +1, 2x puan.":"Viens chaque jour depuis PickyList : +30 s, +1 à chaque aide, points x2.","Kopyalandı":"Copié","Kopyalanamadı":"Copie impossible","Eksik kalanlar:":"Il manque :","Tekrar dene":"Réessayer","Bir ürüne dokun, sonra boş yeri olan rafa dokun.":"Touche un produit, puis une étagère avec de la place.","Zıplayan ürüne dokun.":"Touche le produit qui saute.","Şimdi yeşil çerçeveli rafa dokun.":"Touche maintenant l'étagère encadrée en vert.","İpucu yok":"Aucun indice","{n} adet":"{n} pièces","{n} üründen {d} tamam":"{d} sur {n} produits faits","Kapalı koli":"Carton fermé","% {p}: +10 sn":"% {p} : +10 s","Sesi aç":"Activer le son","Sesi kapat":"Couper le son","PickyList'ten hoş geldin!":"Bienvenue depuis PickyList !","Bugünkü bonusun: +30 saniye, her yardımdan +1 ve bu reyonda 2x puan.":"Ton bonus du jour : +30 secondes, +1 à chaque aide et points x2 dans ce rayon.","Bugünkü bonusunu aldın, yarın tekrar gel.":"Tu as eu ton bonus du jour. Reviens demain.","Listen bu reyona geldi: {x}":"Ta liste est dans ce rayon : {x}","PickyList kullanıyor musun?":"Tu utilises PickyList ?","Uygulamadan oyuna gelince her gün +30 saniye, ekstra yardımlar ve 2x puan kazanırsın.":"En venant de l'appli, tu gagnes chaque jour +30 secondes, des aides en plus et des points x2.","Yarım kalanı bitir":"Reprendre","Devam et":"Continuer","Alışverişe başla":"Commencer les courses","Bugünkü en iyi: {x}":"Meilleur du jour : {x}","Herkese aynı liste, her gün yenisi":"La même liste pour tous, une nouvelle chaque jour","Müzik: {s}":"Musique : {s}","Açık":"Oui","Kapalı":"Non","Puan":"Points","Duraklat":"Pause","Listeyi tamamla":"Complète la liste","Alışveriş listesi":"Liste de courses","Raflar":"Étagères","Sepet":"Panier","Listedeki ürünleri raflarda bul, aynı üçünü yan yana diz, süre bitmeden listeyi tamamla.":"Trouve les produits de ta liste dans les rayons, aligne trois produits identiques et termine la liste avant la fin du temps.","Reyon haritası":"Plan des rayons","Bugünün görevleri":"Missions du jour","Listeni PickyList'te hazırla":"Prépare ta liste dans PickyList","Baştan başla":"Recommencer à zéro","Kapat":"Fermer","Rozetler":"Badges","İstatistikler":"Statistiques","Mola":"Pause","Yeniden başla":"Recommencer","🛒 Sepet":"🛒 Panier"},"pt":{"Raf Avcısı":"Caça Prateleira","Domates":"Tomates","Salatalık":"Pepinos","Havuç":"Cenouras","Soğan":"Cebolas","Patates":"Batatas","Limon":"Limões","Elma":"Maçãs","Muz":"Bananas","Kıyma":"Carne moída","Tavuk göğsü":"Peito de frango","Süt":"Leite","Beyaz peynir":"Queijo feta","Yumurta":"Ovos","Tereyağı":"Manteiga","Bal":"Mel","Makarna":"Macarrão","Pirinç":"Arroz","Zeytinyağı":"Azeite","Kahve":"Café","Meyve suyu":"Suco","Çamaşır deterjanı":"Sabão em pó","Kağıt havlu":"Papel-toalha","Ekmek":"Pão","Sebzeler":"Legumes","Meyveler":"Frutas","Et":"Carnes","Süt Ürünleri":"Laticínios","Temel gıda":"Mercearia","İçecekler":"Bebidas","Temizlik":"Limpeza","Fırın":"Padaria","Manav":"Hortifrúti","Kahvaltılık":"Desjejum","Kasap ve şarküteri":"Açougue e frios","Haftalık market":"Compra da semana","İlk liste":"Primeira lista","İlk reyonu bitir":"Termine seu primeiro corredor","Kombo ustası":"Mestre do combo","3'lü kombo yap":"Faça um combo x3","Kusursuz":"Impecável","Bir reyonu 3 yıldızla bitir":"Termine um corredor com 3 estrelas","Yardımsız":"Sem ajuda","Hiç yardım kullanmadan bitir":"Termine sem usar ajudas","Günün alışverişi":"Compra do dia","Günün listesini bitir":"Termine a lista do dia","3 gün seri":"3 dias seguidos","Günün listesini 3 gün üst üste bitir":"Termine a lista do dia 3 dias seguidos","PickyList'li":"Do PickyList","Oyuna PickyList'ten gel":"Entre no jogo pelo PickyList","Market müdavimi":"Freguês","Reyon 10'a ulaş":"Chegue ao corredor 10","Rozet: {x}":"Medalha: {x}","{n} raf temizle":"Esvazie {n} prateleiras","{n} kez 3'lü kombo yap":"Faça {n} combos x3","{n} indirimli ürün yakala":"Pegue {n} ofertas","{n} reyon bitir":"Termine {n} corredores","Yardım kullanmadan bir reyon bitir":"Termine um corredor sem ajuda","{n} koli aç":"Abra {n} caixas","Geri al":"Desfazer","İpucu":"Dica","Karıştır":"Embaralhar","Görev tamam: {x}":"Missão cumprida: {x}","Ödül: +1 {x} (sonraki reyonda)":"Prêmio: +1 {x} (próximo corredor)","Ödül: {x}":"Prêmio: {x}","Alındı":"Obtido","Biten reyon":"Corredores concluídos","Temizlenen raf":"Prateleiras esvaziadas","Toplam hamle":"Jogadas no total","En iyi kombo":"Melhor combo","Açılan koli":"Caixas abertas","Yakalanan indirim":"Ofertas pegas","Günün listesi":"Lista do dia","En iyi puan":"Melhor pontuação","En çok topladığın":"Mais coletado","{n} gün":{"one":"{n} dia","other":"{n} dias"},"{n} puan":{"one":"{n} ponto","other":"{n} pontos"},"Görev ödülü!":"Prêmio de missão!","PickyList bonusu!":"Bônus do PickyList!","PickyList bonusu":"Bônus do PickyList","Yeni: Sepet! Bir ürüne, sonra alttaki sepete dokunarak onu kenara park edebilirsin.":"Novo: a cesta! Toque num produto e depois na cesta abaixo para deixá-lo de lado.","Kırmızı % etiketli ürün indirimde. Üçlüsünü temizlersen +10 saniye kazanırsın.":"O produto com a etiqueta vermelha % está em oferta. Junte os três e ganhe +10 segundos.","Yeni: Koliler! 📦 kapalı ürünler taşınamaz. Her raf temizlendiğinde bir koli açılır.":"Novo: caixas! 📦 Produtos encaixotados não podem ser movidos. Cada prateleira esvaziada abre uma caixa.","Süre doldu":"Acabou o tempo","Kasa kapandı, listede eksikler kaldı.":"O caixa fechou e faltaram itens da lista.","Reyon {n}":"Corredor {n}","Reyon":"Corredor","kalan süre {t}":"tempo restante {t}","Koli kapalı. Bir raf temizlenince açılır.":"A caixa está fechada. Ela abre quando uma prateleira é esvaziada.","İndirim! +10 sn":"Oferta! +10 s","Harika! Raf temizlendi, listedeki ürün işaretlendi.":"Ótimo! Prateleira esvaziada e o produto foi marcado na lista.","Kombo x{n}":"Combo x{n}","Koli açıldı!":"Caixa aberta!","Raflar dolu!":"Prateleiras cheias!","Raflar tıkandı":"Prateleiras travadas","Hiç boş yer kalmadı.":"Não sobrou nenhum espaço livre.","Hamle":"Jogadas","Süre bonusu":"Bônus de tempo","Günlük seri":"Sequência diária","TOPLAM PUAN":"PONTUAÇÃO TOTAL","Yarın yeni bir liste seni bekliyor.":"Amanhã tem uma lista nova esperando por você.","Ana ekran":"Início","Reyonlara devam":"Continuar corredores","Harita":"Mapa","Sonraki reyon":"Próximo corredor","PickyList'e dön":"Voltar ao PickyList","Gerçek alışverişin için PickyList":"PickyList para suas compras de verdade","Sonucu kopyala":"Copiar resultado","PickyList'ten oyuna her gün girişte: +30 sn, her yardımdan +1, 2x puan.":"Entre todo dia pelo PickyList: +30 s, +1 de cada ajuda, pontos 2x.","Kopyalandı":"Copiado","Kopyalanamadı":"Não foi possível copiar","Eksik kalanlar:":"Faltaram:","Tekrar dene":"Tentar de novo","Bir ürüne dokun, sonra boş yeri olan rafa dokun.":"Toque num produto e depois numa prateleira com espaço livre.","Zıplayan ürüne dokun.":"Toque no produto que está pulando.","Şimdi yeşil çerçeveli rafa dokun.":"Agora toque na prateleira com borda verde.","İpucu yok":"Sem dicas","{n} adet":"{n} un.","{n} üründen {d} tamam":"{d} de {n} produtos prontos","Kapalı koli":"Caixa fechada","% {p}: +10 sn":"% {p}: +10 s","Sesi aç":"Ativar som","Sesi kapat":"Desativar som","PickyList'ten hoş geldin!":"Boas-vindas do PickyList!","Bugünkü bonusun: +30 saniye, her yardımdan +1 ve bu reyonda 2x puan.":"Seu bônus de hoje: +30 segundos, +1 de cada ajuda e pontos 2x neste corredor.","Bugünkü bonusunu aldın, yarın tekrar gel.":"Você já pegou o bônus de hoje. Volte amanhã.","Listen bu reyona geldi: {x}":"Sua lista veio para este corredor: {x}","PickyList kullanıyor musun?":"Você usa o PickyList?","Uygulamadan oyuna gelince her gün +30 saniye, ekstra yardımlar ve 2x puan kazanırsın.":"Entrando no jogo pelo app, você ganha todo dia +30 segundos, ajudas extras e pontos 2x.","Yarım kalanı bitir":"Retomar","Devam et":"Continuar","Alışverişe başla":"Começar as compras","Bugünkü en iyi: {x}":"Melhor de hoje: {x}","Herkese aynı liste, her gün yenisi":"A mesma lista para todos, uma nova a cada dia","Müzik: {s}":"Música: {s}","Açık":"Ligada","Kapalı":"Desligada","Puan":"Pontos","Duraklat":"Pausar","Listeyi tamamla":"Complete a lista","Alışveriş listesi":"Lista de compras","Raflar":"Prateleiras","Sepet":"Cesta","Listedeki ürünleri raflarda bul, aynı üçünü yan yana diz, süre bitmeden listeyi tamamla.":"Encontre nas prateleiras os produtos da sua lista, junte três iguais e complete a lista antes que o tempo acabe.","Reyon haritası":"Mapa dos corredores","Bugünün görevleri":"Missões de hoje","Listeni PickyList'te hazırla":"Monte sua lista no PickyList","Baştan başla":"Começar do zero","Kapat":"Fechar","Rozetler":"Medalhas","İstatistikler":"Estatísticas","Mola":"Pausa","Yeniden başla":"Reiniciar","🛒 Sepet":"🛒 Cesta"},"ru":{"Raf Avcısı":"Охотник за полками","Domates":"Помидоры","Salatalık":"Огурцы","Havuç":"Морковь","Soğan":"Лук","Patates":"Картофель","Limon":"Лимоны","Elma":"Яблоки","Muz":"Бананы","Kıyma":"Фарш","Tavuk göğsü":"Куриная грудка","Süt":"Молоко","Beyaz peynir":"Брынза","Yumurta":"Яйца","Tereyağı":"Сливочное масло","Bal":"Мёд","Makarna":"Макароны","Pirinç":"Рис","Zeytinyağı":"Оливковое масло","Kahve":"Кофе","Meyve suyu":"Сок","Çamaşır deterjanı":"Стиральный порошок","Kağıt havlu":"Бумажные полотенца","Ekmek":"Хлеб","Sebzeler":"Овощи","Meyveler":"Фрукты","Et":"Мясо","Süt Ürünleri":"Молочное","Temel gıda":"Бакалея","İçecekler":"Напитки","Temizlik":"Бытовая химия","Fırın":"Выпечка","Manav":"Овощи и фрукты","Kahvaltılık":"Завтрак","Kasap ve şarküteri":"Мясо и колбасы","Haftalık market":"Покупки на неделю","İlk liste":"Первый список","İlk reyonu bitir":"Пройди первый отдел","Kombo ustası":"Мастер комбо","3'lü kombo yap":"Сделай комбо x3","Kusursuz":"Безупречно","Bir reyonu 3 yıldızla bitir":"Пройди отдел на 3 звезды","Yardımsız":"Без помощи","Hiç yardım kullanmadan bitir":"Пройди без подсказок","Günün alışverişi":"Покупки дня","Günün listesini bitir":"Пройди список дня","3 gün seri":"3 дня подряд","Günün listesini 3 gün üst üste bitir":"Пройди список дня 3 дня подряд","PickyList'li":"С PickyList","Oyuna PickyList'ten gel":"Зайди в игру из PickyList","Market müdavimi":"Завсегдатай","Reyon 10'a ulaş":"Дойди до 10-го отдела","Rozet: {x}":"Значок: {x}","{n} raf temizle":{"one":"Очисти {n} полку","few":"Очисти {n} полки","many":"Очисти {n} полок","other":"Очисти {n} полки"},"{n} kez 3'lü kombo yap":{"one":"Сделай комбо x3 {n} раз","few":"Сделай комбо x3 {n} раза","many":"Сделай комбо x3 {n} раз","other":"Сделай комбо x3 {n} раза"},"{n} indirimli ürün yakala":{"one":"Поймай {n} скидку","few":"Поймай {n} скидки","many":"Поймай {n} скидок","other":"Поймай {n} скидки"},"{n} reyon bitir":{"one":"Пройди {n} отдел","few":"Пройди {n} отдела","many":"Пройди {n} отделов","other":"Пройди {n} отдела"},"Yardım kullanmadan bir reyon bitir":"Пройди отдел без подсказок","{n} koli aç":{"one":"Открой {n} коробку","few":"Открой {n} коробки","many":"Открой {n} коробок","other":"Открой {n} коробки"},"Geri al":"Отмена","İpucu":"Подсказка","Karıştır":"Перемешать","Görev tamam: {x}":"Задание выполнено: {x}","Ödül: +1 {x} (sonraki reyonda)":"Награда: +1 {x} (в следующем отделе)","Ödül: {x}":"Награда: {x}","Alındı":"Получено","Biten reyon":"Пройдено отделов","Temizlenen raf":"Очищено полок","Toplam hamle":"Всего ходов","En iyi kombo":"Лучшее комбо","Açılan koli":"Открыто коробок","Yakalanan indirim":"Поймано скидок","Günün listesi":"Список дня","En iyi puan":"Лучший счёт","En çok topladığın":"Чаще всего собираешь","{n} gün":{"one":"{n} день","few":"{n} дня","many":"{n} дней","other":"{n} дня"},"{n} puan":{"one":"{n} очко","few":"{n} очка","many":"{n} очков","other":"{n} очка"},"Görev ödülü!":"Награда за задание!","PickyList bonusu!":"Бонус PickyList!","PickyList bonusu":"Бонус PickyList","Yeni: Sepet! Bir ürüne, sonra alttaki sepete dokunarak onu kenara park edebilirsin.":"Новое: корзина! Нажми на товар, а потом на корзину внизу, чтобы отложить его.","Kırmızı % etiketli ürün indirimde. Üçlüsünü temizlersen +10 saniye kazanırsın.":"Товар с красным ярлыком % со скидкой. Собери три таких и получи +10 секунд.","Yeni: Koliler! 📦 kapalı ürünler taşınamaz. Her raf temizlendiğinde bir koli açılır.":"Новое: коробки! 📦 Товары в коробках нельзя двигать. Каждая очищенная полка открывает одну коробку.","Süre doldu":"Время вышло","Kasa kapandı, listede eksikler kaldı.":"Касса закрылась, а в списке ещё есть товары.","Reyon {n}":"Отдел {n}","Reyon":"Отдел","kalan süre {t}":"осталось {t}","Koli kapalı. Bir raf temizlenince açılır.":"Коробка закрыта. Она откроется, когда очистится полка.","İndirim! +10 sn":"Скидка! +10 с","Harika! Raf temizlendi, listedeki ürün işaretlendi.":"Отлично! Полка очищена, товар отмечен в списке.","Kombo x{n}":"Комбо x{n}","Koli açıldı!":"Коробка открыта!","Raflar dolu!":"Полки заполнены!","Raflar tıkandı":"Полки забиты","Hiç boş yer kalmadı.":"Свободного места не осталось.","Hamle":"Ходы","Süre bonusu":"Бонус за время","Günlük seri":"Серия дней","TOPLAM PUAN":"ИТОГО ОЧКОВ","Yarın yeni bir liste seni bekliyor.":"Завтра тебя ждёт новый список.","Ana ekran":"Главная","Reyonlara devam":"К отделам","Harita":"Карта","Sonraki reyon":"Следующий отдел","PickyList'e dön":"Вернуться в PickyList","Gerçek alışverişin için PickyList":"PickyList для настоящих покупок","Sonucu kopyala":"Скопировать результат","PickyList'ten oyuna her gün girişte: +30 sn, her yardımdan +1, 2x puan.":"Заходи в игру из PickyList каждый день: +30 с, +1 к каждой подсказке, очки x2.","Kopyalandı":"Скопировано","Kopyalanamadı":"Не удалось скопировать","Eksik kalanlar:":"Не хватило:","Tekrar dene":"Ещё раз","Bir ürüne dokun, sonra boş yeri olan rafa dokun.":"Нажми на товар, затем на полку со свободным местом.","Zıplayan ürüne dokun.":"Нажми на прыгающий товар.","Şimdi yeşil çerçeveli rafa dokun.":"Теперь нажми на полку с зелёной рамкой.","İpucu yok":"Подсказок нет","{n} adet":"{n} шт.","{n} üründen {d} tamam":"Готово {d} из {n}","Kapalı koli":"Закрытая коробка","% {p}: +10 sn":"% {p}: +10 с","Sesi aç":"Включить звук","Sesi kapat":"Выключить звук","PickyList'ten hoş geldin!":"Привет из PickyList!","Bugünkü bonusun: +30 saniye, her yardımdan +1 ve bu reyonda 2x puan.":"Твой бонус сегодня: +30 секунд, +1 к каждой подсказке и очки x2 в этом отделе.","Bugünkü bonusunu aldın, yarın tekrar gel.":"Сегодняшний бонус уже получен. Возвращайся завтра.","Listen bu reyona geldi: {x}":"Твой список в этом отделе: {x}","PickyList kullanıyor musun?":"Пользуешься PickyList?","Uygulamadan oyuna gelince her gün +30 saniye, ekstra yardımlar ve 2x puan kazanırsın.":"Заходи в игру из приложения и каждый день получай +30 секунд, дополнительные подсказки и очки x2.","Yarım kalanı bitir":"Продолжить","Devam et":"Продолжить","Alışverişe başla":"Начать покупки","Bugünkü en iyi: {x}":"Лучший сегодня: {x}","Herkese aynı liste, her gün yenisi":"Один список для всех, каждый день новый","Müzik: {s}":"Музыка: {s}","Açık":"Вкл.","Kapalı":"Выкл.","Puan":"Очки","Duraklat":"Пауза","Listeyi tamamla":"Собери список","Alışveriş listesi":"Список покупок","Raflar":"Полки","Sepet":"Корзина","Listedeki ürünleri raflarda bul, aynı üçünü yan yana diz, süre bitmeden listeyi tamamla.":"Найди товары из списка на полках, поставь три одинаковых рядом и собери список, пока не вышло время.","Reyon haritası":"Карта отделов","Bugünün görevleri":"Задания на сегодня","Listeni PickyList'te hazırla":"Составь список в PickyList","Baştan başla":"Начать заново","Kapat":"Закрыть","Rozetler":"Значки","İstatistikler":"Статистика","Mola":"Перерыв","Yeniden başla":"Заново","🛒 Sepet":"🛒 Корзина"}};
+const LANGS=["tr","en","de","es","fr","pt","ru"];
+const LANG=(()=>{try{const q=new URLSearchParams(location.search).get("lang");if(q&&LANGS.includes(q))return q}catch(e){}
+  const ls=navigator.languages&&navigator.languages.length?navigator.languages:[navigator.language||"en"];
+  for(const l of ls){const c=String(l).toLowerCase().split("-")[0];if(LANGS.includes(c))return c}return "en"})();
+const LOC=String(navigator.language||"").toLowerCase().split("-")[0]===LANG?navigator.language:{tr:"tr-TR",en:"en-US",de:"de-DE",es:"es-ES",fr:"fr-FR",pt:"pt-BR",ru:"ru-RU"}[LANG];
+const DICT=I18N[LANG]||{};
+let PLURAL;try{PLURAL=new Intl.PluralRules(LOC)}catch(e){PLURAL={select:n=>n===1?"one":"other"}}
+function T(k,v){let s=DICT[k];if(s==null){if(LANG!=="tr")(window.RAF_I18N_MISSING=window.RAF_I18N_MISSING||[]).push(k);s=k}
+  if(typeof s==="object"){const n=v?v.n:0;s=s[PLURAL.select(n)]||s.other||s.one}
+  return v?s.replace(/\{(\w+)\}/g,(m,x)=>v[x]!=null?v[x]:m):s}
+function localizeDom(){
+  document.documentElement.lang=LANG;document.title=T("Raf Avcısı");if(LANG==="tr")return;
+  const w=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);let n;
+  while((n=w.nextNode())){if(n.parentNode&&n.parentNode.nodeName==="SCRIPT")continue;const t=n.nodeValue.trim();if(t&&typeof DICT[t]==="string")n.nodeValue=n.nodeValue.replace(t,DICT[t])}
+  document.querySelectorAll("[aria-label],[title]").forEach(e=>["aria-label","title"].forEach(a=>{const v=e.getAttribute(a);if(v&&typeof DICT[v]==="string")e.setAttribute(a,DICT[v])}));
+}
+localizeDom();
 const CATS={
-  sebze:["Sebzeler","🥕","#F1F5D8"],meyve:["Meyveler","🍎","#FBE3E1"],et:["Et","🥩","#FBE0E6"],
-  sut:["Süt Ürünleri","🥛","#E4EEF9"],temel:["Temel gıda","🌾","#EFE7DA"],icecek:["İçecekler","☕","#ECE4F6"],
-  temizlik:["Temizlik","🧴","#DDEFF5"],firin:["Fırın","🍞","#F7EAD7"]
+  sebze:[T("Sebzeler"),"🥕","#F1F5D8"],meyve:[T("Meyveler"),"🍎","#FBE3E1"],et:[T("Et"),"🥩","#FBE0E6"],
+  sut:[T("Süt Ürünleri"),"🥛","#E4EEF9"],temel:[T("Temel gıda"),"🌾","#EFE7DA"],icecek:[T("İçecekler"),"☕","#ECE4F6"],
+  temizlik:[T("Temizlik"),"🧴","#DDEFF5"],firin:[T("Fırın"),"🍞","#F7EAD7"]
 };
 const PRODUCTS=[
   ["🍅","Domates","sebze"],["🥒","Salatalık","sebze"],["🥕","Havuç","sebze"],["🧅","Soğan","sebze"],["🥔","Patates","sebze"],
@@ -302,6 +323,7 @@ const PRODUCTS=[
   ["🍞","Ekmek","firin"]
 ];
 const $=id=>document.getElementById(id);
+PRODUCTS.forEach(p=>p[3]=T(p[1]));
 const store={get(k,d){try{const v=localStorage.getItem("raf_"+k);return v==null?d:JSON.parse(v)}catch(e){return d}},
              set(k,v){try{localStorage.setItem("raf_"+k,JSON.stringify(v))}catch(e){}}};
 
@@ -356,7 +378,7 @@ function readLink(){
   }catch(e){}
   const want=[];
   names.map(slug).filter(Boolean).forEach(n=>{
-    const i=PRODUCTS.findIndex(p=>slug(p[1])===n)>=0?PRODUCTS.findIndex(p=>slug(p[1])===n):PRODUCTS.findIndex(p=>slug(p[1]).startsWith(n)||n.startsWith(slug(p[1])));
+    let i=PRODUCTS.findIndex(p=>slug(p[1])===n||slug(p[3])===n);if(i<0)i=PRODUCTS.findIndex(p=>[p[1],p[3]].some(x=>{const z=slug(x);return z&&(z.startsWith(n)||n.startsWith(z))}));
     if(i>=0&&!want.includes(i))want.push(i);
   });
   return {from,want:want.slice(0,6)};
@@ -371,23 +393,23 @@ let RNG=Math.random;
 function seeded(seed){let a=seed>>>0;return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
 function rnd(n){return Math.floor(RNG()*n)}
 const THEMES=[
-  {name:"Manav",e:"🥕",cats:["sebze","meyve"],bar:"#7CB342"},
-  {name:"Kahvaltılık",e:"🧀",cats:["sut","firin","temel"],bar:"#F9A825"},
-  {name:"Kasap ve şarküteri",e:"🥩",cats:["et","sut"],bar:"#E57373"},
-  {name:"Temel gıda",e:"🍝",cats:["temel","icecek"],bar:"#A1887F"},
-  {name:"Temizlik",e:"🧴",cats:["temizlik","icecek"],bar:"#4FC3F7"},
-  {name:"Haftalık market",e:"🛒",cats:null,bar:"#1F9D55"}
+  {name:T("Manav"),e:"🥕",cats:["sebze","meyve"],bar:"#7CB342"},
+  {name:T("Kahvaltılık"),e:"🧀",cats:["sut","firin","temel"],bar:"#F9A825"},
+  {name:T("Kasap ve şarküteri"),e:"🥩",cats:["et","sut"],bar:"#E57373"},
+  {name:T("Temel gıda"),e:"🍝",cats:["temel","icecek"],bar:"#A1887F"},
+  {name:T("Temizlik"),e:"🧴",cats:["temizlik","icecek"],bar:"#4FC3F7"},
+  {name:T("Haftalık market"),e:"🛒",cats:null,bar:"#1F9D55"}
 ];
 function themeOf(l){return THEMES[(l-1)%THEMES.length]}
 const BADGES=[
-  {id:"first",e:"🛒",n:"İlk liste",d:"İlk reyonu bitir"},
-  {id:"combo3",e:"⚡",n:"Kombo ustası",d:"3'lü kombo yap"},
-  {id:"perfect",e:"⭐",n:"Kusursuz",d:"Bir reyonu 3 yıldızla bitir"},
-  {id:"nohelp",e:"💪",n:"Yardımsız",d:"Hiç yardım kullanmadan bitir"},
-  {id:"daily",e:"📅",n:"Günün alışverişi",d:"Günün listesini bitir"},
-  {id:"streak3",e:"🔥",n:"3 gün seri",d:"Günün listesini 3 gün üst üste bitir"},
-  {id:"pickylist",e:"✅",n:"PickyList'li",d:"Oyuna PickyList'ten gel"},
-  {id:"lvl10",e:"🏪",n:"Market müdavimi",d:"Reyon 10'a ulaş"}
+  {id:"first",e:"🛒",n:T("İlk liste"),d:T("İlk reyonu bitir")},
+  {id:"combo3",e:"⚡",n:T("Kombo ustası"),d:T("3'lü kombo yap")},
+  {id:"perfect",e:"⭐",n:T("Kusursuz"),d:T("Bir reyonu 3 yıldızla bitir")},
+  {id:"nohelp",e:"💪",n:T("Yardımsız"),d:T("Hiç yardım kullanmadan bitir")},
+  {id:"daily",e:"📅",n:T("Günün alışverişi"),d:T("Günün listesini bitir")},
+  {id:"streak3",e:"🔥",n:T("3 gün seri"),d:T("Günün listesini 3 gün üst üste bitir")},
+  {id:"pickylist",e:"✅",n:T("PickyList'li"),d:T("Oyuna PickyList'ten gel")},
+  {id:"lvl10",e:"🏪",n:T("Market müdavimi"),d:T("Reyon 10'a ulaş")}
 ];
 const toastQ=[];let toastBusy=false;
 function showToast(e,title,sub){toastQ.push([e,title,sub]);if(!toastBusy)nextToast()}
@@ -402,20 +424,20 @@ function award(id){
   const got=store.get("badges",{});if(got[id])return;
   got[id]=dayKey();store.set("badges",got);
   const b=BADGES.find(x=>x.id===id);if(!b)return;
-  showToast(b.e,"Rozet: "+b.n,b.d);
+  showToast(b.e,T("Rozet: {x}",{x:b.n}),b.d);
 }
 /* daily missions */
 const MISSIONS=[
-  {id:"clears",n:15,e:"🧺",d:n=>n+" raf temizle"},
-  {id:"combo",n:2,e:"⚡",d:n=>n+" kez 3'lü kombo yap"},
-  {id:"sale",n:2,e:"🏷️",d:n=>n+" indirimli ürün yakala"},
-  {id:"wins",n:2,e:"🛒",d:n=>n+" reyon bitir"},
-  {id:"stars3",n:1,e:"⭐",d:()=>"Bir reyonu 3 yıldızla bitir"},
-  {id:"daily",n:1,e:"📅",d:()=>"Günün listesini bitir"},
-  {id:"nohelp",n:1,e:"💪",d:()=>"Yardım kullanmadan bir reyon bitir"},
-  {id:"boxes",n:3,e:"📦",d:n=>n+" koli aç"}
+  {id:"clears",n:15,e:"🧺",d:n=>T("{n} raf temizle",{n})},
+  {id:"combo",n:2,e:"⚡",d:n=>T("{n} kez 3'lü kombo yap",{n})},
+  {id:"sale",n:2,e:"🏷️",d:n=>T("{n} indirimli ürün yakala",{n})},
+  {id:"wins",n:2,e:"🛒",d:n=>T("{n} reyon bitir",{n})},
+  {id:"stars3",n:1,e:"⭐",d:()=>T("Bir reyonu 3 yıldızla bitir")},
+  {id:"daily",n:1,e:"📅",d:()=>T("Günün listesini bitir")},
+  {id:"nohelp",n:1,e:"💪",d:()=>T("Yardım kullanmadan bir reyon bitir")},
+  {id:"boxes",n:3,e:"📦",d:n=>T("{n} koli aç",{n})}
 ];
-const REWARDS=[["undo","↩️","Geri al"],["hint","🔍","İpucu"],["shuf","🔀","Karıştır"]];
+const REWARDS=[["undo","↩️",T("Geri al")],["hint","🔍",T("İpucu")],["shuf","🔀",T("Karıştır")]];
 function missionsToday(){
   const k=dayKey();let m=store.get("missions",null);
   if(!m||m.day!==k){
@@ -435,7 +457,7 @@ function track(id,n){
     if(m.prog[id]>=def.n){
       m.done[id]=true;const rw=REWARDS[m.ids.indexOf(id)%3];
       const ex=store.get("extra",{});ex[rw[0]]=(ex[rw[0]]||0)+1;store.set("extra",ex);
-      showToast("🎯","Görev tamam: "+def.d(def.n),"Ödül: +1 "+rw[2]+" (sonraki reyonda)");
+      showToast("🎯",T("Görev tamam: {x}",{x:def.d(def.n)}),T("Ödül: +1 {x} (sonraki reyonda)",{x:rw[2]}));
     }
     store.set("missions",m);
   }
@@ -443,7 +465,7 @@ function track(id,n){
 function missionsHtml(){
   const m=missionsToday();
   return m.ids.map((id,i)=>{const d=MISSIONS.find(x=>x.id===id),p=m.prog[id]||0,ok=m.done[id],rw=REWARDS[i%3];
-    return `<div class="mis${ok?" ok":""}"><span class="me">${ok?"✅":d.e}</span><span class="mt"><b>${d.d(d.n)}</b><span class="mbar"><i style="width:${Math.round(p/d.n*100)}%"></i></span></span><span class="mr" title="Ödül: ${rw[2]}">${ok?"Alındı":p+"/"+d.n+" · "+rw[1]}</span></div>`}).join("");
+    return `<div class="mis${ok?" ok":""}"><span class="me">${ok?"✅":d.e}</span><span class="mt"><b>${d.d(d.n)}</b><span class="mbar"><i style="width:${Math.round(p/d.n*100)}%"></i></span></span><span class="mr" title="${T("Ödül: {x}",{x:rw[2]})}">${ok?T("Alındı"):p+"/"+d.n+" · "+rw[1]}</span></div>`}).join("");
 }
 /* lifetime stats */
 function stat(k,n){const st=store.get("stats",{});st[k]=(st[k]||0)+(n==null?1:n);store.set("stats",st)}
@@ -452,10 +474,10 @@ function statsHtml(){
   const st=store.get("stats",{}),pc=store.get("prodCount",{});
   let fav=-1,fn=0;Object.keys(pc).forEach(t=>{if(pc[t]>fn){fn=pc[t];fav=+t}});
   const sk=store.get("streak",{n:0});const dl=Object.keys(store.get("daily",{})).length;
-  const rows=[["Biten reyon",st.wins||0],["Temizlenen raf",st.clears||0],["Toplam hamle",st.moves||0],["En iyi kombo",st.maxCombo?"x"+st.maxCombo:"-"],
-    ["Açılan koli",st.boxes||0],["Yakalanan indirim",st.sales||0],["Günün listesi",dl+" gün"],["En iyi puan",store.get("best",0)]];
+  const rows=[[T("Biten reyon"),st.wins||0],[T("Temizlenen raf"),st.clears||0],[T("Toplam hamle"),st.moves||0],[T("En iyi kombo"),st.maxCombo?"x"+st.maxCombo:"-"],
+    [T("Açılan koli"),st.boxes||0],[T("Yakalanan indirim"),st.sales||0],[T("Günün listesi"),T("{n} gün",{n:dl})],[T("En iyi puan"),store.get("best",0)]];
   return rows.map(r=>`<div class="sr"><span>${r[0]}</span><b>${r[1]}</b></div>`).join("")+
-    (fav>=0?`<div class="sr fav"><span>En çok topladığın</span><b>${PRODUCTS[fav][0]} ${PRODUCTS[fav][1]} · ${fn}</b></div>`:"");
+    (fav>=0?`<div class="sr fav"><span>${T("En çok topladığın")}</span><b>${PRODUCTS[fav][0]} ${PRODUCTS[fav][3]} · ${fn}</b></div>`:"");
 }
 function shuffle(a){for(let i=a.length-1;i>0;i--){const j=rnd(i+1);[a[i],a[j]]=[a[j],a[i]]}return a}
 
@@ -518,18 +540,18 @@ function newGame(l,mode){
      tut:mode==="level"&&l===1&&!store.get("tutDone",false),basket:null,sale:-1,paused:false};
   if(l>=2||mode==="daily"){const types=[...new Set(S.shelves.flatMap(x=>x.layers.flat()).filter(x=>x!=null).map(x=>x<0?-x-1:x))];S.sale=types[(mode==="daily"?(+dayKey().replace(/-/g,""))%types.length:Math.floor(Math.random()*types.length))];}
   {const ex=store.get("extra",{});if(ex.undo||ex.hint||ex.shuf){S.undo+=ex.undo||0;S.hint+=ex.hint||0;S.shuf+=ex.shuf||0;store.set("extra",{});
-    setTimeout(()=>flashCombo("Görev ödülü!"),500);}}
+    setTimeout(()=>flashCombo(T("Görev ödülü!")),500);}}
   if(LINK.from)setTimeout(()=>award("pickylist"),900);
   if(bonusPending){bonusPending=false;store.set("bonusDay",today);S.time+=30;S.total+=30;S.undo++;S.hint++;S.shuf++;S.mult=2;
-    setTimeout(()=>flashCombo("PickyList bonusu!"),300);}
+    setTimeout(()=>flashCombo(T("PickyList bonusu!")),300);}
   render(true);startTimer();
   const tips=[];
-  if(S.mode!=="daily"&&l>=2&&!store.get("tip_basket",false)){tips.push("Yeni: Sepet! Bir ürüne, sonra alttaki sepete dokunarak onu kenara park edebilirsin.");store.set("tip_basket",true)}
-  if(S.sale>=0&&!store.get("tip_sale",false)){tips.push("Kırmızı % etiketli ürün indirimde. Üçlüsünü temizlersen +10 saniye kazanırsın.");store.set("tip_sale",true)}
-  if(S.shelves.some(x=>x.layers.flat().some(v=>v!=null&&v<0))&&!store.get("tip_box",false)){tips.push("Yeni: Koliler! 📦 kapalı ürünler taşınamaz. Her raf temizlendiğinde bir koli açılır.");store.set("tip_box",true)}
+  if(S.mode!=="daily"&&l>=2&&!store.get("tip_basket",false)){tips.push(T("Yeni: Sepet! Bir ürüne, sonra alttaki sepete dokunarak onu kenara park edebilirsin."));store.set("tip_basket",true)}
+  if(S.sale>=0&&!store.get("tip_sale",false)){tips.push(T("Kırmızı % etiketli ürün indirimde. Üçlüsünü temizlersen +10 saniye kazanırsın."));store.set("tip_sale",true)}
+  if(S.shelves.some(x=>x.layers.flat().some(v=>v!=null&&v<0))&&!store.get("tip_box",false)){tips.push(T("Yeni: Koliler! 📦 kapalı ürünler taşınamaz. Her raf temizlendiğinde bir koli açılır."));store.set("tip_box",true)}
   tips.forEach((t,i)=>setTimeout(()=>{if(!S.over&&!S.paused)coach(t,4200)},600+i*4600));
 }
-function startTimer(){clearInterval(timerId);timerId=setInterval(()=>{if(S.over||S.paused)return;S.time--;renderTop();if(S.time%5===0)saveGame();if(S.time<=0)lose("Süre doldu","Kasa kapandı, listede eksikler kaldı.")},1000)}
+function startTimer(){clearInterval(timerId);timerId=setInterval(()=>{if(S.over||S.paused)return;S.time--;renderTop();if(S.time%5===0)saveGame();if(S.time<=0)lose(T("Süre doldu"),T("Kasa kapandı, listede eksikler kaldı."))},1000)}
 
 function front(si){return S.shelves[si].layers[0]}
 function buzz(p){try{if(window.RAF_NATIVE)RAF_NATIVE.haptic(p);else if(navigator.vibrate)navigator.vibrate(p)}catch(e){}}
@@ -547,7 +569,7 @@ function resumeGame(sv){
 }
 function pauseGame(){
   if(S.over||S.paused)return;S.paused=true;S.sel=null;saveGame();render();coach("");
-  $("pauseInfo").textContent=(S.mode==="daily"?"Günün listesi":"Reyon "+S.level+" · "+S.theme.name)+" · kalan süre "+fmt(S.time);
+  $("pauseInfo").textContent=(S.mode==="daily"?T("Günün listesi"):T("Reyon {n}",{n:S.level})+" · "+S.theme.name)+" · "+T("kalan süre {t}",{t:fmt(S.time)});
   $("pauseMis").innerHTML=missionsHtml();
   $("ovPause").hidden=false;
 }
@@ -578,7 +600,7 @@ function tapItem(si,k){
   const f=front(si);
   if(f[k]==null){ if(S.sel)place(si,k); return; }
   if(S.sel&&S.sel[0]==="b"){sfx.bad();shake(si);return}
-  if(f[k]<0){sfx.bad();buzz(40);shake(si);if(!S.sel)coach("Koli kapalı. Bir raf temizlenince açılır.",2200);return}
+  if(f[k]<0){sfx.bad();buzz(40);shake(si);if(!S.sel)coach(T("Koli kapalı. Bir raf temizlenince açılır."),2200);return}
   if(S.sel&&S.sel[0]===si&&S.sel[1]===k){S.sel=null;render();return}
   S.sel=[si,k];sfx.pick();render();
 }
@@ -620,10 +642,10 @@ function afterClear(si,t){
   const onList=S.list.find(x=>x.t===t&&!x.done);
   const pts=(onList?150:100)*S.combo*(S.mult||1);S.score+=pts;S.clears++;
   if(onList)onList.done=true;
-  if(t===S.sale){track("sale");stat("sales");S.time+=10;S.total+=10;S.sale=-1;setTimeout(()=>flashCombo("İndirim! +10 sn"),450);renderTop();}
+  if(t===S.sale){track("sale");stat("sales");S.time+=10;S.total+=10;S.sale=-1;setTimeout(()=>flashCombo(T("İndirim! +10 sn")),450);renderTop();}
   sfx.clear(S.combo);buzz(25);
-  if(S.tut){S.tut=false;store.set("tutDone",true);coach("Harika! Raf temizlendi, listedeki ürün işaretlendi.",2600);}
-  if(S.combo>1)flashCombo("Kombo x"+S.combo);
+  if(S.tut){S.tut=false;store.set("tutDone",true);coach(T("Harika! Raf temizlendi, listedeki ürün işaretlendi."),2600);}
+  if(S.combo>1)flashCombo(T("Kombo x{n}",{n:S.combo}));
   else if(onList)flashCombo("+"+pts);
   front(si).fill(null);
   openBox();
@@ -631,7 +653,7 @@ function afterClear(si,t){
 }
 function openBox(){
   for(const li of [0,1,2,3]){for(let si=0;si<S.shelves.length;si++){const L=S.shelves[si].layers[li];if(!L)continue;const k=L.findIndex(x=>x!=null&&x<0);
-    if(k>=0){L[k]=-L[k]-1;S.opened=[si,li,k];track("boxes");stat("boxes");if(li===0)setTimeout(()=>{flashCombo("Koli açıldı!");const t=checkClear(si);if(t!=null){render();afterClear(si,t)}},360);return}}}
+    if(k>=0){L[k]=-L[k]-1;S.opened=[si,li,k];track("boxes");stat("boxes");if(li===0)setTimeout(()=>{flashCombo(T("Koli açıldı!"));const t=checkClear(si);if(t!=null){render();afterClear(si,t)}},360);return}}}
 }
 function advance(si){
   const s=S.shelves[si];
@@ -650,8 +672,8 @@ function checkEnd(){
   const anyEmpty=S.shelves.some(s=>s.layers[0].includes(null))||S.basket==null;
   const pending=document.querySelector(".item.pop");
   if(!anyEmpty&&!pending){
-    if(S.undo>0||S.shuf>0){flashCombo("Raflar dolu!");}
-    else lose("Raflar tıkandı","Hiç boş yer kalmadı.");
+    if(S.undo>0||S.shuf>0){flashCombo(T("Raflar dolu!"));}
+    else lose(T("Raflar tıkandı"),T("Hiç boş yer kalmadı."));
   }
 }
 function win(){
@@ -673,27 +695,27 @@ function win(){
   if(S.mode==="daily"){awards.push("daily");if(S.streak>=3)awards.push("streak3");}
   if(store.get("level",1)>=10)awards.push("lvl10");
   setTimeout(()=>awards.forEach(award),700);
-  const rows=S.list.map(x=>`<div class="r"><span>${PRODUCTS[x.t][1]} x3</span><span>✓</span></div>`).join("");
+  const rows=S.list.map(x=>`<div class="r"><span>${PRODUCTS[x.t][3]} x3</span><span>✓</span></div>`).join("");
   $("endCard").innerHTML=`
     <div class="stars">${[1,2,3].map(i=>i<=stars?"★":'<span class="off">★</span>').join("")}</div>
     <div class="receipt">
-      <div class="c"><b>PICKYLIST · RAF AVCISI</b><br>${S.mode==="daily"?"Günün listesi":"Reyon "+S.level+" · "+S.theme.name} · ${new Date().toLocaleDateString("tr-TR")}</div><hr>
+      <div class="c"><b>PICKYLIST · ${T("Raf Avcısı").toLocaleUpperCase(LOC)}</b><br>${S.mode==="daily"?T("Günün listesi"):T("Reyon {n}",{n:S.level})+" · "+S.theme.name} · ${new Date().toLocaleDateString(LOC)}</div><hr>
       ${rows}<hr>
-      <div class="r"><span>Temizlenen raf</span><span>${S.clears}</span></div>
-      <div class="r"><span>Hamle</span><span>${S.moves}</span></div>
-      <div class="r"><span>Süre bonusu</span><span>+${timeBonus}</span></div>
-      ${S.mult>1?'<div class="r"><span>PickyList bonusu</span><span>2x</span></div>':""}<hr>
-      ${S.mode==="daily"?`<div class="r"><span>Günlük seri</span><span>${S.streak} gün</span></div>`:""}
-      <div class="r tot"><span>TOPLAM PUAN</span><span>${S.score}</span></div>
+      <div class="r"><span>${T("Temizlenen raf")}</span><span>${S.clears}</span></div>
+      <div class="r"><span>${T("Hamle")}</span><span>${S.moves}</span></div>
+      <div class="r"><span>${T("Süre bonusu")}</span><span>+${timeBonus}</span></div>
+      ${S.mult>1?'<div class="r"><span>'+T("PickyList bonusu")+'</span><span>2x</span></div>':""}<hr>
+      ${S.mode==="daily"?`<div class="r"><span>${T("Günlük seri")}</span><span>${T("{n} gün",{n:S.streak})}</span></div>`:""}
+      <div class="r tot"><span>${T("TOPLAM PUAN")}</span><span>${S.score}</span></div>
       <div class="barcode"></div>
     </div>
-    ${S.mode==="daily"?'<p class="promo">Yarın yeni bir liste seni bekliyor.</p><div class="rowbtns"><button class="btn out" id="toMenu">Ana ekran</button><button class="btn" id="next">Reyonlara devam</button></div>':'<div class="rowbtns"><button class="btn out" id="toMap">Harita</button><button class="btn" id="next">Sonraki reyon</button></div>'}
-    <a class="btn out applink" href="${appUrl()}" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#logo"/></svg>${S.fromList?"PickyList'e dön":"Gerçek alışverişin için PickyList"}</a>
-    <button class="link" id="share">Sonucu kopyala</button>
-    <p class="promo">PickyList'ten oyuna her gün girişte: +30 sn, her yardımdan +1, 2x puan.</p>`;
-  const shareText=`PickyList · Raf Avcısı\n${S.mode==="daily"?"Günün listesi "+new Date().toLocaleDateString("tr-TR"):"Reyon "+S.level+" · "+S.theme.name}\n${S.list.map(x=>PRODUCTS[x.t][0]).join("")} ✅ ${"⭐".repeat(stars)}\n${S.score} puan${S.mode==="daily"&&S.streak>1?" · 🔥 "+S.streak+" gün":""}`;
+    ${S.mode==="daily"?'<p class="promo">'+T("Yarın yeni bir liste seni bekliyor.")+'</p><div class="rowbtns"><button class="btn out" id="toMenu">'+T("Ana ekran")+'</button><button class="btn" id="next">'+T("Reyonlara devam")+'</button></div>':'<div class="rowbtns"><button class="btn out" id="toMap">'+T("Harita")+'</button><button class="btn" id="next">'+T("Sonraki reyon")+'</button></div>'}
+    <a class="btn out applink" href="${appUrl()}" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#logo"/></svg>${S.fromList?T("PickyList'e dön"):T("Gerçek alışverişin için PickyList")}</a>
+    <button class="link" id="share">${T("Sonucu kopyala")}</button>
+    <p class="promo">${T("PickyList'ten oyuna her gün girişte: +30 sn, her yardımdan +1, 2x puan.")}</p>`;
+  const shareText=`PickyList · ${T("Raf Avcısı")}\n${S.mode==="daily"?T("Günün listesi")+" "+new Date().toLocaleDateString(LOC):T("Reyon {n}",{n:S.level})+" · "+S.theme.name}\n${S.list.map(x=>PRODUCTS[x.t][0]).join("")} ✅ ${"⭐".repeat(stars)}\n${T("{n} puan",{n:S.score})}${S.mode==="daily"&&S.streak>1?" · 🔥 "+T("{n} gün",{n:S.streak}):""}`;
   $("share").onclick=()=>{
-    const done=()=>{$("share").textContent="Kopyalandı";};
+    const done=()=>{$("share").textContent=T("Kopyalandı");};
     try{navigator.clipboard.writeText(shareText).then(done,()=>fallbackCopy(shareText,done));}catch(e){fallbackCopy(shareText,done)}
   };
   $("ovEnd").hidden=false;
@@ -705,8 +727,8 @@ function lose(title,msg){
   S.over=true;clearInterval(timerId);sfx.lose();stat("losses");stat("moves",S.moves);store.set("save",null);buzz(120);
   const miss=S.list.filter(x=>!x.done).map(x=>PRODUCTS[x.t][0]).join(" ");
   $("endCard").innerHTML=`<h2 class="endtitle">${title}</h2><p>${msg}</p>
-    ${miss?`<p>Eksik kalanlar: <span style="font-size:24px">${miss}</span></p>`:""}
-    <button class="btn" id="retry">Tekrar dene</button>`;
+    ${miss?`<p>${T("Eksik kalanlar:")} <span style="font-size:24px">${miss}</span></p>`:""}
+    <button class="btn" id="retry">${T("Tekrar dene")}</button>`;
   $("ovEnd").hidden=false;
   $("retry").onclick=()=>{$("ovEnd").hidden=true;if(S.mode!=="daily")store.set("score",S.startScore);newGame(S.level,S.mode)};
 }
@@ -714,7 +736,7 @@ function lose(title,msg){
 function fallbackCopy(t,done){
   const ta=document.createElement("textarea");ta.value=t;ta.setAttribute("readonly","");ta.style.position="fixed";ta.style.opacity="0";document.body.appendChild(ta);ta.select();
   let ok=false;try{ok=document.execCommand("copy")}catch(e){}document.body.removeChild(ta);
-  if(ok)done();else{$("share").textContent="Kopyalanamadı";}
+  if(ok)done();else{$("share").textContent=T("Kopyalanamadı");}
 }
 /* boosters */
 function doUndo(){
@@ -753,15 +775,15 @@ function findMove(){
 function coach(t,ms){const c=$("coach");if(!t){c.hidden=true;return}c.textContent=t;c.hidden=false;clearTimeout(coach._t);if(ms)coach._t=setTimeout(()=>{c.hidden=true},ms)}
 function applyTutorial(){
   if(!S.tut||S.over)return;
-  const m=findMove();if(!m){coach("Bir ürüne dokun, sonra boş yeri olan rafa dokun.");return}
+  const m=findMove();if(!m){coach(T("Bir ürüne dokun, sonra boş yeri olan rafa dokun."));return}
   const b=$("board");
-  if(!S.sel){const it=b.children[m.from[0]].querySelectorAll(".slot")[m.from[1]].querySelector(".item");if(it)it.classList.add("guide");coach("Zıplayan ürüne dokun.");}
+  if(!S.sel){const it=b.children[m.from[0]].querySelectorAll(".slot")[m.from[1]].querySelector(".item");if(it)it.classList.add("guide");coach(T("Zıplayan ürüne dokun."));}
   else{
     if(S.sel[0]==="b")return;
     const t=front(S.sel[0])[S.sel[1]];let to=-1;
     for(let si=0;si<S.shelves.length;si++){if(si===S.sel[0])continue;const f=front(si);if(f.includes(null)&&f.includes(t)){to=si;break}}
     if(to<0)to=m.to;
-    b.children[to].classList.add("guide");coach("Şimdi yeşil çerçeveli rafa dokun.");
+    b.children[to].classList.add("guide");coach(T("Şimdi yeşil çerçeveli rafa dokun."));
   }
 }
 function doHint(){
@@ -785,7 +807,7 @@ function doHint(){
       }
     }
   }
-  flashCombo("İpucu yok");
+  flashCombo(T("İpucu yok"));
 }
 
 /* ---------- render ---------- */
@@ -798,16 +820,16 @@ function render(){
   renderTop();
   $("lvl").innerHTML=(S.mode==="daily"?"":S.level)+(S.mult>1?'<span class="x2">2x</span>':"");
   $("lvlPre").hidden=S.mode==="daily";
-  $("lvlName").textContent=S.mode==="daily"?"Günün listesi":(S.theme?" · "+S.theme.name:"");
-  $("listItems").innerHTML=S.list.map(x=>`<div class="row${x.done?" done":""}"><span class="cb"></span><span class="em" style="background:${CATS[PRODUCTS[x.t][2]][2]}">${PRODUCTS[x.t][0]}</span><span class="nm"><span>${PRODUCTS[x.t][1]}</span><small>3 adet · ${CATS[PRODUCTS[x.t][2]][0]}</small></span></div>`).join("");
-  $("lvlSub").textContent=S.list.length+" üründen "+S.list.filter(x=>x.done).length+" tamam";
+  $("lvlName").textContent=S.mode==="daily"?T("Günün listesi"):(S.theme?" · "+S.theme.name:"");
+  $("listItems").innerHTML=S.list.map(x=>`<div class="row${x.done?" done":""}"><span class="cb"></span><span class="em" style="background:${CATS[PRODUCTS[x.t][2]][2]}">${PRODUCTS[x.t][0]}</span><span class="nm"><span>${PRODUCTS[x.t][3]}</span><small>${T("{n} adet",{n:3})} · ${CATS[PRODUCTS[x.t][2]][0]}</small></span></div>`).join("");
+  $("lvlSub").textContent=T("{n} üründen {d} tamam",{n:S.list.length,d:S.list.filter(x=>x.done).length});
   const b=$("board");b.innerHTML="";
   S.shelves.forEach((s,si)=>{
     const el=document.createElement("div");el.className="shelf";
     if(!S.tut&&S.sel&&front(si).includes(null)&&S.sel[0]!==si)el.classList.add("target");
     const backL=s.layers[1];
     el.innerHTML=(backL?`<div class="back">${backL.map(x=>`<span>${x==null?"":x<0?"📦":PRODUCTS[x][0]}</span>`).join("")}</div>`:"")+
-      `<div class="slots">${s.layers[0].map((x,k)=>`<div class="slot" data-k="${k}">${x!=null&&x<0?`<span class="item box" role="img" aria-label="Kapalı koli">📦</span>`:x!=null?`<span class="item${x===S.sale?" sale":""}${S.sel&&S.sel[0]===si&&S.sel[1]===k?" sel":""}${S.justIn&&S.justIn[0]===si&&S.justIn[1]===k?" in":""}" role="button" aria-label="${PRODUCTS[x][1]}">${PRODUCTS[x][0]}</span>`:""}</div>`).join("")}</div>
+      `<div class="slots">${s.layers[0].map((x,k)=>`<div class="slot" data-k="${k}">${x!=null&&x<0?`<span class="item box" role="img" aria-label="${T("Kapalı koli")}">📦</span>`:x!=null?`<span class="item${x===S.sale?" sale":""}${S.sel&&S.sel[0]===si&&S.sel[1]===k?" sel":""}${S.justIn&&S.justIn[0]===si&&S.justIn[1]===k?" in":""}" role="button" aria-label="${PRODUCTS[x][3]}">${PRODUCTS[x][0]}</span>`:""}</div>`).join("")}</div>
       <div class="plank"></div>${s.layers.length>1?`<span class="layers">+${s.layers.length-1}</span>`:""}`;
     el.addEventListener("pointerup",e=>{
       const slot=e.target.closest(".slot");
@@ -821,7 +843,7 @@ function render(){
   const bk=$("basket");$("bslot").textContent=S.basket!=null?PRODUCTS[S.basket][0]:"";
   bk.classList.toggle("full",S.basket!=null);bk.classList.toggle("sel",!!(S.sel&&S.sel[0]==="b"));
   bk.classList.toggle("ready",!!(S.sel&&S.sel[0]!=="b"&&S.basket==null));
-  $("saleinfo").textContent=S.sale!=null&&S.sale>=0?"% "+PRODUCTS[S.sale][1]+": +10 sn":"";
+  $("saleinfo").textContent=S.sale!=null&&S.sale>=0?T("% {p}: +10 sn",{p:PRODUCTS[S.sale][3]}):"";
   if(S.tut)applyTutorial();
   if(!S.over)saveGame();
   $("nUndo").textContent=S.undo;$("nHint").textContent=S.hint;$("nShuffle").textContent=S.shuf;
@@ -832,28 +854,28 @@ function flashCombo(t){const c=$("combo");c.textContent=t;c.classList.remove("sh
 
 /* ---------- wiring ---------- */
 $("basket").onclick=tapBasket;$("bUndo").onclick=doUndo;$("bHint").onclick=doHint;$("bShuffle").onclick=doShuffle;
-function setMute(){$("mute").textContent=muted?"🔇":"🔊";$("mute").setAttribute("aria-label",muted?"Sesi aç":"Sesi kapat")}
+function setMute(){$("mute").textContent=muted?"🔇":"🔊";$("mute").setAttribute("aria-label",muted?T("Sesi aç"):T("Sesi kapat"))}
 $("mute").onclick=()=>{muted=!muted;store.set("muted",muted);setMute()};setMute();
 $("appLinkStart").href=appUrl();
 if(LINK.from){
   const g=$("gift");g.hidden=false;
-  const names=LINK.want.map(i=>PRODUCTS[i][0]+" "+PRODUCTS[i][1]).join(", ");
-  g.innerHTML=(bonusPending?"<b>PickyList'ten hoş geldin!</b><span>Bugünkü bonusun: +30 saniye, her yardımdan +1 ve bu reyonda 2x puan.</span>":"<b>PickyList'ten hoş geldin!</b><span>Bugünkü bonusunu aldın, yarın tekrar gel.</span>")+
-    (names?`<span class="imp">Listen bu reyona geldi: ${names}</span>`:"");
+  const names=LINK.want.map(i=>PRODUCTS[i][0]+" "+PRODUCTS[i][3]).join(", ");
+  g.innerHTML=(bonusPending?"<b>"+T("PickyList'ten hoş geldin!")+"</b><span>"+T("Bugünkü bonusun: +30 saniye, her yardımdan +1 ve bu reyonda 2x puan.")+"</span>":"<b>"+T("PickyList'ten hoş geldin!")+"</b><span>"+T("Bugünkü bonusunu aldın, yarın tekrar gel.")+"</span>")+
+    (names?`<span class="imp">${T("Listen bu reyona geldi: {x}",{x:names})}</span>`:"");
   $("appLinkStart").hidden=true;
 }else{
-  $("gift").hidden=false;$("gift").innerHTML="<b>PickyList kullanıyor musun?</b><span>Uygulamadan oyuna gelince her gün +30 saniye, ekstra yardımlar ve 2x puan kazanırsın.</span>";
+  $("gift").hidden=false;$("gift").innerHTML="<b>"+T("PickyList kullanıyor musun?")+"</b><span>"+T("Uygulamadan oyuna gelince her gün +30 saniye, ekstra yardımlar ve 2x puan kazanırsın.")+"</span>";
 }
-const MONTHS=["Oca","Şub","Mar","Nis","May","Haz","Tem","Ağu","Eyl","Eki","Kas","Ara"];
+const MONTHS=LANG==="tr"?["Oca","Şub","Mar","Nis","May","Haz","Tem","Ağu","Eyl","Eki","Kas","Ara"]:Array.from({length:12},(_,i)=>{try{return new Date(2020,i,1).toLocaleDateString(LOC,{month:"short"}).replace(".","")}catch(e){return String(i+1)}});
 function showStart(){
   clearInterval(timerId);coach("");
   const lv=store.get("level",1);
   const sv=loadSave();
-  $("play").textContent=sv?("Yarım kalanı bitir · "+(sv.mode==="daily"?"Günün listesi":"Reyon "+sv.level)):(lv>1?"Devam et · Reyon "+lv:"Alışverişe başla");$("reset").hidden=lv<=1;
+  $("play").textContent=sv?(T("Yarım kalanı bitir")+" · "+(sv.mode==="daily"?T("Günün listesi"):T("Reyon {n}",{n:sv.level}))):(lv>1?T("Devam et")+" · "+T("Reyon {n}",{n:lv}):T("Alışverişe başla"));$("reset").hidden=lv<=1;
   const d=new Date();$("calDay").textContent=d.getDate();$("calMon").textContent=MONTHS[d.getMonth()];
   const r=store.get("daily",{})[dayKey()];
   const sk=store.get("streak",{n:0,last:""});
-  $("dailyInfo").innerHTML=(r?"Bugünkü en iyi: "+r.score+" puan · "+"★".repeat(r.stars):"Herkese aynı liste, her gün yenisi")+(sk.n>1?` · <span class="streak">🔥 ${sk.n} gün</span>`:"");
+  $("dailyInfo").innerHTML=(r?T("Bugünkü en iyi: {x}",{x:T("{n} puan",{n:r.score})})+" · "+"★".repeat(r.stars):T("Herkese aynı liste, her gün yenisi"))+(sk.n>1?` · <span class="streak">🔥 ${T("{n} gün",{n:sk.n})}</span>`:"");
   $("misList").innerHTML=missionsHtml();
   $("ovStart").hidden=false;
 }
@@ -863,7 +885,7 @@ function openMap(){
   const n=Math.max(12,Math.ceil((lv+3)/3)*3);
   let h="";
   for(let i=1;i<=n;i++){const th=themeOf(i),locked=i>lv;
-    h+=`<button class="tile${i===lv?" cur":""}" data-l="${i}" ${locked?"disabled":""}><span class="te">${locked?"🔒":th.e}</span><b>Reyon ${i}</b><small>${th.name}</small><span class="st">${st[i]?"★".repeat(st[i]):""}</span><span class="bar" style="background:${th.bar}"></span></button>`}
+    h+=`<button class="tile${i===lv?" cur":""}" data-l="${i}" ${locked?"disabled":""}><span class="te">${locked?"🔒":th.e}</span><b>${T("Reyon {n}",{n:i})}</b><small>${th.name}</small><span class="st">${st[i]?"★".repeat(st[i]):""}</span><span class="bar" style="background:${th.bar}"></span></button>`}
   $("tiles").innerHTML=h;
   const got=store.get("badges",{});
   $("stats").innerHTML=statsHtml();
@@ -878,7 +900,7 @@ const savedLevel=store.get("level",1);
 showStart();
 $("play").onclick=()=>{$("ovStart").hidden=true;tone(1,.01);startMusic();const sv=loadSave();if(sv)resumeGame(sv);else newGame(store.get("level",1))};
 $("pause").onclick=pauseGame;
-function setMusicLabel(){$("pMusic").textContent="Müzik: "+(musicOn?"Açık":"Kapalı")}setMusicLabel();
+function setMusicLabel(){$("pMusic").textContent=T("Müzik: {s}",{s:musicOn?T("Açık"):T("Kapalı")})}setMusicLabel();
 $("pMusic").onclick=()=>{musicOn=!musicOn;store.set("music",musicOn);setMusicLabel();if(musicOn)startMusic()};
 $("pResume").onclick=()=>{$("ovPause").hidden=true;S.paused=false;render();startTimer()};
 $("pRestart").onclick=()=>{$("ovPause").hidden=true;if(S.mode!=="daily")store.set("score",S.startScore);newGame(S.level,S.mode)};
