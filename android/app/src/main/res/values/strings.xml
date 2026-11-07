@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">Raf Avcısı</string>
-    <string name="title_activity_main">Raf Avcısı</string>
+    <string name="app_name">Shelf Hunter</string>
+    <string name="title_activity_main">Shelf Hunter</string>
     <string name="package_name">com.listeal.rafavcisi</string>
     <string name="custom_url_scheme">com.listeal.rafavcisi</string>
 </resources>

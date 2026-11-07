@@ -17,7 +17,7 @@ Uygulamaya eklenenler:
 
 | | Değer |
 | --- | --- |
-| Uygulama adı (ana ekranda) | Raf Avcısı |
+| Uygulama adı (ana ekranda) | Türkçe telefonlarda "Raf Avcısı", diğer dillerde "Shelf Hunter" |
 | Android applicationId / iOS Bundle ID | `com.listeal.rafavcisi` |
 | Sürüm | 1.0 (derleme 1) |
 | URL şeması | `rafavcisi://` |

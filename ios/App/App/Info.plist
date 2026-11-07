@@ -5,9 +5,9 @@
   <key>CAPACITOR_DEBUG</key>
 	<string>$(CAPACITOR_DEBUG)</string>
 	<key>CFBundleDevelopmentRegion</key>
-	<string>tr</string>
+	<string>en</string>
 	<key>CFBundleDisplayName</key>
-        <string>Raf Avcısı</string>
+        <string>Shelf Hunter</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
