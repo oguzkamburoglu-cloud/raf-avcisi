@@ -8,7 +8,7 @@ Metinler Türkçe. Karakter sınırları parantez içinde, hepsi sınırın alt�
 | --- | --- |
 | Uygulama kimliği (Android `applicationId` / iOS Bundle ID) | `com.listeal.rafavcisi` |
 | Kategori | Oyunlar › Bulmaca (Apple: Games › Puzzle, ikincil: Games › Casual) |
-| Fiyat | Ücretsiz, uygulama içi satın alma yok, reklam yok |
+| Fiyat | Ücretsiz; isteğe bağlı ödüllü reklam ve uygulama içi satın alma (Yardım paketi, Premium) |
 | Destek / pazarlama sitesi | `https://ailiste.web.app/oyun/` |
 | Gizlilik politikası adresi | `https://ailiste.web.app/oyun/gizlilik.html` (dosya: `store/gizlilik.html`) |
 | İletişim e-postası | oguz.kamburoglu@gmail.com |
@@ -45,7 +45,9 @@ NASIL OYNANIR
 • Sepet, indirimli ürünler ve açılmayı bekleyen koliler
 • Geri al, ipucu ve karıştır yardımları, kombo puanları
 • Bölüm sonunda yıldızlı market fişi, yarıda kalan bölüme devam
-• İnternetsiz oynanır, reklam yok, hesap gerekmez
+• Zorunlu reklam yok: istersen kısa bir reklamla +30 saniye ya da ekstra yardım
+• Türkçe, İngilizce, Almanca, İspanyolca, Fransızca, Portekizce ve Rusça
+• İnternetsiz oynanır, hesap gerekmez
 
 PICKYLIST İLE DAHA EĞLENCELİ
 PickyList uygulamasından oyuna geçince her gün +30 saniye, her yardımdan +1 hak ve 2x puan kazanırsın. Üstelik gerçek alışveriş listendeki ürünler oyundaki ilk reyona gelir.
@@ -53,10 +55,10 @@ PickyList uygulamasından oyuna geçince her gün +30 saniye, her yardımdan +1 
 **Bu sürümde yenilikler:** İlk sürüm. İyi alışverişler!
 
 **Yaş sınırı anketi:** Tüm sorulara "Yok / None" → 4+.
-**App Privacy (Uygulama gizliliği):** "Veri toplamıyoruz / Data Not Collected".
+**App Privacy (Uygulama gizliliği):** aşağıdaki "Reklam ve satın alma cevapları" bölümüne bak.
 **Şifreleme (Export compliance):** Info.plist'te `ITSAppUsesNonExemptEncryption = NO` ayarlı, soru çıkmaz.
 **İnceleme notu (App Review Information › Notes):**
-Raf Avcısı is a fully offline puzzle game bundled in the app (no remote content, no login). It is the companion game of our shopping list app PickyList (same developer). PickyList can open the game with the URL scheme rafavcisi://oyun?from=pickylist&list=Domates,Kahve to give a daily bonus; the game works fully without it.
+Raf Avcısı is a puzzle game bundled in the app (no remote content, no login). Rewarded ads (Google AdMob) are optional and only shown when the player taps "Watch an ad"; in-app purchases: a consumable help pack and a non-consumable Premium, with a Restore Purchases button in the Shop screen. It is the companion game of our shopping list app PickyList (same developer). PickyList can open the game with the URL scheme rafavcisi://oyun?from=pickylist&list=Domates,Kahve to give a daily bonus; the game works fully without it.
 
 ## Google Play (Play Console)
 
@@ -68,15 +70,9 @@ Raf Avcısı is a fully offline puzzle game bundled in the app (no remote conten
 
 **Uygulama mı oyun mu:** Oyun · Kategori: Bulmaca · Etiketler: Bulmaca, Eşleştirme, Gündelik, Tek oyunculu, Çevrimdışı
 
-**Veri güvenliği formu:**
-- Uygulama kullanıcı verisi topluyor ya da paylaşıyor mu? → Hayır
-- (Form "veri toplanmıyor" olarak biter.)
+**Veri güvenliği, içerik derecelendirmesi, hedef kitle, reklam:** aşağıdaki "Reklam ve satın alma cevapları" bölümüne bak.
 
-**İçerik derecelendirmesi (IARC anketi):** Kategori "Oyun"; şiddet, korku, kumar, kullanıcı etkileşimi, konum paylaşımı, dijital satın alma sorularının hepsi Hayır → PEGI 3 / Herkes.
-
-**Hedef kitle:** 13 yaş ve üzeri (13-15, 16-17, 18+). Oyun veri toplamadığı için daha küçük yaşları da seçebilirsin, ama o zaman Google'ın "Aileler" politikası ve ek inceleme devreye girer.
-
-**Reklam içeriyor mu:** Hayır. **Uygulama erişimi:** Tüm işlevler kısıtlama olmadan kullanılabilir.
+**Uygulama erişimi:** Tüm işlevler kısıtlama olmadan kullanılabilir.
 
 ## Grafik ve ekran görüntüleri
 
@@ -85,9 +81,11 @@ Raf Avcısı is a fully offline puzzle game bundled in the app (no remote conten
 | `store/appstore-icon-1024.png` | App Store simgesi (Xcode zaten içeriyor, Connect'te ayrıca istenmez) |
 | `store/play-icon-512.png` | Play › Ana mağaza girişi › Uygulama simgesi |
 | `store/play-feature-graphic-1024x500.png` | Play › Öne çıkan grafik |
-| `store/screenshots/ios/1-…5-*.png` (1320×2868) | App Store › iPhone 6.9" ekran görüntüleri (diğer iPhone boyutları bundan otomatik üretilir) |
-| `store/screenshots/android/1-…5-*.png` (1080×1920) | Play › Telefon ekran görüntüleri |
-| `store/screenshots/*/raw-*.png` | Yazısız ham ekranlar (istersen bunları kullan) |
+| `store/screenshots/<dil>/ios/1-…5-*.png` (1320×2868) | App Store › iPhone 6.9" ekran görüntüleri (diğer iPhone boyutları bundan otomatik üretilir) |
+| `store/screenshots/<dil>/android/1-…5-*.png` (1080×1920) | Play › Telefon ekran görüntüleri |
+| `store/screenshots/<dil>/*/raw-*.png` | Yazısız ham ekranlar (istersen bunları kullan) |
+
+`<dil>`: tr, en, de, es, fr, pt, ru. Her mağaza dilinin ekran görüntülerini kendi klasöründen yükle; listede olmayan dillerde `en`. Yeniden üretmek için: `python3 -m http.server 8765` (proje kökünde) ve `NODE_PATH=… node design/shots.cjs [tr,en,…]`.
 
 Sıra ve başlıklar:
 1. Market raflarında üçlüleri yakala (açılış ekranı)
@@ -121,16 +119,17 @@ FEATURES
 • Daily list: the same puzzle for everyone, a new one every day
 • Daily missions, badges, streaks and an aisle map
 • Undo, hint and shuffle helpers, combo points and a starred receipt
-• Plays offline, no ads, no account
+• No forced ads: watch a short ad only if you want +30 seconds or an extra helper
+• In English, Turkish, German, Spanish, French, Portuguese and Russian
+• Plays offline, no account
 
 PLAY WITH PICKYLIST
 Open the game from PickyList and get a daily bonus: +30 seconds, an extra helper of each kind and 2x points. Your real shopping list shows up in the first aisle.
 
-Note: the game is currently in Turkish.
 
 ## Diğer dillerde mağaza adı (30 karakter sınırı)
 
-Play Console'da "Çevirileri yönet", App Store Connect'te dil menüsünden her dili ekleyip adı yaz. Açıklamalar için Play Console'un "Google çevirisi" seçeneği kullanılabilir; App Store'da çevirisi olmayan dillerde İngilizce sayfa gösterilir.
+Play Console'da "Çevirileri yönet", App Store Connect'te dil menüsünden her dili ekleyip adı yaz. Almanca, İspanyolca, Fransızca, Portekizce ve Rusça için tam metinler `store/MAGAZA_METINLERI_DILLER.md` içinde. Diğer dillerde yalnızca adı gir; açıklama olarak İngilizce gösterilir (Play'de istersen "Google çevirisi" kullanılabilir).
 
 | Dil | Mağaza adı | Ana ekran adı |
 | --- | --- | --- |
@@ -153,3 +152,38 @@ Play Console'da "Çevirileri yönet", App Store Connect'te dil menüsünden her 
 | 简体中文 | 货架猎人：超市益智游戏 | 货架猎人 |
 
 Ana ekran adları `scripts/app-names.py` içinde; değiştirip çalıştırınca Android ve iOS dosyaları güncellenir.
+
+
+## Reklam ve satın alma cevapları (ilk sürümden itibaren geçerli)
+
+**Ürünler (Play Console › Para kazanma › Uygulama içi ürünler · App Store Connect › Uygulama İçi Satın Almalar):**
+
+| Ürün kimliği | Tür | Ad | Açıklama | Önerilen fiyat |
+| --- | --- | --- | --- | --- |
+| `yardim_paketi_5` | Tüketilebilir (consumable) | Yardım paketi | 5 Geri al, 5 İpucu, 5 Karıştır | 0,99 $ (Türkiye ~29,99 ₺) |
+| `premium` | Tüketilemez (non-consumable) | Premium | Reklam izlemeden tüm ödüller ve 10'ar yardım | 2,99 $ (Türkiye ~99,99 ₺) |
+
+Kimlikler kodda bu haliyle yazılı, birebir aynı girilmeli.
+
+**Play › Reklam içeriyor mu:** Evet.
+
+**Play › Veri güvenliği formu (Google AdMob'un belgelerine göre):**
+- Veri topluyor ya da paylaşıyor mu? → Evet
+- Aktarım sırasında şifreleniyor mu? → Evet
+- Kullanıcı veri silinmesini isteyebilir mi? → Hayır (geliştirici veri tutmuyor; Google'ın kendi araçları geçerli)
+- Toplanan ve paylaşılan veri türleri (hepsi için amaç: Reklam veya pazarlama, Analiz, Sahtekarlığı önleme / güvenlik; işleme: geçici değil, isteğe bağlı değil):
+  - Konum › Yaklaşık konum
+  - Uygulama etkinliği › Uygulama etkileşimleri
+  - Uygulama bilgileri ve performans › Kilitlenme günlükleri, Tanılama
+  - Cihaz veya diğer kimlikler › Cihaz veya diğer kimlikler
+- Satın alma geçmişini işaretlemene gerek yok (ödemeyi Google Play işliyor, geliştiriciye gelmiyor).
+
+**Play › İçerik derecelendirmesi:** "Dijital ürün satın alma imkânı var mı?" → Evet. Diğerleri aynı. (Sonuç PEGI 3 kalır, mağazada "Uygulama içi satın alma" etiketi çıkar.)
+
+**Play › Hedef kitle:** 13 yaş ve üzeri olarak kalsın. 13 altını seçersen AdMob'un çocuk ayarları ve Aileler politikası gerekir.
+
+**App Store › Uygulama Gizliliği:** Veri toplanıyor → Evet. "Seni izlemek için kullanılan veri": yok (oyun ATT izni istemiyor). "Sana bağlı olmayan veri": Tanımlayıcılar (Cihaz kimliği), Kullanım verileri (Reklam verileri, Ürün etkileşimi), Tanılama, Konum (Yaklaşık). Amaç: Üçüncü taraf reklamcılık, Analiz.
+
+**App Store › Yaş sınırı:** aynı (4+); "Uygulama içi satın alma" Connect'te ürünler eklenince otomatik görünür.
+
+**Sürüm notu:** İlk sürüm için yukarıdaki "İlk sürüm. İyi alışverişler!" yeterli.
