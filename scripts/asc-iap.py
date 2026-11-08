@@ -42,7 +42,7 @@ def token():
     return jwt.encode({"iss": os.environ["ASC_ISSUER_ID"], "iat": now, "exp": now + 1100, "aud": "appstoreconnect-v1"},
                       KEY, algorithm="ES256", headers={"kid": os.environ["ASC_KEY_ID"], "typ": "JWT"})
 
-def api(method, path, body=None):
+def api(method, path, body=None, ok404=False):
     req = urllib.request.Request("https://api.appstoreconnect.apple.com" + path, method=method,
                                  data=json.dumps(body).encode() if body else None,
                                  headers={"Authorization": "Bearer " + token(), "Content-Type": "application/json"})
@@ -52,6 +52,7 @@ def api(method, path, body=None):
             return json.loads(t) if t else {}
     except urllib.error.HTTPError as e:
         msg = e.read().decode()
+        if ok404 and e.code == 404: return {}
         raise SystemExit(f"::error::{method} {path} → {e.code}\n{msg}")
 
 def get_all(path):
@@ -87,7 +88,7 @@ for p in PRODUCTS:
             "relationships": {"inAppPurchaseV2": {"data": {"type": "inAppPurchases", "id": iap_id}}}}})
         print("  dil", loc)
 
-    sched = api("GET", f"/v2/inAppPurchases/{iap_id}/iapPriceSchedule").get("data")
+    sched = api("GET", f"/v2/inAppPurchases/{iap_id}/iapPriceSchedule", ok404=True).get("data")
     has_price = sched and get_all(f"/v1/inAppPurchasePriceSchedules/{sched['id']}/manualPrices?limit=1")
     if not has_price:
         pts = get_all(f"/v2/inAppPurchases/{iap_id}/pricePoints?filter[territory]=USA&limit=200")
@@ -100,10 +101,7 @@ for p in PRODUCTS:
                           "relationships": {"inAppPurchasePricePoint": {"data": {"type": "inAppPurchasePricePoints", "id": pp["id"]}}}}]})
         print("  fiyat", p["usd"], "$ (diğer ülkeler Apple'ın eşdeğer fiyatı)")
 
-    try:
-        avail = api("GET", f"/v2/inAppPurchases/{iap_id}/inAppPurchaseAvailability").get("data")
-    except SystemExit:
-        avail = None
+    avail = api("GET", f"/v2/inAppPurchases/{iap_id}/inAppPurchaseAvailability", ok404=True).get("data")
     if not avail:
         if territories is None:
             territories = [{"type": "territories", "id": t["id"]} for t in get_all("/v1/territories?limit=200")]
