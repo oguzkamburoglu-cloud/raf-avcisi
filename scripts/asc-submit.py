@@ -19,11 +19,13 @@ def api(method, path, body=None, soft=False):
         try: det = "; ".join(x.get("detail") or x.get("title", "") for x in json.loads(msg)["errors"])
         except Exception: det = msg[:500]
         if soft: print(f"  ! {method} {path.split('?')[0]} {e.code}: {det}"); return None
-        raise SystemExit(f"::error::{method} {path} → {e.code}: {det}\n{msg[:1500]}")
+        raise SystemExit(f"::error::{method} {path} → {e.code}: {det}\n{msg[:4000]}")
 
 app_id = api("GET", "/v1/apps?filter[bundleId]=com.listeal.rafavcisi")["data"][0]["id"]
 ver = next(v for v in api("GET", f"/v1/apps/{app_id}/appStoreVersions?filter[platform]=IOS")["data"]
            if v["attributes"]["appStoreState"] in ("PREPARE_FOR_SUBMISSION", "DEVELOPER_REJECTED", "REJECTED", "METADATA_REJECTED"))
+# "Content rights": the game shows ads (third-party content) and open-licensed fonts/emoji, which we may use
+api("PATCH", f"/v1/apps/{app_id}", {"data": {"type": "apps", "id": app_id, "attributes": {"contentRightsDeclaration": "USES_THIRD_PARTY_CONTENT"}}}, soft=True)
 b = api("GET", f"/v1/appStoreVersions/{ver['id']}/build").get("data")
 print("sürüm", ver["attributes"]["versionString"], "derleme", b and b["attributes"]["version"])
 
