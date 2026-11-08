@@ -9,8 +9,8 @@ Metinler Türkçe. Karakter sınırları parantez içinde, hepsi sınırın alt�
 | Uygulama kimliği (Android `applicationId` / iOS Bundle ID) | `com.listeal.rafavcisi` |
 | Kategori | Oyunlar › Bulmaca (Apple: Games › Puzzle, ikincil: Games › Casual) |
 | Fiyat | Ücretsiz; isteğe bağlı ödüllü reklam ve uygulama içi satın alma (Yardım paketi, Premium) |
-| Destek / pazarlama sitesi | `https://ailiste.web.app/oyun/` |
-| Gizlilik politikası adresi | `https://ailiste.web.app/oyun/gizlilik.html` (dosya: `store/gizlilik.html`) |
+| Destek / pazarlama sitesi | `https://raf-avcisi.web.app/` |
+| Gizlilik politikası adresi | `https://raf-avcisi.web.app/gizlilik.html` (dosya: `store/gizlilik.html`) |
 | İletişim e-postası | oguz.kamburoglu@gmail.com |
 | Telif | © 2026 MoguzK |
 

@@ -8,8 +8,8 @@ import json, os, re, sys, time, hashlib, pathlib, urllib.request, urllib.error
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 STORE = ROOT / "store"
-SUPPORT = "https://ailiste.web.app/oyun/"
-PRIVACY = "https://ailiste.web.app/oyun/gizlilik.html"
+SUPPORT = "https://raf-avcisi.web.app/"
+PRIVACY = "https://raf-avcisi.web.app/gizlilik.html"
 COPYRIGHT = "2026 MoguzK"
 LOCALES = {"tr": "tr", "en-US": "en", "de-DE": "de", "es-ES": "es", "fr-FR": "fr", "pt-BR": "pt", "ru": "ru"}
 SHOTS = ["1-start", "2-play", "3-level", "4-win", "5-bonus"]

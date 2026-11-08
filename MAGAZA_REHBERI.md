@@ -114,7 +114,7 @@ Xcode açılınca:
 - **İncelemeye Gönder**.
 
 ## 3. Gizlilik politikasını yayınla (iki mağaza da adres ister)
-`store/gizlilik.html` dosyasını PickyList'in Firebase Hosting `public/oyun/` klasörüne koy ve `firebase deploy --only hosting` çalıştır. Adres: `https://ailiste.web.app/oyun/gizlilik.html`. Oyunun web sürümü (`index.html`) de aynı klasöre gidebilir (bkz. PICKYLIST_BAGLANTI.md).
+`store/gizlilik.html` dosyasını PickyList'in Firebase Hosting `public/oyun/` klasörüne koy ve `firebase deploy --only hosting` çalıştır. Adres: `https://raf-avcisi.web.app/gizlilik.html`. Oyunun web sürümü (`index.html`) de aynı klasöre gidebilir (bkz. PICKYLIST_BAGLANTI.md).
 
 ## 4. Yayından sonra
 
