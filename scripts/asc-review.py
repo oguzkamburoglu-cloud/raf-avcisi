@@ -45,6 +45,7 @@ attrs = {"demoAccountRequired": False, "notes": NOTES, "contactFirstName": "Oguz
          "contactEmail": "oguz.kamburoglu@gmail.com"}
 if os.environ.get("REVIEW_PHONE"): attrs["contactPhone"] = os.environ["REVIEW_PHONE"]
 rd = api("GET", f"/v1/appStoreVersions/{ver['id']}/appStoreReviewDetail", soft=True)
+print("mevcut inceleme bilgisi:", json.dumps({k: v for k, v in ((rd or {}).get("data") or {}).get("attributes", {}).items() if k in ("contactFirstName","demoAccountRequired","notes")}, ensure_ascii=False)[:200], "telefon var" if ((rd or {}).get("data") or {}).get("attributes", {}).get("contactPhone") else "telefon yok")
 if rd and rd.get("data"):
     api("PATCH", f"/v1/appStoreReviewDetails/{rd['data']['id']}", {"data": {"type": "appStoreReviewDetails", "id": rd["data"]["id"], "attributes": attrs}}, soft=True)
 else:
