@@ -57,3 +57,16 @@ for l in api("GET", f"/v1/appStoreVersions/{ver['id']}/appStoreVersionLocalizati
     sets = api("GET", f"/v1/appStoreVersionLocalizations/{l['id']}/appScreenshotSets?include=appScreenshots")
     desc = ", ".join(f"{s['attributes']['screenshotDisplayType']}={len(s['relationships']['appScreenshots']['data'])}" for s in sets["data"])
     print("ekran görüntüleri", l["attributes"]["locale"], desc or "YOK")
+
+# in-app purchase readiness
+for i in api("GET", f"/v1/apps/{app_id}/inAppPurchasesV2?limit=50")["data"]:
+    a = i["attributes"]; iid = i["id"]
+    print("ürün", a["productId"], a.get("state"), "| familySharable", a.get("familySharable"), "| reviewNote", bool(a.get("reviewNote")))
+    sh = api("GET", f"/v2/inAppPurchases/{iid}/appStoreReviewScreenshot", soft=True)
+    if sh and sh.get("data"):
+        s = sh["data"]["attributes"]; print("   görsel", s.get("fileName"), s.get("assetDeliveryState"), s.get("imageAsset") and (s["imageAsset"].get("width"), s["imageAsset"].get("height")))
+    else: print("   görsel YOK")
+    ps = api("GET", f"/v2/inAppPurchases/{iid}/iapPriceSchedule", soft=True); print("   fiyat planı", bool(ps and ps.get("data")))
+    av = api("GET", f"/v2/inAppPurchases/{iid}/inAppPurchaseAvailability", soft=True); print("   satış ülkeleri", bool(av and av.get("data")))
+    locs = api("GET", f"/v2/inAppPurchases/{iid}/inAppPurchaseLocalizations")["data"]
+    print("   diller", [(l["attributes"]["locale"], l["attributes"].get("state")) for l in locs])
