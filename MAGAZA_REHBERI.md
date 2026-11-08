@@ -211,7 +211,7 @@ Oyunda şunlar var (yalnızca mağaza sürümünde, web sürümünde yok):
    - Android uygulama kimliği `ca-app-pub-…~…` ve ödüllü reklam birimi `ca-app-pub-…/…`
    - iOS uygulama kimliği ve ödüllü reklam birimi
 5. **Gizlilik ve mesajlaşma › Avrupa düzenlemeleri** → yeni mesaj oluştur, iki uygulamayı seç, yayınla. (Bu olmadan Avrupa'da izin formu çıkmaz ve reklam gösterilemez.)
-6. **app-ads.txt:** AdMob'un verdiği satırı `https://ailiste.web.app/app-ads.txt` adresine koy (gizlilik sayfasıyla aynı Firebase Hosting, `public/app-ads.txt`). Play ve App Store'daki "web sitesi" alanına `https://ailiste.web.app` yaz.
+6. **app-ads.txt:** `https://raf-avcisi.web.app/app-ads.txt` adresinde yayında (Firebase AIliste projesindeki ayrı `raf-avcisi` sitesi; kaynak `store/web/`). Play ve App Store web sitesi alanı `https://raf-avcisi.web.app` olmalı.
 
 ### 7b. Play Console satın almaları
 1. **Kurulum › Ödeme profili**: banka/vergi bilgileri (satış yapabilmek için şart).
