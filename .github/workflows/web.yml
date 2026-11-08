@@ -10,7 +10,7 @@ on:
         description: "Firebase Hosting site kimliği"
         default: raf-avcisi
   push:
-    branches: [main]
+    branches: [main, web-yayin]   # web-yayin: run before this file is on main
     paths: ["store/web/**"]
 
 jobs:
