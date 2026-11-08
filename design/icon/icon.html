@@ -1,0 +1,37 @@
+<!doctype html><html><head><meta charset="utf-8">
+<style>
+@font-face{font-family:R;font-weight:900;src:url(rubik-latin-900-normal.woff2);unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F}
+@font-face{font-family:R;font-weight:900;src:url(rubik-latin-ext-900-normal.woff2);unicode-range:U+0100-02AF,U+1E00-1EFF}
+@font-face{font-family:R;font-weight:900;src:url(rubik-cyrillic-900-normal.woff2);unicode-range:U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}
+html,body{margin:0}
+#c{width:1024px;height:1024px;position:relative;overflow:hidden}
+#base{position:absolute;inset:0;width:1024px;height:1024px}
+.plate{position:absolute;left:105px;top:40px;width:815px;height:445px;border-radius:340px 340px 80px 80px/300px 300px 80px 80px;
+ background:linear-gradient(#2c7a2c,#1d5c1f);box-shadow:0 0 0 14px #7ccf3e,0 0 0 26px #1b4d1b,0 22px 30px rgba(0,0,0,.35)}
+.w{position:absolute;left:105px;width:815px;text-align:center;font-family:R;font-weight:900;line-height:1;white-space:nowrap;letter-spacing:-2px}
+.w span{display:inline-block;transform-origin:center}
+.t1{top:92px;font-size:225px;color:#fff;-webkit-text-stroke:0;text-shadow:0 8px 0 #c9d3d6,0 14px 0 #164416,0 18px 14px rgba(0,0,0,.35)}
+.t2{top:285px;font-size:200px;color:#ffc61a;background:none;text-shadow:0 8px 0 #e8890c,0 14px 0 #164416,0 18px 14px rgba(0,0,0,.35)}
+.spark{position:absolute;background:#ffcf2a;border-radius:20px;box-shadow:inset -6px -6px 0 #f39a12}
+#tick{position:absolute;display:none;border-radius:30px;background:#2f9e3a;box-shadow:0 0 0 9px #8bd84a,0 10px 14px rgba(0,0,0,.35)}
+</style></head><body>
+<div id="c">
+ <img id="base">
+ <div class="plate"></div>
+ <div class="spark" style="left:150px;top:110px;width:34px;height:100px;transform:rotate(-40deg)"></div>
+ <div class="spark" style="left:205px;top:72px;width:34px;height:110px;transform:rotate(-12deg)"></div>
+ <div class="w t1"><span id="a"></span></div>
+ <div class="w t2"><span id="b"></span></div>
+ <svg id="tick" viewBox="0 0 100 100"><path d="M26 52l16 16 32-36" stroke="#fff" stroke-width="13" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+</div>
+<script>
+const O=window.OPTS;
+document.getElementById('base').src=O.base;
+const a=document.getElementById('a'),b=document.getElementById('b');a.textContent=O.l1;b.textContent=O.l2;
+Promise.all([document.fonts.load('900 200px R',a.textContent),document.fonts.load('900 200px R',b.textContent)]).then(()=>document.fonts.ready).then(()=>{
+ for(const [el,max,fs] of [[a,600,225],[b,720,200]]){const w=el.offsetWidth;if(w>max)el.parentNode.style.fontSize=(fs*max/w)+'px';}
+ const t1=a.parentNode,t2=b.parentNode;t1.style.top=(92+(225-parseFloat(getComputedStyle(t1).fontSize))*0.6)+'px';t2.style.top=(285+(200-parseFloat(getComputedStyle(t2).fontSize))*0.5)+'px';
+ if(O.tick){const t=document.getElementById('tick');t.style.display='block';Object.assign(t.style,O.tick)}
+ document.title='ready';
+});
+</script></body></html>
