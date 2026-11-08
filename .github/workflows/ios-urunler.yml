@@ -2,7 +2,10 @@ name: iOS satın alma ürünlerini oluştur
 
 # Creates yardim_paketi_5 and premium in App Store Connect with 7 languages, price and
 # availability (scripts/asc-iap.py). Running it again only fills in what is missing.
-on: workflow_dispatch
+on:
+  workflow_dispatch:
+  push:
+    branches: [ios-urunler]   # pushing this branch runs it before the file is on main
 
 jobs:
   products:
