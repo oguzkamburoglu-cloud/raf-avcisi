@@ -68,8 +68,8 @@
      AD_UNITS are Google's public TEST ids until the real AdMob ids are filled in
      (see MAGAZA_REHBERI.md, "Reklam ve satın alma"). Test ads earn nothing. */
   var AD_UNITS = {
-    android: "ca-app-pub-3940256099942544/5224354917",
-    ios: "ca-app-pub-3940256099942544/1712485313"
+    android: "ca-app-pub-2461120295843731/2415832110",
+    ios: "ca-app-pub-2461120295843731/4129415219"
   };
   var ADS_TEST = AD_UNITS[platform].indexOf("3940256099942544") >= 0;
   // Product ids: create the same ids in Play Console and App Store Connect
