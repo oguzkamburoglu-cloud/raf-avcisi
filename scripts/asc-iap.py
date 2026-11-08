@@ -3,7 +3,7 @@
 products are only completed, never duplicated). Needs env ASC_KEY_ID, ASC_ISSUER_ID and
 the key file path as argv[1]. Review screenshot is the one thing left to add by hand."""
 import json, sys, time, os, urllib.request, urllib.error
-import jwt
+import jwt, hashlib, pathlib
 
 BUNDLE = "com.listeal.rafavcisi"
 PRODUCTS = [
@@ -110,4 +110,19 @@ for p in PRODUCTS:
             "relationships": {"inAppPurchase": {"data": {"type": "inAppPurchases", "id": iap_id}},
                               "availableTerritories": {"data": territories}}}})
         print("  tüm ülkelerde satışta:", len(territories))
-print("bitti. Kalan: her ürüne inceleme ekran görüntüsü (Mağaza ekranı) ekle.")
+
+    shot = api("GET", f"/v2/inAppPurchases/{iap_id}/appStoreReviewScreenshot", ok404=True).get("data")
+    if not shot:
+        img = (pathlib.Path(__file__).resolve().parent.parent / "store/iap-inceleme.png").read_bytes()
+        r = api("POST", "/v1/inAppPurchaseAppStoreReviewScreenshots", {"data": {"type": "inAppPurchaseAppStoreReviewScreenshots",
+            "attributes": {"fileName": "iap-inceleme.png", "fileSize": len(img)},
+            "relationships": {"inAppPurchaseV2": {"data": {"type": "inAppPurchases", "id": iap_id}}}}})["data"]
+        for op in r["attributes"]["uploadOperations"]:
+            part = img[op["offset"]:op["offset"] + op["length"]]
+            req = urllib.request.Request(op["url"], method=op["method"], data=part,
+                                         headers={h["name"]: h["value"] for h in op["requestHeaders"]})
+            urllib.request.urlopen(req).read()
+        api("PATCH", f"/v1/inAppPurchaseAppStoreReviewScreenshots/{r['id']}", {"data": {"type": "inAppPurchaseAppStoreReviewScreenshots",
+            "id": r["id"], "attributes": {"uploaded": True, "sourceFileChecksum": hashlib.md5(img).hexdigest()}}})
+        print("  inceleme ekran görüntüsü yüklendi")
+print("bitti.")
