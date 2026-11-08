@@ -34,7 +34,7 @@ const a=document.getElementById('a'),b=document.getElementById('b');a.textConten
 Promise.all([document.fonts.load('700 200px R',a.textContent),document.fonts.load('700 200px R',b.textContent)]).then(()=>document.fonts.ready).then(()=>{
  for(const [el,max,fs] of [[a,470,185],[b,660,165]]){const w=el.offsetWidth;if(w>max)el.parentNode.style.fontSize=(fs*max/w)+'px';}
  const t1=a.parentNode,t2=b.parentNode;t1.style.top=(110+(185-parseFloat(getComputedStyle(t1).fontSize))*0.6)+'px';t2.style.top=(295+(165-parseFloat(getComputedStyle(t2).fontSize))*0.5)+'px';
- if(O.android){const g=document.getElementById('g');g.style.transform='scale(.78)';g.style.transformOrigin='512px 500px';document.querySelectorAll('.spark').forEach(e=>e.style.display='none')}
+ if(O.android){const g=document.getElementById('g');g.style.transform='scale(.82)';g.style.transformOrigin='512px 330px'}
  if(O.tick){const t=document.getElementById('tick');t.style.display='block';Object.assign(t.style,O.tick)}
  document.title='ready';
 });
