@@ -1,9 +1,13 @@
-name: iOS satın alma ürünlerini oluştur
+name: App Store Connect (ürünler ve mağaza sayfası)
 
 # Creates yardim_paketi_5 and premium in App Store Connect with 7 languages, price and
 # availability (scripts/asc-iap.py). Running it again only fills in what is missing.
 on:
   workflow_dispatch:
+    inputs:
+      what:
+        description: "urunler = satın almalar, sayfa = mağaza sayfası, hepsi"
+        default: hepsi
   push:
     branches: [ios-urunler]   # pushing this branch runs it before the file is on main
 
@@ -31,4 +35,6 @@ jobs:
           lines = [body[i:i+64] for i in range(0, len(body), 64)]
           open(sys.argv[1], "w").write("-----BEGIN PRIVATE KEY-----\n" + "\n".join(lines) + "\n-----END PRIVATE KEY-----\n")
           PY
-          python3 scripts/asc-iap.py "$RUNNER_TEMP/key.p8"
+          W="${{ github.event.inputs.what || 'hepsi' }}"
+          if [ "$W" != sayfa ]; then python3 scripts/asc-iap.py "$RUNNER_TEMP/key.p8"; fi
+          if [ "$W" != urunler ]; then python3 scripts/asc-listing.py "$RUNNER_TEMP/key.p8"; fi
