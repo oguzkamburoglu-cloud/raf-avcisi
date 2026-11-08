@@ -27,6 +27,16 @@ ver = next(v for v in api("GET", f"/v1/apps/{app_id}/appStoreVersions?filter[pla
 b = api("GET", f"/v1/appStoreVersions/{ver['id']}/build").get("data")
 print("sürüm", ver["attributes"]["versionString"], "derleme", b and b["attributes"]["version"])
 
+subs = api("GET", f"/v1/reviewSubmissions?filter[app]={app_id}&filter[platform]=IOS&filter[state]=READY_FOR_REVIEW").get("data", [])
+sub = subs[0] if subs else api("POST", "/v1/reviewSubmissions", {"data": {"type": "reviewSubmissions",
+        "attributes": {"platform": "IOS"}, "relationships": {"app": {"data": {"type": "apps", "id": app_id}}}}})["data"]
+items = api("GET", f"/v1/reviewSubmissions/{sub['id']}/items?include=appStoreVersion").get("data", [])
+print("paketteki öğeler:", [(it["id"], it["attributes"].get("state"), bool((it.get("relationships", {}).get("appStoreVersion") or {}).get("data"))) for it in items])
+if not any((it.get("relationships", {}).get("appStoreVersion") or {}).get("data") for it in items):
+    api("POST", "/v1/reviewSubmissionItems", {"data": {"type": "reviewSubmissionItems",
+        "relationships": {"reviewSubmission": {"data": {"type": "reviewSubmissions", "id": sub["id"]}},
+                          "appStoreVersion": {"data": {"type": "appStoreVersions", "id": ver["id"]}}}}})
+print("inceleme paketi", sub["id"], "hazır")
 for i in api("GET", f"/v1/apps/{app_id}/inAppPurchasesV2?limit=50")["data"]:
     if i["attributes"]["state"] == "READY_TO_SUBMIT":
         r = api("POST", "/v1/inAppPurchaseSubmissions", {"data": {"type": "inAppPurchaseSubmissions",
@@ -35,14 +45,5 @@ for i in api("GET", f"/v1/apps/{app_id}/inAppPurchasesV2?limit=50")["data"]:
     else:
         print("satın alma", i["attributes"]["productId"], i["attributes"]["state"])
 
-subs = api("GET", f"/v1/reviewSubmissions?filter[app]={app_id}&filter[platform]=IOS&filter[state]=READY_FOR_REVIEW").get("data", [])
-sub = subs[0] if subs else api("POST", "/v1/reviewSubmissions", {"data": {"type": "reviewSubmissions",
-        "attributes": {"platform": "IOS"}, "relationships": {"app": {"data": {"type": "apps", "id": app_id}}}}})["data"]
-items = api("GET", f"/v1/reviewSubmissions/{sub['id']}/items").get("data", [])
-if not items:
-    api("POST", "/v1/reviewSubmissionItems", {"data": {"type": "reviewSubmissionItems",
-        "relationships": {"reviewSubmission": {"data": {"type": "reviewSubmissions", "id": sub["id"]}},
-                          "appStoreVersion": {"data": {"type": "appStoreVersions", "id": ver["id"]}}}}})
-print("inceleme paketi", sub["id"], "hazır")
 r = api("PATCH", f"/v1/reviewSubmissions/{sub['id']}", {"data": {"type": "reviewSubmissions", "id": sub["id"], "attributes": {"submitted": True}}})
 print("GÖNDERİLDİ:", r["data"]["attributes"].get("state"))
