@@ -24,11 +24,8 @@ function inRange(range) {
 
 const pick = [
   // [package, css file, keep(block) ]
-  ["roboto", "latin-400.css"], ["roboto", "latin-ext-400.css"],
-  ["roboto", "latin-500.css"], ["roboto", "latin-ext-500.css"],
-  ["roboto", "latin-700.css"], ["roboto", "latin-ext-700.css"],
-  // Cyrillic for the Russian translation
-  ["roboto", "cyrillic-400.css"], ["roboto", "cyrillic-500.css"], ["roboto", "cyrillic-700.css"],
+  // UI and titles: Nunito (rounded, playful; variable weight 200-1000; Latin, Turkish and Cyrillic)
+  ["../@fontsource-variable/nunito", "wght.css"],
   // variable Fraunces with the optical-size axis, same as the web version (opsz 9..144)
   ["../@fontsource-variable/fraunces", "opsz.css"]
   // No emoji font: the bundled Noto Color Emoji (OpenType-SVG) drew nothing in the iPhone app (build 4),
@@ -50,7 +47,8 @@ for (const [pkg, file, filter] of pick) {
     css += block
       .replace(/src:[^;]+;/, `src: url(./${woff2}) format('woff2');`)
       .replace(/font-display:\s*swap/, "font-display: block")
-      .replace("'Fraunces Variable'", "'Fraunces'") + "\n";
+      .replace("'Fraunces Variable'", "'Fraunces'")
+      .replace("'Nunito Variable'", "'Nunito'") + "\n";
   }
 }
 fs.writeFileSync(path.join(fontsOut, "fonts.css"), css);
