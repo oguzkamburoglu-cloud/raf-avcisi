@@ -29,6 +29,11 @@
             </intent-filter>
         </activity>
 
+        <!-- AdMob app id (scripts/set-admob-ids.py) -->
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-2461120295843731~7823062303" />
+
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.fileprovider"

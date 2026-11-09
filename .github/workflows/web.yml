@@ -1,0 +1,36 @@
+name: Web sayfası (Firebase Hosting)
+
+# Publishes store/web (support page, privacy policy, app-ads.txt) to a separate Firebase
+# Hosting site in the PickyList Firebase project, so the PickyList site itself is untouched.
+# Needs secret FIREBASE_SERVICE_ACCOUNT (the service account JSON, pasted whole).
+on:
+  workflow_dispatch:
+    inputs:
+      site:
+        description: "Firebase Hosting site kimliği"
+        default: raf-avcisi
+  push:
+    branches: [main, web-yayin]   # web-yayin: run before this file is on main
+    paths: ["store/web/**"]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+      - name: Yayınla
+        env:
+          SA: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          SITE: ${{ github.event.inputs.site || 'raf-avcisi' }}
+        run: |
+          if [ -z "$SA" ]; then echo "::error::FIREBASE_SERVICE_ACCOUNT secret yok"; exit 1; fi
+          printf '%s' "$SA" > "$RUNNER_TEMP/sa.json"
+          export GOOGLE_APPLICATION_CREDENTIALS="$RUNNER_TEMP/sa.json"
+          PROJECT=$(python3 -c "import json,sys;print(json.load(open(sys.argv[1]))['project_id'])" "$RUNNER_TEMP/sa.json")
+          cd store/web
+          printf '{"hosting":{"site":"%s","public":".","ignore":["firebase.json"]}}' "$SITE" > firebase.json
+          npx -y firebase-tools@14 deploy --only hosting --project "$PROJECT" --non-interactive
+          echo "Yayında: https://$SITE.web.app/"

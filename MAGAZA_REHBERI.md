@@ -82,7 +82,7 @@ Alternatif: `npm run android` ile Android Studio'yu aç → Build › Generate S
 1. **Uygulama oluştur**: ad "Raf Avcısı: Market Bulmacası", dil Türkçe, **Oyun**, **Ücretsiz**.
 2. **Kurulum › Uygulama içeriği** bölümündeki her kartı doldur. Cevaplar `store/MAGAZA_METINLERI.md` içinde:
    gizlilik politikası adresi, uygulama erişimi, reklamlar (yok), içerik derecelendirmesi, hedef kitle, veri güvenliği, devlet uygulaması (hayır), finansal özellikler (yok), sağlık (yok).
-3. **Mağaza varlığı › Ana mağaza girişi**: kısa/tam açıklama, simge (`store/play-icon-512.png`), öne çıkan grafik (`store/play-feature-graphic-1024x500.png`), telefon ekran görüntüleri (`store/screenshots/android/1-…5-`).
+3. **Mağaza varlığı › Ana mağaza girişi**: kısa/tam açıklama, simge (`store/play-icon-512.png`), öne çıkan grafik (`store/play-feature-graphic-1024x500.png`), telefon ekran görüntüleri (`store/screenshots/<dil>/android/1-…5-`; her dil için kendi klasörü: tr, en, de, es, fr, pt, ru).
 4. **Test › Kapalı test** (ya da doğrudan **Üretim**) → Yeni sürüm → `app-release.aab` yükle → sürüm notu: "İlk sürüm." → İncelemeye gönder.
 5. İlk incelemede **Play App Signing**'i kabul et.
 
@@ -110,11 +110,11 @@ Xcode açılınca:
 `store/MAGAZA_METINLERI.md`'deki metinleri gir:
 - Uygulama Bilgileri: alt başlık, kategori (Oyunlar › Bulmaca), yaş sınırı anketi (hepsi "Yok" → 4+), gizlilik politikası adresi.
 - Uygulama Gizliliği: "Veri toplamıyoruz".
-- Sürüm sayfası: tanıtım metni, açıklama, anahtar kelimeler, destek adresi, ekran görüntüleri (`store/screenshots/ios/1-…5-`, 6.9" alanına), derlemeyi seç, inceleme notunu yapıştır.
+- Sürüm sayfası: tanıtım metni, açıklama, anahtar kelimeler, destek adresi, ekran görüntüleri (`store/screenshots/<dil>/ios/1-…5-`, 6.9" alanına, her dilde kendi klasörü), derlemeyi seç, inceleme notunu yapıştır.
 - **İncelemeye Gönder**.
 
 ## 3. Gizlilik politikasını yayınla (iki mağaza da adres ister)
-`store/gizlilik.html` dosyasını PickyList'in Firebase Hosting `public/oyun/` klasörüne koy ve `firebase deploy --only hosting` çalıştır. Adres: `https://ailiste.web.app/oyun/gizlilik.html`. Oyunun web sürümü (`index.html`) de aynı klasöre gidebilir (bkz. PICKYLIST_BAGLANTI.md).
+`store/gizlilik.html` dosyasını PickyList'in Firebase Hosting `public/oyun/` klasörüne koy ve `firebase deploy --only hosting` çalıştır. Adres: `https://raf-avcisi.web.app/gizlilik.html`. Oyunun web sürümü (`index.html`) de aynı klasöre gidebilir (bkz. PICKYLIST_BAGLANTI.md).
 
 ## 4. Yayından sonra
 
@@ -191,3 +191,38 @@ Google ilk `.aab` dosyasını Play Console'a **elle** yüklemeni ister. Sonraki 
 
 ### Akışı çalıştırmak
 Actions › akışı seç › **Run workflow** › sürüm adını yaz (ör. `1.0`) › Run. Android'de bitince sayfanın altından `.aab` dosyasını indirip Play Console'a yükle. iOS'ta dosya doğrudan App Store Connect'e gider.
+
+
+## 7. Reklam ve satın alma (ödüllü reklam, Yardım paketi, Premium)
+
+Oyunda şunlar var (yalnızca mağaza sürümünde, web sürümünde yok):
+- Bir yardım (Geri al / İpucu / Karıştır) bitince Mağaza açılır: **Reklam izle: +1** ya da Yardım paketi / Premium.
+- Süre bitince, her reyonda bir kez: **Reklam izle: +30 saniye**.
+- Premium alan reklam izlemeden bu ödülleri alır, bir kez 10'ar yardım kazanır.
+- Avrupa'da ilk açılışta Google'ın izin formu çıkar; Mağaza ekranında "Gizlilik ayarları" ve "Satın alımları geri yükle" var.
+
+Şu an kodda **Google'ın test reklam kimlikleri** var: reklamlar çalışır ama para kazandırmaz. Gerçek kimlikleri bana verince değiştiririm.
+
+### 7a. AdMob (bir kez)
+1. https://admob.google.com → PickyList'in Google hesabıyla giriş → hesap ve ödeme bilgilerini doldur.
+2. **Uygulamalar › Uygulama ekle** → Android → "Uygulama mağazada yayında mı?" sorusuna, Play'de yayına girdiyse Evet deyip Raf Avcısı'nı seç, girmediyse Hayır (sonra bağlarsın). Aynısını iOS için de yap.
+3. Her uygulamada **Reklam birimi ekle › Ödüllü** (Rewarded) → ad: "Yardim odulu". Ödül ayarı önemli değil (oyun kendisi veriyor).
+4. Bana şu 4 değeri gönder (gizli değiller):
+   - Android uygulama kimliği `ca-app-pub-…~…` ve ödüllü reklam birimi `ca-app-pub-…/…`
+   - iOS uygulama kimliği ve ödüllü reklam birimi
+5. **Gizlilik ve mesajlaşma › Avrupa düzenlemeleri** → yeni mesaj oluştur, iki uygulamayı seç, yayınla. (Bu olmadan Avrupa'da izin formu çıkmaz ve reklam gösterilemez.)
+6. **app-ads.txt:** `https://raf-avcisi.web.app/app-ads.txt` adresinde yayında (Firebase AIliste projesindeki ayrı `raf-avcisi` sitesi; kaynak `store/web/`). Play ve App Store web sitesi alanı `https://raf-avcisi.web.app` olmalı.
+
+### 7b. Play Console satın almaları
+1. **Kurulum › Ödeme profili**: banka/vergi bilgileri (satış yapabilmek için şart).
+2. Reklamlı sürümün AAB'sini önce **Kapalı test**e yükle (ürün oluşturma, faturalandırma izni olan bir AAB yüklenince açılır).
+3. **Para kazanma › Ürünler › Uygulama içi ürünler** → `yardim_paketi_5` ve `premium` oluştur, fiyatları gir, **Etkinleştir**. Ad/açıklamalar `store/MAGAZA_METINLERI.md` sonunda.
+4. **Ayarlar › Lisans testi**: kendi Gmail'ini ekle; test kanalından kurduğunda satın almalar ücretsiz denenir.
+
+### 7c. App Store Connect satın almaları
+1. **Sözleşmeler, Vergi ve Bankacılık** → Ücretli Uygulamalar sözleşmesini imzala, banka/vergi bilgilerini gir.
+2. Uygulama › **Uygulama İçi Satın Almalar** → `yardim_paketi_5` (Tüketilebilir) ve `premium` (Tüketilemez) oluştur, fiyat ve en az bir dilde ad/açıklama, inceleme ekran görüntüsü (Mağaza ekranı) ekle.
+3. İlk sürümle birlikte incelemeye gönder.
+
+### 7d. Formlar
+Reklamlı sürümü yüklediğin gün: Play'de "Reklam içeriyor: Evet", veri güvenliği formu ve içerik derecelendirmesindeki "dijital satın alma" sorusu değişir. App Store'da Uygulama Gizliliği değişir. Cevaplar `store/MAGAZA_METINLERI.md`'nin sonunda. Güncel gizlilik politikasını (`store/gizlilik.html`) yayınlamayı unutma.

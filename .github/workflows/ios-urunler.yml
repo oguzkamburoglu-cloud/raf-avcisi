@@ -1,0 +1,43 @@
+name: App Store Connect (ürünler ve mağaza sayfası)
+
+# Creates yardim_paketi_5 and premium in App Store Connect with 7 languages, price and
+# availability (scripts/asc-iap.py). Running it again only fills in what is missing.
+on:
+  workflow_dispatch:
+    inputs:
+      what:
+        description: "urunler, sayfa, inceleme (derleme + inceleme bilgileri) ya da hepsi"
+        default: hepsi
+  push:
+    branches: [ios-urunler, ios-gonder, ios-durum]   # pushing this branch runs it before the file is on main
+
+jobs:
+  products:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - run: pip install "pyjwt[crypto]"
+      - name: Ürünleri oluştur
+        env:
+          ASC_KEY_P8: ${{ secrets.ASC_KEY_P8 }}
+          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+        run: |
+          python3 - "$RUNNER_TEMP/key.p8" <<'PY'
+          import base64, os, re, sys
+          raw = os.environ["ASC_KEY_P8"].strip().strip('"').replace("\\n", "\n").replace("\r", "")
+          if "BEGIN" not in raw:
+              try:
+                  dec = base64.b64decode(re.sub(r"\s", "", raw)).decode()
+                  if "BEGIN" in dec: raw = dec
+              except Exception: pass
+          body = re.sub(r"\s", "", re.sub(r"-----[A-Z ]+-----", "", raw))
+          lines = [body[i:i+64] for i in range(0, len(body), 64)]
+          open(sys.argv[1], "w").write("-----BEGIN PRIVATE KEY-----\n" + "\n".join(lines) + "\n-----END PRIVATE KEY-----\n")
+          PY
+          W="${{ github.event.inputs.what || 'hepsi' }}"
+          if [ "${{ github.ref_name }}" = ios-durum ]; then python3 scripts/asc-status.py "$RUNNER_TEMP/key.p8"; exit 0; fi
+          if [ "${{ github.ref_name }}" = ios-gonder ]; then python3 scripts/asc-submit.py "$RUNNER_TEMP/key.p8"; exit 0; fi
+          if [ "$W" = hepsi ] || [ "$W" = urunler ]; then python3 scripts/asc-iap.py "$RUNNER_TEMP/key.p8"; fi
+          if [ "$W" = hepsi ] || [ "$W" = sayfa ]; then python3 scripts/asc-listing.py "$RUNNER_TEMP/key.p8"; fi
+          if [ "$W" = hepsi ] || [ "$W" = inceleme ]; then python3 scripts/asc-review.py "$RUNNER_TEMP/key.p8"; fi
