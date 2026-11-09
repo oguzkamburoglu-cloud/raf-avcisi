@@ -15,7 +15,7 @@ NOTES = """1) SCREEN RECORDING: attached to this App Review Information section 
 
 5) REGIONS: The app works the same in all regions. Only the interface language follows the device (Turkish, English, German, Spanish, French, Portuguese, Russian; others get English).
 
-6) REGULATED / THIRD-PARTY MATERIAL: Not applicable. All graphics are our own; product pictures use the open-source Noto Color Emoji font (SIL Open Font License)."""
+6) REGULATED / THIRD-PARTY MATERIAL: Not applicable. All graphics are our own; product pictures are the device's built-in emoji."""
 def token():
     now = int(time.time())
     return jwt.encode({"iss": os.environ["ASC_ISSUER_ID"], "iat": now, "exp": now + 1100, "aud": "appstoreconnect-v1"},
