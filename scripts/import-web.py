@@ -41,11 +41,9 @@ sub("tap highlight", "-webkit-tap-highlight-color:transparent;", "-webkit-tap-hi
 sub("appbar safe area", ".appbar{display:flex;align-items:center;gap:12px;padding-block:10px}",
     ".appbar{display:flex;align-items:center;gap:12px;padding-block:10px;padding-top:max(10px, env(safe-area-inset-top,0px))}")
 
-# 3. emoji: system Noto on Android, bundled Noto (SVG font "Raf Emoji") on iOS
+# 3. emoji: the phone's own emoji (Noto on Android, Apple on iPhone). A bundled Noto SVG font drew nothing on iPhone.
 sub("emoji font", '.item,.em,.shelf .back span,.navbtn .ic,.how li .e{font-family:"Noto Color Emoji","Apple Color Emoji","Segoe UI Emoji",sans-serif}',
-    '.item,.em,.shelf .back span,.navbtn .ic,.how li .e,#mute{font-family:"Noto Color Emoji","Apple Color Emoji","Segoe UI Emoji",sans-serif}\n'
-    'html.ios body{font-family:var(--f-ui),"Raf Emoji"}\n'
-    'html.ios .item,html.ios .em,html.ios .shelf .back span,html.ios .navbtn .ic,html.ios .how li .e,html.ios #mute{font-family:"Raf Emoji","Apple Color Emoji",sans-serif}')
+    '.item,.em,.shelf .back span,.navbtn .ic,.how li .e,#mute{font-family:"Noto Color Emoji","Apple Color Emoji","Segoe UI Emoji",sans-serif}')
 
 # 4. store link per platform
 sub("appUrl", 'function appUrl(){const ios=/iPhone|iPad|iPod/.test(navigator.userAgent);',
