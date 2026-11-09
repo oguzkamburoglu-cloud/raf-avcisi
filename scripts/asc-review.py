@@ -5,13 +5,17 @@ Contact phone comes from env REVIEW_PHONE (optional). argv[1] = key file."""
 import json, os, sys, time, urllib.request, urllib.error
 import jwt
 KEY = open(sys.argv[1]).read()
-NOTES = ("Raf Avcısı (Shelf Hunter) is an offline single-player puzzle game. No account or sign-in is needed; "
-         "everything is available on launch. Optional rewarded ads (Google AdMob) are shown only when the player taps "
-         "\"Watch an ad\" (when a helper runs out, or for +30 seconds when time is up). In-app purchases: "
-         "yardim_paketi_5 (consumable help pack) and premium (non-consumable, skips ads); open them with the Shop button, "
-         "which also has Restore Purchases. Languages: Turkish, English, German, Spanish, French, Portuguese, Russian. "
-         "It is the companion game of our shopping list app PickyList (same developer); PickyList can open it with "
-         "rafavcisi://oyun?from=pickylist to give a daily bonus, but the game works fully without it.")
+NOTES = """1) SCREEN RECORDING: attached to this App Review Information section (recorded on a physical iPhone with the latest iOS, starting from app launch: home screen, playing a level, shop with in-app purchases and Restore Purchases, rewarded ad).
+
+2) PURPOSE AND AUDIENCE: Raf Avcisi (Shelf Hunter) is a casual, offline, single-player puzzle game for everyone (rated 4+). The player sorts groceries on supermarket shelves: tap an item, tap a shelf, three identical items on a shelf clear it. Each level shows a shopping list; finishing the list before the timer ends wins the level. It offers a short, relaxing brain-teaser and is the companion game of our shopping list app PickyList (same developer).
+
+3) HOW TO USE: No account, login, sign-in or sample files are needed; everything works right after launch. Tap Start shopping to play aisle 1. Helpers (undo, hint, shuffle) are at the bottom. The Shop link (bottom of the home screen, also in the pause menu) shows the in-app purchases: yardim_paketi_5 (consumable, +5 of each helper) and premium (non-consumable, removes ads and adds helpers), plus Restore Purchases. When a helper runs out, or when time is up, the player may optionally tap Watch an ad for a reward. There is no user-generated content and no account, so no account deletion or reporting is needed.
+
+4) EXTERNAL SERVICES: Apple StoreKit (in-app purchases); Google AdMob (optional rewarded ads) with Google User Messaging Platform (consent). No backend server, no AI services, no authentication service. PickyList can optionally open the game with rafavcisi://oyun?from=pickylist for a daily bonus; the game works fully without it.
+
+5) REGIONS: The app works the same in all regions. Only the interface language follows the device (Turkish, English, German, Spanish, French, Portuguese, Russian; others get English).
+
+6) REGULATED / THIRD-PARTY MATERIAL: Not applicable. All graphics are our own; product pictures use the open-source Noto Color Emoji font (SIL Open Font License)."""
 def token():
     now = int(time.time())
     return jwt.encode({"iss": os.environ["ASC_ISSUER_ID"], "iat": now, "exp": now + 1100, "aud": "appstoreconnect-v1"},
