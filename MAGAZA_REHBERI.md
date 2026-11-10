@@ -154,7 +154,7 @@ Xcode açılınca:
 src/              Oyunun kaynağı (index.html) ve native.js (mağaza sürümü eklentileri)
 scripts/          www/ derleme betiği (yazı tiplerini gömer)
 android/, ios/    Capacitor'ın yerel projeleri
-assets/           Simge ve açılış ekranı kaynakları (npm run assets ile tüm boyutlar üretilir)
+assets/           Simge ve açılış ekranı kaynakları (açılış ekranı: python3 scripts/splash.py; npm run assets KULLANMA, Android dil ikonlarını ezer)
 design/           Simge, açılış ekranı ve ekran görüntülerini üreten dosyalar
 store/            Mağaza metinleri, gizlilik politikası, simgeler, ekran görüntüleri
 ```

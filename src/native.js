@@ -198,6 +198,7 @@
 
   // Hide the native splash once the first frame is drawn
   window.addEventListener("load", function () {
-    if (P.SplashScreen) setTimeout(function () { P.SplashScreen.hide(); }, 250);
+    // the splash background is the intro's sky gradient, so a slow fade hands over smoothly
+    if (P.SplashScreen) setTimeout(function () { P.SplashScreen.hide({ fadeOutDuration: 450 }); }, 150);
   });
 })();
