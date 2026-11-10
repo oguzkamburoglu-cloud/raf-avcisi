@@ -25,6 +25,7 @@ jobs:
           KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
           GAMES_APP_ID: ${{ github.event.inputs.games_app_id || '' }}
         run: |
+          if [ -z "$PLAY_JSON" ]; then echo "::warning::PLAY_SERVICE_ACCOUNT_JSON secret'ı boş, kurulum atlandı"; exit 0; fi
           printf '%s' "$PLAY_JSON" > "$RUNNER_TEMP/play.json"
           export PLAY_KEY="$RUNNER_TEMP/play.json"
           export APKSIGNER=$(ls -d $ANDROID_HOME/build-tools/*/apksigner | sort -V | tail -1)

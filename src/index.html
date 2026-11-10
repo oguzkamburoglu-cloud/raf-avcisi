@@ -222,7 +222,7 @@ body{margin:0;background:var(--cream);color:var(--ink);font-family:var(--f-ui);o
 .item.box{filter:drop-shadow(0 2px 0 rgba(0,0,0,.15)) saturate(.9);cursor:not-allowed}
 .item.opened{animation:unbox .45s ease-out}
 @keyframes unbox{0%{transform:scale(.5) rotate(-12deg);opacity:.2}60%{transform:scale(1.2)}100%{transform:none}}
-@media (prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+@media (prefers-reduced-motion:reduce){.menubg span,.intro .spark{animation-duration:30s!important}}
 :root:lang(ru){--f-brand:"Fraunces","Roboto",sans-serif}
 .appbar h1{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}:root:lang(ru) .appbar h1{font-size:14px}
 .shop .btn{margin-top:8px}.shop .btn small{display:block;font-weight:400;font-size:12px;opacity:.85;margin-top:2px}.shop .bank{color:var(--muted);font-size:13px;margin:6px 0 0}.shop .link{display:block;margin:10px auto 0}
@@ -600,11 +600,18 @@ let timerId=null, comboTimer=null, muted=store.get("muted",false);
 let ac=null;
 function tone(f,d=.08,type="sine",vol=.12,delay=0){
   if(muted)return;
-  try{ac=ac||new (window.AudioContext||window.webkitAudioContext)();
+  try{ac=ac||new (window.AudioContext||window.webkitAudioContext)();if(ac.state!=="running")ac.resume();
     const t=ac.currentTime+delay,o=ac.createOscillator(),g=ac.createGain();
     o.type=type;o.frequency.setValueAtTime(f,t);g.gain.setValueAtTime(vol,t);g.gain.exponentialRampToValueAtTime(.001,t+d);
     o.connect(g).connect(ac.destination);o.start(t);o.stop(t+d+.02);}catch(e){}
 }
+function unlockAudio(){
+  try{if(navigator.audioSession)navigator.audioSession.type="playback"}catch(e){}
+  try{ac=ac||new (window.AudioContext||window.webkitAudioContext)();if(ac.state!=="running")ac.resume();
+    const b=ac.createBuffer(1,1,22050),src=ac.createBufferSource();src.buffer=b;src.connect(ac.destination);src.start(0)}catch(e){}
+}
+["pointerdown","touchend","click"].forEach(ev=>document.addEventListener(ev,unlockAudio,{capture:true,passive:true}));
+document.addEventListener("visibilitychange",()=>{if(!document.hidden&&ac&&ac.state!=="running")try{ac.resume()}catch(e){}});
 let musicOn=store.get("music",true),musicTimer=null,musicStep=0,musicNext=0,noiseBuf=null;
 // Upbeat market tune: C major, 124 bpm, 8th-note steps. Two 4-bar phrases (A: C Am F G, B: C Em F G),
 // oom-pah bass, off-beat chord stabs, soft kick and hi-hat. Speeds up in Kapış Kapış and in the last 10 seconds.
@@ -1233,7 +1240,7 @@ document.querySelectorAll(".appbar h1").forEach(e=>logoTitle(e,false));document.
 try{new MutationObserver(colorTitles).observe(document.body,{childList:true,subtree:true})}catch(e){}
 /* ---------- v11: effects ---------- */
 const FXC=["#1F9D55","#B3F1BE","#FFD54F","#E57373","#4FC3F7","#F9A825","#0A4521"];
-function fxOn(){return !!(document.body.animate)&&!(window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches)}
+function fxOn(){return !!(document.body.animate)}
 function fxEl(cls,x,y,txt){const d=document.createElement("span");d.className=cls;d.style.left=x+"px";d.style.top=y+"px";if(txt)d.textContent=txt;$("fx").appendChild(d);return d}
 function burst(x,y,em,n){
   if(!fxOn())return;n=n||12;
