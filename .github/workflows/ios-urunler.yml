@@ -6,10 +6,10 @@ on:
   workflow_dispatch:
     inputs:
       what:
-        description: "urunler, sayfa, inceleme (derleme + inceleme bilgileri) ya da hepsi"
+        description: "urunler, sayfa, inceleme (derleme + inceleme bilgileri), oyunmerkezi (Game Center liderlik tabloları) ya da hepsi"
         default: hepsi
   push:
-    branches: [ios-urunler, ios-gonder, ios-durum]   # pushing this branch runs it before the file is on main
+    branches: [ios-urunler, ios-gonder, ios-durum, ios-oyunmerkezi]   # pushing this branch runs it before the file is on main
 
 jobs:
   products:
@@ -37,6 +37,7 @@ jobs:
           PY
           W="${{ github.event.inputs.what || 'hepsi' }}"
           if [ "${{ github.ref_name }}" = ios-durum ]; then python3 scripts/asc-status.py "$RUNNER_TEMP/key.p8"; exit 0; fi
+          if [ "${{ github.ref_name }}" = ios-oyunmerkezi ] || [ "$W" = oyunmerkezi ]; then python3 scripts/asc-gamecenter.py "$RUNNER_TEMP/key.p8"; exit 0; fi
           if [ "${{ github.ref_name }}" = ios-gonder ]; then python3 scripts/asc-submit.py "$RUNNER_TEMP/key.p8"; exit 0; fi
           if [ "$W" = hepsi ] || [ "$W" = urunler ]; then python3 scripts/asc-iap.py "$RUNNER_TEMP/key.p8"; fi
           if [ "$W" = hepsi ] || [ "$W" = sayfa ]; then python3 scripts/asc-listing.py "$RUNNER_TEMP/key.p8"; fi

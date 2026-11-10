@@ -25,6 +25,37 @@
     }
   };
 
+  // Leaderboards: Game Center on iOS, Google Play Games on Android (plugins/game-services).
+  // ready() turns true once the platform says it can be used; the game then shows the
+  // world ranking buttons, otherwise only the player's own records.
+  var G = P.RafGameServices;
+  if (G) {
+    var gReady = platform === "ios", gAuth = false;
+    var signIn = function (interactive) {
+      return G.signIn({ interactive: !!interactive })
+        .then(function (r) { gAuth = !!(r && r.authenticated); return gAuth; })
+        .catch(function () { return false; });
+    };
+    window.RAF_GAMES = {
+      platform: platform,
+      ready: function () { return gReady; },
+      submit: function (board, score) {
+        if (!gReady || !gAuth) return;
+        G.submitScore({ leaderboard: board, score: Math.round(score) }).catch(function () {});
+      },
+      show: function (board) {
+        if (!gReady) return;
+        (gAuth ? Promise.resolve(true) : signIn(true)).then(function (ok) {
+          if (ok) G.showLeaderboard({ leaderboard: board }).catch(function () {});
+        });
+      }
+    };
+    G.available().then(function (r) {
+      gReady = !!(r && r.available);
+      if (gReady) setTimeout(function () { signIn(false); }, 1500);
+    }).catch(function () { gReady = false; });
+  }
+
   // Status bar: dark icons on the cream/white game background
   if (P.StatusBar) {
     try { P.StatusBar.setStyle({ style: "LIGHT" }); } catch (e) {}

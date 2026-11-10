@@ -1,0 +1,12 @@
+{
+  "name": "raf-game-services",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Raf Avcısı: Game Center (iOS) and Google Play Games (Android) leaderboards",
+  "main": "index.js",
+  "files": ["index.js", "Package.swift", "ios/Sources", "android/src/main/", "android/build.gradle"],
+  "capacitor": {
+    "ios": { "src": "ios" },
+    "android": { "src": "android" }
+  }
+}
