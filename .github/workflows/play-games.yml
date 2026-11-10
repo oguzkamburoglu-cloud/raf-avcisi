@@ -1,0 +1,36 @@
+name: Play Games kurulumu
+
+# Finds the app signing SHA-1, registers the Android OAuth client (via Firebase) and,
+# when GAMES_APP_ID is given, creates the leaderboards (scripts/play-games-setup.py).
+on:
+  workflow_dispatch:
+    inputs:
+      games_app_id:
+        description: "Play Games proje kimliği (boş: yalnızca SHA-1 ve OAuth)"
+        default: ""
+  push:
+    paths: [".github/workflows/play-games.yml", "scripts/play-games-setup.py"]
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - run: pip install "pyjwt[crypto]"
+      - name: Kurulum
+        env:
+          PLAY_JSON: ${{ secrets.PLAY_SERVICE_ACCOUNT_JSON }}
+          KEYSTORE_B64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          STORE_PW: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          GAMES_APP_ID: ${{ github.event.inputs.games_app_id || '' }}
+        run: |
+          if [ -z "$PLAY_JSON" ]; then echo "::warning::PLAY_SERVICE_ACCOUNT_JSON secret'ı boş, kurulum atlandı"; exit 0; fi
+          printf '%s' "$PLAY_JSON" > "$RUNNER_TEMP/play.json"
+          export PLAY_KEY="$RUNNER_TEMP/play.json"
+          export APKSIGNER=$(ls -d $ANDROID_HOME/build-tools/*/apksigner | sort -V | tail -1)
+          if [ -n "$KEYSTORE_B64" ]; then
+            echo "$KEYSTORE_B64" | base64 -d > "$RUNNER_TEMP/u.jks"
+            export UPLOAD_SHA1=$(keytool -list -v -keystore "$RUNNER_TEMP/u.jks" -storepass "$STORE_PW" -alias "$KEY_ALIAS" | grep -m1 "SHA1:" | awk '{print $2}')
+          fi
+          python3 scripts/play-games-setup.py
