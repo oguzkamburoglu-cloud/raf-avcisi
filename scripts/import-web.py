@@ -50,8 +50,8 @@ sub("appUrl", 'function appUrl(){const ios=/iPhone|iPad|iPod/.test(navigator.use
     'function appUrl(){const pf=window.RAF_NATIVE?RAF_NATIVE.platform:"";const ios=pf==="ios"||(!pf&&/iPhone|iPad|iPod/.test(navigator.userAgent));')
 
 # 5. vibration -> native haptics (navigator.vibrate does nothing on iOS)
-sub("buzz", "function buzz(p){try{if(navigator.vibrate)navigator.vibrate(p)}catch(e){}}",
-    "function buzz(p){try{if(window.RAF_NATIVE)RAF_NATIVE.haptic(p);else if(navigator.vibrate)navigator.vibrate(p)}catch(e){}}")
+sub("buzz", "function buzz(p){if(store.get(\"vib\",true)===false)return;try{if(navigator.vibrate)navigator.vibrate(p)}catch(e){}}",
+    "function buzz(p){if(store.get(\"vib\",true)===false)return;try{if(window.RAF_NATIVE)RAF_NATIVE.haptic(p);else if(navigator.vibrate)navigator.vibrate(p)}catch(e){}}")
 
 # 6. app sent to background: same as hiding the tab (pause game, stop timer/music)
 m = re.search(r'document\.addEventListener\("visibilitychange",\(\)=>\{if\(document\.hidden\)\{(.*?)\}\}\);', s)

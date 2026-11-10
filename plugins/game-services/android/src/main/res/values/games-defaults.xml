@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Defaults: Play Games stays off. The app's games-ids.xml sets the real values. -->
+    <string name="game_services_project_id" translatable="false"></string>
+    <string name="leaderboard_raf_toplam_puan" translatable="false"></string>
+    <string name="leaderboard_raf_gunun_listesi" translatable="false"></string>
+</resources>
