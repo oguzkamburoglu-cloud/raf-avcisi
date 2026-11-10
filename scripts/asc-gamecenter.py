@@ -73,7 +73,7 @@ for b in BOARDS:
         attrs = {"referenceName": b["ref"], "vendorIdentifier": b["id"], "defaultFormatter": "INTEGER",
                  "submissionType": "BEST_SCORE", "scoreSortType": "DESC"}
         if b["daily"]:
-            attrs.update({"recurrenceStartDate": "2026-11-10T00:00:00Z", "recurrenceDuration": "P1D",
+            attrs.update({"recurrenceStartDate": "2026-11-10T00:00:00Z", "recurrenceDuration": "PT24H",
                           "recurrenceRule": "FREQ=DAILY;INTERVAL=1"})
         lb = api("POST", "/v1/gameCenterLeaderboards", {"data": {"type": "gameCenterLeaderboards", "attributes": attrs,
             "relationships": {"gameCenterDetail": {"data": {"type": "gameCenterDetails", "id": det_id}}}}})["data"]
