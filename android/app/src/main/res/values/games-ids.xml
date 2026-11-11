@@ -3,6 +3,6 @@
     <!-- Google Play Games Services (Play Console > Play Games Hizmetleri > Skor tabloları > Kaynakları al).
          These turn the world ranking on in the Android app (plugins/game-services). -->
     <string name="game_services_project_id" translatable="false">862375321418</string>
-    <string name="leaderboard_raf_toplam_puan" translatable="false">CgkIyr7MzIwZEAIQAA</string>
-    <string name="leaderboard_raf_gunun_listesi" translatable="false">CgkIyr7MzIwZEAIQAQ</string>
+    <string name="leaderboard_raf_toplam_puan" translatable="false">CgkIyr7MzIwZEAIQAQ</string>
+    <string name="leaderboard_raf_gunun_listesi" translatable="false">CgkIyr7MzIwZEAIQAA</string>
 </resources>
