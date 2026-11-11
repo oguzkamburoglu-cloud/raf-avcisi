@@ -15,7 +15,9 @@ NOTES = """1) SCREEN RECORDING: attached to this App Review Information section 
 
 5) REGIONS: The app works the same in all regions. Only the interface language follows the device (Turkish, English, German, Spanish, French, Portuguese, Russian; others get English).
 
-6) REGULATED / THIRD-PARTY MATERIAL: Not applicable. All graphics are our own; product pictures are the device's built-in emoji."""
+6) REGULATED / THIRD-PARTY MATERIAL: Not applicable. All graphics are our own; product pictures are the device's built-in emoji.
+
+7) GAME CENTER: Optional. The Leaderboard screen (trophy button on the home screen) shows the player's own records and two Game Center leaderboards: raf_toplam_puan (total score) and raf_gunun_listesi (daily list, resets every day). The game is fully playable without signing in to Game Center."""
 def token():
     now = int(time.time())
     return jwt.encode({"iss": os.environ["ASC_ISSUER_ID"], "iat": now, "exp": now + 1100, "aud": "appstoreconnect-v1"},
@@ -56,6 +58,26 @@ else:
     api("POST", "/v1/appStoreReviewDetails", {"data": {"type": "appStoreReviewDetails", "attributes": attrs,
         "relationships": {"appStoreVersion": {"data": {"type": "appStoreVersions", "id": ver["id"]}}}}}, soft=True)
 print("inceleme bilgileri yazıldı (telefon:", "var" if "contactPhone" in attrs else "YOK", ")")
+
+# Game Center: switch it on for this version and release the leaderboards with it
+gv = (api("GET", f"/v1/appStoreVersions/{ver['id']}/gameCenterAppVersion", soft=True) or {}).get("data")
+if not gv:
+    gv = (api("POST", "/v1/gameCenterAppVersions", {"data": {"type": "gameCenterAppVersions",
+          "relationships": {"appStoreVersion": {"data": {"type": "appStoreVersions", "id": ver["id"]}}}}}, soft=True) or {}).get("data")
+if gv:
+    if not gv["attributes"].get("enabled"):
+        api("PATCH", f"/v1/gameCenterAppVersions/{gv['id']}", {"data": {"type": "gameCenterAppVersions", "id": gv["id"], "attributes": {"enabled": True}}}, soft=True)
+    print("Game Center bu sürümde açık")
+det = (api("GET", f"/v1/apps/{app_id}/gameCenterDetail", soft=True) or {}).get("data")
+if det:
+    rel = api("GET", f"/v1/gameCenterDetails/{det['id']}/leaderboardReleases?include=gameCenterLeaderboard&limit=50", soft=True) or {}
+    done = {(r.get("relationships", {}).get("gameCenterLeaderboard", {}).get("data") or {}).get("id") for r in rel.get("data", [])}
+    for lb in (api("GET", f"/v1/gameCenterDetails/{det['id']}/gameCenterLeaderboards?limit=50", soft=True) or {}).get("data", []):
+        if lb["id"] in done: print("tablo sürümde:", lb["attributes"]["vendorIdentifier"]); continue
+        r = api("POST", "/v1/gameCenterLeaderboardReleases", {"data": {"type": "gameCenterLeaderboardReleases", "relationships": {
+            "gameCenterDetail": {"data": {"type": "gameCenterDetails", "id": det["id"]}},
+            "gameCenterLeaderboard": {"data": {"type": "gameCenterLeaderboards", "id": lb["id"]}}}}}, soft=True)
+        print("tablo sürüme eklendi:" if r else "tablo eklenemedi:", lb["attributes"]["vendorIdentifier"])
 
 for l in api("GET", f"/v1/appStoreVersions/{ver['id']}/appStoreVersionLocalizations")["data"]:
     sets = api("GET", f"/v1/appStoreVersionLocalizations/{l['id']}/appScreenshotSets?include=appScreenshots")
