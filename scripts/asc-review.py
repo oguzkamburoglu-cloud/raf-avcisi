@@ -5,7 +5,7 @@ Contact phone comes from env REVIEW_PHONE (optional). argv[1] = key file."""
 import json, os, sys, time, urllib.request, urllib.error
 import jwt
 KEY = open(sys.argv[1]).read()
-NOTES = """1) SCREEN RECORDING: attached to this App Review Information section (recorded on a physical iPhone with the latest iOS, starting from app launch: home screen, playing a level, shop with in-app purchases and Restore Purchases, rewarded ad).
+NOTES = """1) SCREEN RECORDING: attached to this App Review Information section (recorded on a physical iPhone with the latest iOS, starting from app launch: intro and home screen with the daily gift wheel, playing a level, then the in-app purchase sheets of both products, premium and yardim_paketi_5, each cancelled at the password prompt). The account name and e-mail on Apple's purchase sheets are masked with a grey bar for privacy. Restore Purchases is in the Shop (home screen and pause menu). At the time of recording AdMob had no rewarded ad to serve (the app is not live yet), so the game shows its "ad not ready" notice instead.
 
 2) PURPOSE AND AUDIENCE: Raf Avcisi (Shelf Hunter) is a casual, offline, single-player puzzle game for everyone (rated 4+). The player sorts groceries on supermarket shelves: tap an item, tap a shelf, three identical items on a shelf clear it. Each level shows a shopping list; finishing the list before the timer ends wins the level. It offers a short, relaxing brain-teaser and is the companion game of our shopping list app PickyList (same developer).
 
