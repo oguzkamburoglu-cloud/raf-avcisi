@@ -698,6 +698,8 @@ const sfx={
 // When the game is self-hosted, ?from=pickylist&list=domates,kiyma also works.
 const PLAY_URL="https://play.google.com/store/apps/details?id=com.listeal.app";
 const APPSTORE_URL=""; // fill in when known
+// Store link appended to a shared result. Only the App Store listing is live, so Android builds add no link yet.
+function shareLink(){const pf=window.RAF_NATIVE?RAF_NATIVE.platform:"";return pf==="android"?"":"\nhttps://apps.apple.com/app/id6832235609?ct=paylasim&mt=8"}
 function appUrl(){const pf=window.RAF_NATIVE?RAF_NATIVE.platform:"";const ios=pf==="ios"||(!pf&&/iPhone|iPad|iPod/.test(navigator.userAgent));return (ios&&APPSTORE_URL)?APPSTORE_URL:PLAY_URL}
 function slug(t){return t.toLocaleLowerCase("tr-TR").replace(/ç/g,"c").replace(/ğ/g,"g").replace(/ı/g,"i").replace(/ö/g,"o").replace(/ş/g,"s").replace(/ü/g,"u").replace(/[^a-z0-9]/g,"")}
 function readLink(){
@@ -1061,13 +1063,15 @@ function win(){
       <div class="r tot"><span>${T("TOPLAM PUAN")}</span><span>${S.score}</span></div>
       <div class="barcode"></div>
     </div>
-    ${S.mode==="daily"?'<p class="promo">'+T("Yarın yeni bir liste seni bekliyor.")+'</p><div class="endrow"><button class="ib t2" id="toMenu" aria-label="'+T("Ana ekran")+'"><span>🏠</span></button><button class="ib t5" id="share" aria-label="'+T("Sonucu kopyala")+'"><span>📋</span></button><button class="btn" id="next">'+T("Reyonlara devam")+'</button></div>':'<div class="endrow"><button class="ib t1" id="toMap" aria-label="'+T("Harita")+'"><span>🗺️</span></button><button class="ib t5" id="share" aria-label="'+T("Sonucu kopyala")+'"><span>📋</span></button><button class="btn" id="next">'+T("Sonraki reyon")+'</button></div>'}
+    ${S.mode==="daily"?'<p class="promo">'+T("Yarın yeni bir liste seni bekliyor.")+'</p><div class="endrow"><button class="ib t2" id="toMenu" aria-label="'+T("Ana ekran")+'"><span>🏠</span></button><button class="ib t5" id="share" aria-label="'+T("Sonucu kopyala")+'"><span>📤</span></button><button class="btn" id="next">'+T("Reyonlara devam")+'</button></div>':'<div class="endrow"><button class="ib t1" id="toMap" aria-label="'+T("Harita")+'"><span>🗺️</span></button><button class="ib t5" id="share" aria-label="'+T("Sonucu kopyala")+'"><span>📤</span></button><button class="btn" id="next">'+T("Sonraki reyon")+'</button></div>'}
     <a class="btn out applink" href="${appUrl()}" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#logo"/></svg>${S.fromList?T("PickyList'e dön"):T("PickyList'le listeni yap, puanı kap!")}</a>
     <p class="promo">${T("PickyList'ten oyuna her gün girişte: +30 sn, her yardımdan +1, 2x puan.")}</p>`;
-  const shareText=`PickyList · ${T("Raf Avcısı")}\n${S.mode==="daily"?T("Günün listesi")+" "+new Date().toLocaleDateString(LOC):T("Reyon {n}",{n:S.level})+" · "+S.theme.name}\n${S.list.map(x=>PRODUCTS[x.t][0]).join("")} ✅ ${"⭐".repeat(stars)}\n${T("{n} puan",{n:S.score})}${S.mode==="daily"&&S.streak>1?" · 🔥 "+T("{n} gün",{n:S.streak}):""}`;
+  const shareText=`PickyList · ${T("Raf Avcısı")}\n${S.mode==="daily"?T("Günün listesi")+" "+new Date().toLocaleDateString(LOC):T("Reyon {n}",{n:S.level})+" · "+S.theme.name}\n${S.list.map(x=>PRODUCTS[x.t][0]).join("")} ✅ ${"⭐".repeat(stars)}\n${T("{n} puan",{n:S.score})}${S.mode==="daily"&&S.streak>1?" · 🔥 "+T("{n} gün",{n:S.streak}):""}${shareLink()}`;
   $("share").onclick=()=>{
     const done=()=>{flashCombo(T("Kopyalandı"))};
-    try{navigator.clipboard.writeText(shareText).then(done,()=>fallbackCopy(shareText,done));}catch(e){fallbackCopy(shareText,done)}
+    const copy=()=>{try{navigator.clipboard.writeText(shareText).then(done,()=>fallbackCopy(shareText,done));}catch(e){fallbackCopy(shareText,done)}};
+    // Native share sheet first (WhatsApp, Messages...); copying stays as the fallback.
+    if(navigator.share){try{navigator.share({text:shareText}).catch(e=>{if(!e||e.name!=="AbortError")copy()})}catch(e){copy()}}else copy();
   };
   $("ovEnd").hidden=false;
   $("next").onclick=()=>{$("ovEnd").hidden=true;if(S.mode==="daily")newGame(store.get("level",1));else aisleTransition(S.level,stars)};
