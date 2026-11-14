@@ -53,6 +53,16 @@ jobs:
           open(sys.argv[1], "w").write("-----BEGIN PRIVATE KEY-----\n" + "\n".join(lines) + "\n-----END PRIVATE KEY-----\n")
           PY
 
+      # Each archive makes Xcode create a new "Created via API" development certificate and Apple caps
+      # how many an account holds, so remove the old throwaway ones first. Distribution is untouched.
+      - name: Eski geçici geliştirme sertifikalarını temizle
+        env:
+          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+        run: |
+          pip3 install --quiet --break-system-packages "pyjwt[crypto]" || pip3 install --quiet "pyjwt[crypto]"
+          python3 scripts/asc-certs.py "$RUNNER_TEMP/asc/AuthKey_$ASC_KEY_ID.p8" --revoke
+
       - name: Arşivle ve App Store Connect'e yükle
         env:
           TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
