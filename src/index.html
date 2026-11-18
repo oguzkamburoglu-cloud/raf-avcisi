@@ -630,6 +630,21 @@ body{font-weight:500}
 .evtbtn .er{float:right;font-weight:800}
 .setrow .sl small.sdesc{display:block;font-weight:600;font-size:11px;line-height:1.3;opacity:.7;margin-top:2px}
 .seasontag{margin:-4px 0 2px;text-align:center;font:800 13px var(--f-ui);color:var(--forest);opacity:.85}
+
+/* v22: market-walk map */
+.path{background-color:#F1ECE2;background-image:linear-gradient(45deg,#E6E0D3 25%,transparent 25%,transparent 75%,#E6E0D3 75%),linear-gradient(45deg,#E6E0D3 25%,transparent 25%,transparent 75%,#E6E0D3 75%);background-size:56px 56px;background-position:0 0,28px 28px}
+.path svg{position:absolute;inset:0;width:100%;height:100%}
+.path .pnode,.path .pchest,.path .pmark{z-index:3}
+.gond{position:absolute;z-index:1;width:31%;height:60px;margin-top:-30px;box-sizing:border-box;padding:0 4px 3px;display:flex;flex-direction:column;justify-content:flex-end;gap:2px;background:linear-gradient(180deg,#FFFFFF,#F2EEE7);border-radius:8px;border-top:6px solid var(--gb);box-shadow:0 4px 0 rgba(60,50,30,.16),inset 0 0 0 2px rgba(0,0,0,.04);pointer-events:none}
+.gond.l{left:1.5%}.gond.r{right:1.5%}
+.gond.off{filter:grayscale(.75);opacity:.55}
+.gond b{position:absolute;top:-19px;left:50%;transform:translateX(-50%);max-width:112%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;background:var(--gb);color:#fff;font:800 10px/1.5 var(--f-ui),"Noto Color Emoji","Apple Color Emoji",sans-serif;padding:0 7px;border-radius:7px;box-shadow:0 2px 0 rgba(0,0,0,.15)}
+.gond span{display:flex;justify-content:space-around;font-size:15px;line-height:1.2;border-bottom:3px solid #D9D0BE;font-family:"Noto Color Emoji","Apple Color Emoji","Segoe UI Emoji",sans-serif}
+.psign.hang{left:50%;z-index:2;padding:6px 16px;font-size:13px;border-radius:8px;border:2px solid rgba(255,255,255,.6)}
+.psign.hang::before,.psign.hang::after{content:"";position:absolute;bottom:100%;width:2px;height:14px;background:#8A8F96}
+.psign.hang::before{left:14px}.psign.hang::after{right:14px}
+.mentry{position:absolute;left:50%;transform:translate(-50%,-50%);z-index:2;display:flex;align-items:center;gap:8px;background:linear-gradient(180deg,#BFE6FA,#8ED0F2);border:3px solid #fff;border-bottom:0;border-radius:12px 12px 0 0;padding:6px 18px 8px;font:900 14px var(--f-fun);color:var(--ic-deep,#0A4521);box-shadow:0 -2px 0 rgba(0,0,0,.08);white-space:nowrap}
+.mentry i{font-style:normal;font-family:"Noto Color Emoji","Apple Color Emoji",sans-serif;font-size:20px}
 </style>
 </head>
 <body>
@@ -2060,14 +2075,17 @@ function openMap(){
   let pts="",h="";
   for(let i=1;i<=n;i++){const p=P(i);pts+=(i>1?" L":"M")+p.x+" "+p.y}
   for(let i=1;i<=n;i++){const p=P(i),th=themeOf(i),locked=i>lv,cur=i===lv,s3=st[i]||0;
-    if((i-1)%6===0)h+=`<span class="psign" style="left:${p.x>50?p.x-27:p.x+27}%;top:${p.y}px">${T("Kat {n}",{n:(i-1)/6+1})}</span>`;
+    if((i-1)%6===0)h+=`<span class="psign hang" style="top:${p.y+G/2}px">${T("Kat {n}",{n:(i-1)/6+1})}</span>`;
+    {const ids=[...PRODUCTS.keys()].filter(j=>!th.cats||th.cats.includes(PRODUCTS[j][2])),pk=k=>ids.length?PRODUCTS[ids[(i*7+k*5)%ids.length]][0]:"🛒";
+     h+=`<div class="gond ${p.x>50?"l":"r"}${locked?" off":""}" style="top:${p.y}px;--gb:${th.bar}"><b>${th.e} ${th.name}</b><span>${[0,1,2,3].map(pk).join("")}</span><span>${[4,5,6,7].map(pk).join("")}</span></div>`}
     h+=`<button class="pnode${locked?" locked":""}${cur?" cur":""}${hardOf(i)===2?" boss":hardOf(i)===1?" hard":""}" data-l="${i}" style="left:${p.x}%;top:${p.y}px;background:${th.bar}" ${locked?"disabled":""} aria-label="${T("Reyon {n}",{n:i})}">${locked?"🔒":i}<span class="pe">${th.e}</span>${hardOf(i)?`<span class="ph">${hardOf(i)===2?"👑":"🔥"}</span>`:""}${kindOf(i)?`<span class="ph">${KINDS[kindOf(i)][0]}</span>`:""}${!locked&&!cur?`<span class="ps">${[1,2,3].map(k=>k<=s3?"★":'<span class="off">★</span>').join("")}</span>`:""}</button>`;
     if(cur)h+=`<span class="pmark" style="left:${p.x}%;top:${p.y}px">🛒</span>`;
     if(i%5===0){const q=P(i+.5),cx=q.x>50?q.x-24:q.x+24,state=ch[i]?"done":lv>i?"ready":"locked";
       h+=`<button class="pchest ${state}" data-c="${i}" style="left:${cx}%;top:${q.y}px" aria-label="${T("Sandık")}">${ch[i]?"📭":"🎁"}</button>`}
   }
+  h+=`<div class="mentry" style="top:${H-18}px"><i>🚪</i>${T("Giriş")}<i>🚪</i></div>`;
   $("path").style.height=H+"px";
-  $("path").innerHTML=`<svg viewBox="0 0 100 ${H}" preserveAspectRatio="none" aria-hidden="true"><path d="${pts}" fill="none" stroke="#fff" stroke-width="22" stroke-linecap="round" vector-effect="non-scaling-stroke" opacity=".9"/><path d="${pts}" fill="none" stroke="#C9E7CF" stroke-width="6" stroke-dasharray="2 16" stroke-linecap="round" vector-effect="non-scaling-stroke"/></svg>`+h;
+  $("path").innerHTML=`<svg viewBox="0 0 100 ${H}" preserveAspectRatio="none" aria-hidden="true"><path d="${pts}" fill="none" stroke="#D3C9B6" stroke-width="40" stroke-linecap="round" vector-effect="non-scaling-stroke"/><path d="${pts}" fill="none" stroke="#FCFAF5" stroke-width="33" stroke-linecap="round" vector-effect="non-scaling-stroke"/><path d="${pts}" fill="none" stroke="#F2C230" stroke-width="3" stroke-dasharray="10 12" stroke-linecap="round" vector-effect="non-scaling-stroke"/></svg>`+h;
   $("path").querySelectorAll(".pnode:not(:disabled)").forEach(b=>b.onclick=()=>{$("ovMap").hidden=true;$("ovStart").hidden=true;tone(1,.01);startMusic();newGame(+b.dataset.l)});
   $("path").querySelectorAll(".pchest").forEach(b=>b.onclick=()=>{const i=+b.dataset.c;
     if(b.classList.contains("locked")){coach(T("Reyon {n} bitince açılır",{n:i}),2000);return}
