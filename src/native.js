@@ -56,6 +56,35 @@
     }).catch(function () { gReady = false; });
   }
 
+  // v19: local reminders (at most one a day: daily wheel tomorrow 19:00, aisle reminder in 3 days).
+  // The game asks for permission after the third aisle and reschedules each time it goes to the background.
+  var LN = P.LocalNotifications;
+  if (LN) {
+    window.RAF_NOTIFY = {
+      ask: function () { return LN.requestPermissions().catch(function () {}); },
+      clear: function () { return LN.cancel({ notifications: [{ id: 1 }, { id: 2 }] }).catch(function () {}); },
+      schedule: function (list) {
+        LN.checkPermissions().then(function (p) {
+          if (!p || p.display !== "granted") return;
+          return window.RAF_NOTIFY.clear().then(function () {
+            return LN.schedule({ notifications: list.map(function (n) {
+              return { id: n.id, title: n.title, body: n.body, schedule: { at: new Date(n.at), allowWhileIdle: false }, smallIcon: "ic_stat_notify", iconColor: "#1F9D55" };
+            }) });
+          });
+        }).catch(function () {});
+      }
+    };
+  }
+
+  // v19: analytics bridge. Events go to Firebase Analytics once its plugin and config files are in the app;
+  // until then the game only counts them on the device.
+  var FA = P.FirebaseAnalytics;
+  if (FA) {
+    window.RAF_ANALYTICS = {
+      log: function (name, params) { FA.logEvent({ name: name, params: params || {} }).catch(function () {}); }
+    };
+  }
+
   // Status bar: dark icons on the cream/white game background
   if (P.StatusBar) {
     try { P.StatusBar.setStyle({ style: "LIGHT" }); } catch (e) {}

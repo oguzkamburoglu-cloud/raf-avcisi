@@ -21,13 +21,14 @@ NAMES = {  # language code: name under the icon (keep short; iOS cuts after ~12-
     "ja": "棚ハンター",
     "ko": "선반 헌터",
     "zh-Hans": "货架猎人",
+    "zh-Hant": "貨架獵人",
 }
 DEFAULT = "en"
 root = pathlib.Path(__file__).resolve().parent.parent
 
 # Android: values/ = default (English), values-xx/ for the rest
 res = root / "android/app/src/main/res"
-android_code = {"zh-Hans": "b+zh+Hans"}
+android_code = {"zh-Hans": "b+zh+Hans", "zh-Hant": "b+zh+Hant"}
 for code, name in NAMES.items():
     d = res / ("values" if code == DEFAULT else "values-" + android_code.get(code, code))
     d.mkdir(parents=True, exist_ok=True)
