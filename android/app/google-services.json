@@ -1,0 +1,170 @@
+{
+  "project_info": {
+    "project_number": "862375321418",
+    "project_id": "ailiste",
+    "storage_bucket": "ailiste.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:862375321418:android:7cbfb3101b8942e8a8ebb3",
+        "android_client_info": {
+          "package_name": "com.listeal.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "862375321418-fcvfg2vr129v5s4uqtfpll6algm28e8i.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.listeal.app",
+            "certificate_hash": "d3f6df4cde4f1b65e5fed677f14b26de44d60408"
+          }
+        },
+        {
+          "client_id": "862375321418-v3jl3tm724pq679753hj3ku615ed4ger.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.listeal.app",
+            "certificate_hash": "1df5055310165748af053471611461269b7e1410"
+          }
+        },
+        {
+          "client_id": "862375321418-s4412vd9o7tbd05c5m23joi70ldsbkhc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB46ogAzk05jTztBKuKp4dYhUs134YEPo0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "862375321418-s4412vd9o7tbd05c5m23joi70ldsbkhc.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "862375321418-iklko68j7lp7l77jv7queoejfl6qpi2v.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.listeal.rafavcisi"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:862375321418:android:88bda79db0ca3e80a8ebb3",
+        "android_client_info": {
+          "package_name": "com.listeal.app.dev"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "862375321418-s4412vd9o7tbd05c5m23joi70ldsbkhc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB46ogAzk05jTztBKuKp4dYhUs134YEPo0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "862375321418-s4412vd9o7tbd05c5m23joi70ldsbkhc.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "862375321418-iklko68j7lp7l77jv7queoejfl6qpi2v.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.listeal.rafavcisi"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:862375321418:android:07539581d0774c9fa8ebb3",
+        "android_client_info": {
+          "package_name": "com.listeal.app.staging"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "862375321418-s4412vd9o7tbd05c5m23joi70ldsbkhc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB46ogAzk05jTztBKuKp4dYhUs134YEPo0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "862375321418-s4412vd9o7tbd05c5m23joi70ldsbkhc.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "862375321418-iklko68j7lp7l77jv7queoejfl6qpi2v.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.listeal.rafavcisi"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:862375321418:android:9f74d978725ee743a8ebb3",
+        "android_client_info": {
+          "package_name": "com.listeal.rafavcisi"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "862375321418-s4412vd9o7tbd05c5m23joi70ldsbkhc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB46ogAzk05jTztBKuKp4dYhUs134YEPo0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "862375321418-s4412vd9o7tbd05c5m23joi70ldsbkhc.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "862375321418-iklko68j7lp7l77jv7queoejfl6qpi2v.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.listeal.rafavcisi"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

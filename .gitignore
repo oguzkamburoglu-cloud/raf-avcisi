@@ -4,3 +4,4 @@ www/
 *.keystore
 android/keystore.properties
 .DS_Store
+ios/App/CapApp-SPM/symlinks/
