@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Creates (or updates) the two in-app products on Google Play in 7 languages.
+"""Creates (or updates) the in-app products on Google Play in 7 languages.
 Env PLAY_KEY = service account key file. Optional argv: currency micros-pack micros-premium."""
 import sys, pathlib
 sys.path.insert(0, str(pathlib.Path(__file__).parent))
@@ -15,6 +15,10 @@ L = {
    "de-DE": ("Premium", "Alle Belohnungen ohne Werbung und je 10 Hilfen"), "es-ES": ("Premium", "Todos los premios sin anuncios y 10 de cada ayuda"),
    "fr-FR": ("Premium", "Toutes les récompenses sans pub et 10 de chaque aide"), "pt-BR": ("Premium", "Todos os prêmios sem anúncios e 10 de cada ajuda"),
    "ru-RU": ("Premium", "Все награды без рекламы и по 10 подсказок")}}
+from iap_new import NEW, PLAY_LOCALE
+for _p in NEW:
+    PRICE[_p["id"]] = _p["micros"]
+    L[_p["id"]] = {PLAY_LOCALE[k]: v for k, v in _p["loc"].items()}
 RV = "regionsVersion.version=2026/01"
 def regional(micros):
     m = int(micros)

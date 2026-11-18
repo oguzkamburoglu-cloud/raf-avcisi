@@ -28,6 +28,9 @@ PRODUCTS = [
         "ru": ("Premium", "Награды без рекламы и по 10 подсказок"),
      }},
 ]
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from iap_new import NEW
+PRODUCTS += NEW
 REVIEW_NOTE = "Shop button on the level screen (bag icon). Purchases unlock in-game helps; Premium skips rewarded ads. Restore Purchases is in the Shop."
 
 for p in PRODUCTS:

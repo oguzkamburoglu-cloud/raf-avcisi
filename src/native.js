@@ -133,7 +133,7 @@
   };
   var ADS_TEST = AD_UNITS[platform].indexOf("3940256099942544") >= 0;
   // Product ids: create the same ids in Play Console and App Store Connect
-  var PRODUCT_IDS = { pack: "yardim_paketi_5", premium: "premium" };
+  var PRODUCT_IDS = { pack: "yardim_paketi_5", premium: "premium", starter: "baslangic_paketi", coins1: "para_1200", coins2: "para_3500" };
 
   var AdMob = P.AdMob, IAP = P.NativePurchases;
   var adReady = false, adLoading = false, canAds = false, privacyReq = false;
@@ -186,7 +186,7 @@
   function setPremium() { premium = true; lsSet("raf_premium", "1"); }
   function loadProducts() {
     if (!IAP) return;
-    IAP.getProducts({ productIdentifiers: [PRODUCT_IDS.pack, PRODUCT_IDS.premium], productType: "inapp" })
+    IAP.getProducts({ productIdentifiers: Object.keys(PRODUCT_IDS).map(function (k) { return PRODUCT_IDS[k]; }), productType: "inapp" })
       .then(function (r) {
         (r.products || []).forEach(function (p) {
           Object.keys(PRODUCT_IDS).forEach(function (k) { if (PRODUCT_IDS[k] === p.identifier) prices[k] = p.priceString; });
@@ -206,7 +206,7 @@
     if (!IAP || !PRODUCT_IDS[kind]) return Promise.resolve(false);
     return IAP.purchaseProduct({
       productIdentifier: PRODUCT_IDS[kind], productType: "inapp", quantity: 1,
-      isConsumable: kind === "pack"   // the pack can be bought again; Premium is bought once
+      isConsumable: kind !== "premium"   // packs and coins can be bought again; Premium is bought once
     })
       .then(function () { if (kind === "premium") setPremium(); return true; })
       .catch(function () { return false; });

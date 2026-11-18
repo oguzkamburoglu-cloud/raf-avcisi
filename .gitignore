@@ -5,3 +5,4 @@ www/
 android/keystore.properties
 .DS_Store
 ios/App/CapApp-SPM/symlinks/
+scripts/__pycache__/
