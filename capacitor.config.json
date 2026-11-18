@@ -24,5 +24,16 @@
       "overlaysWebView": true,
       "style": "LIGHT"
     }
+  },
+  "experimental": {
+    "ios": {
+      "spm": {
+        "packageOptions": {
+          "@capacitor-firebase/analytics": {
+            "symlink": true
+          }
+        }
+      }
+    }
   }
 }
