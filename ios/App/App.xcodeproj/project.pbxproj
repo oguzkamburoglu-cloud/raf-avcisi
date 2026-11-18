@@ -48,6 +48,7 @@
 		7A1FA78C5BF69B40D464B954 /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		7A1FED73F6B46391B95E1D03 /* ko */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ko; path = ko.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		7A1F14515CFE3D4B2659A06F /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = zh-Hans; path = zh-Hans.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		7A1FF99C8A141735E32DCF9E /* zh-Hant */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = zh-Hant; path = zh-Hant.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -157,6 +158,7 @@
 				ja,
 				ko,
 				"zh-Hans",
+				"zh-Hant",
 				Base,
 			);
 			mainGroup = 504EC2FB1FED79650016851F;
@@ -238,6 +240,7 @@
 				7A1FA78C5BF69B40D464B954 /* ja */,
 				7A1FED73F6B46391B95E1D03 /* ko */,
 				7A1F14515CFE3D4B2659A06F /* zh-Hans */,
+				7A1FF99C8A141735E32DCF9E /* zh-Hant */,
 			);
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
