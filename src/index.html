@@ -645,6 +645,24 @@ body{font-weight:500}
 .psign.hang::before{left:14px}.psign.hang::after{right:14px}
 .mentry{position:absolute;left:50%;transform:translate(-50%,-50%);z-index:2;display:flex;align-items:center;gap:8px;background:linear-gradient(180deg,#BFE6FA,#8ED0F2);border:3px solid #fff;border-bottom:0;border-radius:12px 12px 0 0;padding:6px 18px 8px;font:900 14px var(--f-fun);color:var(--ic-deep,#0A4521);box-shadow:0 -2px 0 rgba(0,0,0,.08);white-space:nowrap}
 .mentry i{font-style:normal;font-family:"Noto Color Emoji","Apple Color Emoji",sans-serif;font-size:20px}
+
+/* v23: 3D market stalls */
+.booth3d{display:block;width:100%;height:auto;overflow:visible}
+.booth3d .be{font-family:"Apple Color Emoji","Noto Color Emoji","Segoe UI Emoji",sans-serif;filter:drop-shadow(0 2.5px 0 rgba(60,35,10,.28))}
+.booth3d .bpop{animation:bpop .8s cubic-bezier(.2,1.5,.4,1) both;transform-box:fill-box;transform-origin:50% 100%}
+.booth3d .bnx{animation:bnx 1.3s ease-in-out infinite;transform-box:fill-box;transform-origin:50% 50%}
+@keyframes bpop{0%{transform:translateY(-34px) scale(.3);opacity:0}55%{transform:translateY(2px) scale(1.25);opacity:1}100%{transform:none}}
+@keyframes bnx{0%,100%{transform:scale(1)}50%{transform:scale(1.14)}}
+.mscene{max-width:270px;margin:14px auto 0;position:relative}
+.msec.lock .mscene{filter:grayscale(.85)}
+.msec.done .mscene::after{content:"✓";position:absolute;right:4px;top:2px;width:26px;height:26px;border-radius:50%;background:var(--green);color:#fff;font:900 16px/26px var(--f-ui);text-align:center;box-shadow:0 2px 0 rgba(0,0,0,.18)}
+.mitems{margin:2px 0 8px}
+.mitems span{font-size:19px}
+.mitems span em{font-size:10.5px}
+.gond{width:31%;height:auto;margin-top:-46px;padding:0;background:none;border:0;border-radius:0;box-shadow:none;display:block}
+.gond.l{left:0}.gond.r{right:0}
+.path .gond svg.booth3d{position:static;inset:auto;width:100%;height:auto}
+.gond b{top:-14px;z-index:2;border:2px solid #fff;font-size:9.5px}
 </style>
 </head>
 <body>
@@ -716,6 +734,7 @@ body{font-weight:500}
 <div class="intro" id="intro" hidden><div class="shelfline"></div><div class="ilogo brand"><img class="gicon" alt="" aria-hidden="true"><p class="sub">Raf Avcısı</p></div><div class="icart">🛒</div><p class="itag">Rafları temizle, listeyi tamamla!</p><small class="iskip">Dokun ve başla</small></div>
 <div class="ov sky" id="ovMis" hidden><div class="card mapcard sheet"><div class="maphead"><h2>Görevler</h2><button class="iconbtn" id="misClose" aria-label="Kapat">✕</button></div><div class="missions"><p class="sect">Bugünün görevleri</p><div id="misList"></div></div><p class="sect">Rozetler</p><div class="badges" id="badges"></div><p class="sect">İstatistikler</p><div class="stats" id="stats"></div></div></div>
 <div class="ov sky" id="ovBoard" hidden><div class="card mapcard sheet" id="boardCard"></div></div>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><linearGradient id="bxShade" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".28"/><stop offset=".5" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#3A1E08" stop-opacity=".22"/></linearGradient><linearGradient id="bxAwn" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".35"/><stop offset=".55" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#3A1E08" stop-opacity=".25"/></linearGradient></defs></svg>
 <div class="ov sky" id="ovMkt" hidden><div class="card mapcard sheet" id="mktCard"></div></div>
 <div class="ov sky" id="ovWheel" hidden><div class="card sheet" id="wheelCard"></div></div>
 <div class="ov sky" id="ovSet" hidden><div class="card mapcard sheet"><div class="maphead"><h2>Ayarlar</h2><button class="iconbtn" id="setClose" aria-label="Kapat">✕</button></div>
@@ -2029,6 +2048,55 @@ function walletRefresh(){
   if($("mktSub"))$("mktSub").textContent=x?T("{d}/{n} parça kuruldu",{d:built,n:MKT.length*5}):T("Marketin tamam!");
   if($("mktBang"))$("mktBang").hidden=!(mktCanBuild()||albumReady());
 }
+
+// v23: chunky 3D market stall drawn in SVG. body = counter material, aw = awning colours, back = back wall detail.
+const BOOTH_M={wood:["#EDA862","#BE7535","#F8CF92"],brick:["#DC7550","#A84D2E","#F2A47E"],cool:["#A6DCF4","#62B2DA","#DAF2FC"],
+  cream:["#FFF6E4","#E2CFAC","#FFFFFF"],red:["#EA5A4D","#B63B30","#FF9286"],plum:["#A271E0","#7049B2","#CBA8F6"]};
+const BOOTH_O="#4A2C12";
+function booth(body,aw,back,items,on,pop,nxt,sign){
+  const m=BOOTH_M[body]||BOOTH_M.wood,O=BOOTH_O,w=`stroke="${O}" stroke-width="2.2" stroke-linejoin="round"`;
+  let s=`<svg class="booth3d" viewBox="0 0 200 150" aria-hidden="true"><ellipse cx="100" cy="140" rx="92" ry="8" fill="#5A3A14" opacity=".2"/>`;
+  // back wall + its detail
+  s+=`<rect x="30" y="40" width="146" height="50" rx="4" fill="${m[1]}" ${w}/><rect x="30" y="40" width="146" height="50" rx="4" fill="url(#bxShade)"/>`;
+  if(back==="door")s+=`<rect x="84" y="46" width="38" height="44" rx="3" fill="#BFE6FA" ${w}/><line x1="103" y1="46" x2="103" y2="90" stroke="${O}" stroke-width="2"/><path d="M88 50l8 0-10 14z" fill="#fff" opacity=".7"/>`;
+  else if(back==="oven")s+=`<path d="M78 90v-22a25 25 0 0 1 50 0v22z" fill="#8E3B22" ${w}/><path d="M88 90v-18a15 15 0 0 1 30 0v18z" fill="#3A1A0C"/><ellipse cx="103" cy="86" rx="13" ry="5" fill="#FFB02E"/><ellipse cx="103" cy="84" rx="7" ry="4" fill="#FFE27A"/>`;
+  else if(back==="glass")for(let x=36;x<170;x+=34)s+=`<rect x="${x}" y="45" width="30" height="42" rx="3" fill="#E6F7FF" opacity=".75" ${w}/><path d="M${x+5} 49l7 0-9 14z" fill="#fff"/>`;
+  else if(back==="crates")for(let x=38;x+34<=172;x+=45)s+=`<rect x="${x}" y="78" width="34" height="12" rx="2" fill="#D79A55" ${w}/><line x1="${x}" y1="84" x2="${x+34}" y2="84" stroke="${O}" stroke-width="1.2" opacity=".5"/>`;
+  else s+=`<path d="M30 52h146M30 64h146" stroke="#fff" stroke-width="2" opacity=".25"/>`;
+  // shelf plank
+  s+=`<path d="M30 72h146v6H30z" fill="${m[2]}" ${w}/>`;
+  // items: three on the shelf, two on the counter
+  const slots=[[64,72,22],[103,72,22],[142,72,22],[66,95,27],[132,95,27]];
+  const it=(k)=>{const [x,y,f]=slots[k],e=items[k];if(e==null)return"";
+    if(on[k])return `<text class="be${pop===k?" bpop":""}" x="${x}" y="${y}" font-size="${f}" text-anchor="middle">${e}</text>`;
+    return `<g class="${nxt===k?"bnx":""}" opacity="${nxt===k?.95:.5}"><circle cx="${x}" cy="${y-f*.38}" r="${f*.46}" fill="#fff" fill-opacity=".55" stroke="${O}" stroke-width="1.6" stroke-dasharray="3 3"/><text x="${x}" y="${y-f*.38+5}" font-size="15" font-weight="900" text-anchor="middle" fill="${O}" font-family="sans-serif">+</text></g>`};
+  s+=it(0)+it(1)+it(2);
+  // posts
+  s+=`<rect x="16" y="36" width="9" height="66" rx="3" fill="${m[2]}" ${w}/><rect x="166" y="32" width="9" height="62" rx="3" fill="${m[1]}" ${w}/>`;
+  // counter: side, top, front
+  s+=`<path d="M164 98l22-13v40l-22 13z" fill="${m[1]}" ${w}/><path d="M12 98l20-13h154l-22 13z" fill="${m[2]}" ${w}/><path d="M22 95l10-6h140" stroke="#fff" stroke-width="2.4" fill="none" opacity=".7" stroke-linecap="round"/>`;
+  s+=`<rect x="12" y="98" width="152" height="40" rx="5" fill="${m[0]}" ${w}/><rect x="12" y="98" width="152" height="40" rx="5" fill="url(#bxShade)"/><rect x="12" y="98" width="152" height="6" rx="3" fill="${m[1]}" opacity=".55"/>`;
+  if(body==="cool")s+=`<rect x="22" y="108" width="132" height="24" rx="4" fill="#F2FBFF" opacity=".8" ${w}/><path d="M34 108l14 0-16 24h-6zM56 108h6l-16 24h-6z" fill="#fff"/>`;
+  else if(body==="brick")for(let r=0;r<3;r++)for(let x=14+(r%2)*11;x<160;x+=22)s+=`<rect x="${x}" y="${106+r*10}" width="19" height="7" rx="1.5" fill="#000" opacity=".1"/>`;
+  else if(body==="wood"||body==="red")s+=`<path d="M12 116h152M12 127h152" stroke="${O}" stroke-width="1.3" opacity=".3"/><circle cx="24" cy="110" r="1.6" fill="${O}" opacity=".45"/><circle cx="152" cy="110" r="1.6" fill="${O}" opacity=".45"/>`;
+  else if(body==="plum")s+=`<path d="M12 118h152" stroke="#F2C230" stroke-width="4"/>`;
+  else s+=`<rect x="22" y="110" width="132" height="20" rx="4" fill="${aw[0]}" opacity=".85"/>`;
+  s+=it(3)+it(4);
+  // awning: stripes between a back edge and a wider front edge, scallops below, sheen on top
+  const n=8,tx=k=>32+152*k/n,bx=k=>8+176*k/n;
+  for(let k=0;k<n;k++){const c=aw[k%2];
+    s+=`<path d="M${tx(k)} 12L${tx(k+1)} 12L${bx(k+1)} 42L${bx(k)} 42z" fill="${c}"/>`;
+    s+=`<path d="M${bx(k)} 42a${88/n} ${88/n} 0 0 0 ${176/n} 0z" fill="${c}" ${w}/>`}
+  s+=`<path d="M32 12H184L184 42H8z" fill="url(#bxAwn)" ${w}/><path d="M36 15H180" stroke="#fff" stroke-width="2.5" opacity=".75" stroke-linecap="round"/>`;
+  if(back==="bulbs")for(let k=0;k<=n;k++)s+=`<circle cx="${bx(k)}" cy="42" r="3.4" fill="#FFE27A" ${w.replace("2.2","1.4")}/>`;
+  if(sign)s+=`<path d="M92 12V4M118 12V4" stroke="${O}" stroke-width="2"/><rect x="84" y="-14" width="42" height="22" rx="6" fill="#F8CF92" ${w}/><rect x="87" y="-11" width="36" height="5" rx="2.5" fill="#fff" opacity=".5"/><text class="be" x="105" y="4" font-size="15" text-anchor="middle">${sign}</text>`;
+  return s+`</svg>`;
+}
+const MKT_B={door:["cream",["#1F9D55","#FFFFFF"],"door"],prod:["wood",["#7CB342","#FFFFFF"],"crates"],bake:["brick",["#F08A3C","#FFF3D6"],"oven"],
+  cold:["cool",["#2F8FD8","#FFFFFF"],"glass"],till:["red",["#E53935","#FFFFFF"],"plain"],show:["plum",["#F2C230","#A271E0"],"bulbs"]};
+const TH_B=[["wood","crates"],["cream","plain"],["red","glass"],["wood","plain"],["cool","glass"],["cream","door"],["plum","bulbs"],["wood","crates"],["brick","oven"],["brick","oven"]];
+function mktBooth(si,k,pop,nxt){const sec=MKT[si],b=MKT_B[sec.id];return booth(b[0],b[1],b[2],sec.it.map(x=>x[0]),sec.it.map((x,j)=>j<k),pop,nxt,sec.e)}
+function themeBooth(l,em){const ti=(l-1)%THEMES.length,b=TH_B[ti]||TH_B[0];return booth(b[0],[THEMES[ti].bar,"#FFFFFF"],b[1],em,[1,1,1,1,1])}
 function openMarket(tab,popAt){
   tab=tab||"mkt";const card=$("mktCard"),m=store.get("mkt",{}),nx=mktNext(),free=starsFree();
   let h=`<div class="maphead"><h2>${T("Marketim")}</h2><button class="iconbtn" id="mktClose" aria-label="${T("Kapat")}">✕</button></div>
@@ -2037,7 +2105,7 @@ function openMarket(tab,popAt){
   if(tab==="mkt"){
     h+=`<div class="awning"></div><p class="msign">${T("Marketim")}</p><p class="bank" style="text-align:center">${T("Reyonlarda kazandığın yıldızlarla marketini kur.")}</p>`;
     MKT.forEach((sec,si)=>{const k=m[sec.id]||0,open=!nx||si<=nx[0];
-      h+=`<div class="msec${open?"":" lock"}"><h3>${sec.e} ${sec.n}<small>${k}/5</small></h3><div class="mitems">${sec.it.map((x,j)=>`<span class="${j<k?"":"off"}${popAt&&popAt[0]===si&&popAt[1]===j?" pop":""}">${x[0]}<em>${x[1]}</em></span>`).join("")}</div>`;
+      h+=`<div class="msec${open?"":" lock"}${k>=5?" done":""}"><h3>${sec.e} ${sec.n}<small>${k}/5</small></h3><div class="mscene">${mktBooth(si,k,popAt&&popAt[0]===si?popAt[1]:-1,nx&&si===nx[0]?k:-1)}</div><div class="mitems">${sec.it.map((x,j)=>`<span class="${j<k?"":"off"}${popAt&&popAt[0]===si&&popAt[1]===j?" pop":""}">${x[0]}<em>${x[1]}</em></span>`).join("")}</div>`;
       if(nx&&si===nx[0]){const cost=mktCost(si,k);h+=`<button class="btn" id="mktBuild" ${free<cost?"disabled":""}>⭐ ${cost} · ${T("Kur: {x}",{x:sec.it[k][1]})}${free<cost?`<small>${T("Yıldız topla: reyonları 3 yıldızla bitir.")}</small>`:""}</button>`}
       else if(!open)h+=`<p class="bank">🔒 ${T("Önceki köşe bitince açılır")}</p>`;
       h+=`</div>`});
@@ -2077,7 +2145,7 @@ function openMap(){
   for(let i=1;i<=n;i++){const p=P(i),th=themeOf(i),locked=i>lv,cur=i===lv,s3=st[i]||0;
     if((i-1)%6===0)h+=`<span class="psign hang" style="top:${p.y+G/2}px">${T("Kat {n}",{n:(i-1)/6+1})}</span>`;
     {const ids=[...PRODUCTS.keys()].filter(j=>!th.cats||th.cats.includes(PRODUCTS[j][2])),pk=k=>ids.length?PRODUCTS[ids[(i*7+k*5)%ids.length]][0]:"🛒";
-     h+=`<div class="gond ${p.x>50?"l":"r"}${locked?" off":""}" style="top:${p.y}px;--gb:${th.bar}"><b>${th.e} ${th.name}</b><span>${[0,1,2,3].map(pk).join("")}</span><span>${[4,5,6,7].map(pk).join("")}</span></div>`}
+     h+=`<div class="gond ${p.x>50?"l":"r"}${locked?" off":""}" style="top:${p.y}px;--gb:${th.bar}"><b>${th.e} ${th.name}</b>${themeBooth(i,[0,1,2,3,4].map(pk))}</div>`}
     h+=`<button class="pnode${locked?" locked":""}${cur?" cur":""}${hardOf(i)===2?" boss":hardOf(i)===1?" hard":""}" data-l="${i}" style="left:${p.x}%;top:${p.y}px;background:${th.bar}" ${locked?"disabled":""} aria-label="${T("Reyon {n}",{n:i})}">${locked?"🔒":i}<span class="pe">${th.e}</span>${hardOf(i)?`<span class="ph">${hardOf(i)===2?"👑":"🔥"}</span>`:""}${kindOf(i)?`<span class="ph">${KINDS[kindOf(i)][0]}</span>`:""}${!locked&&!cur?`<span class="ps">${[1,2,3].map(k=>k<=s3?"★":'<span class="off">★</span>').join("")}</span>`:""}</button>`;
     if(cur)h+=`<span class="pmark" style="left:${p.x}%;top:${p.y}px">🛒</span>`;
     if(i%5===0){const q=P(i+.5),cx=q.x>50?q.x-24:q.x+24,state=ch[i]?"done":lv>i?"ready":"locked";
