@@ -663,6 +663,19 @@ body{font-weight:500}
 .gond.l{left:0}.gond.r{right:0}
 .path .gond svg.booth3d{position:static;inset:auto;width:100%;height:auto}
 .gond b{top:-14px;z-index:2;border:2px solid #fff;font-size:9.5px}
+
+/* v24: cartoon stalls */
+.booth3d .be.bob{animation:bbob 2.4s ease-in-out infinite;transform-box:fill-box;transform-origin:50% 100%}
+.booth3d .be.bpop{animation:bpop .8s cubic-bezier(.2,1.5,.4,1) both,bbob 2.4s ease-in-out .8s infinite}
+@keyframes bbob{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-3px) scale(1.04,.98)}}
+.booth3d .bsp{animation:bsp 1.8s ease-in-out infinite;transform-box:fill-box;transform-origin:50% 50%}
+@keyframes bsp{0%,100%{opacity:.2;transform:scale(.5) rotate(0)}50%{opacity:1;transform:scale(1.15) rotate(25deg)}}
+.mscene{max-width:280px;border-radius:22px;background:radial-gradient(ellipse at 50% 35%,#E6F7FF 0,#F4FBFF 45%,rgba(255,255,255,0) 72%);padding:18px 6px 2px}
+.msec.done .mscene::after{right:10px;top:10px}
+.gond{width:29%;margin-top:-50px}
+.gond.l{left:1%}.gond.r{right:1%}
+.gond b{top:-4px}
+@media (prefers-reduced-motion:reduce){.booth3d .be.bob,.booth3d .bsp{animation:none}}
 </style>
 </head>
 <body>
@@ -2050,46 +2063,55 @@ function walletRefresh(){
 }
 
 // v23: chunky 3D market stall drawn in SVG. body = counter material, aw = awning colours, back = back wall detail.
-const BOOTH_M={wood:["#EDA862","#BE7535","#F8CF92"],brick:["#DC7550","#A84D2E","#F2A47E"],cool:["#A6DCF4","#62B2DA","#DAF2FC"],
-  cream:["#FFF6E4","#E2CFAC","#FFFFFF"],red:["#EA5A4D","#B63B30","#FF9286"],plum:["#A271E0","#7049B2","#CBA8F6"]};
-const BOOTH_O="#4A2C12";
+const BOOTH_M={wood:["#F5A855","#B9682B","#FFD58F","#CC7E3D"],brick:["#F57D55","#B44A2B","#FFB38E","#C95C3B"],cool:["#7DD5F8","#2E9BD1","#CDF2FF","#4CB4E7"],
+  cream:["#FFF2D8","#DDBF8E","#FFFFFF","#F2DBB0"],red:["#FF625A","#C2342C","#FFA199","#DA453D"],plum:["#B57EF4","#7347C2","#DFC4FF","#9260DC"]};
+const BOOTH_O="#3E2410";
 function booth(body,aw,back,items,on,pop,nxt,sign){
-  const m=BOOTH_M[body]||BOOTH_M.wood,O=BOOTH_O,w=`stroke="${O}" stroke-width="2.2" stroke-linejoin="round"`;
-  let s=`<svg class="booth3d" viewBox="0 0 200 150" aria-hidden="true"><ellipse cx="100" cy="140" rx="92" ry="8" fill="#5A3A14" opacity=".2"/>`;
-  // back wall + its detail
-  s+=`<rect x="30" y="40" width="146" height="50" rx="4" fill="${m[1]}" ${w}/><rect x="30" y="40" width="146" height="50" rx="4" fill="url(#bxShade)"/>`;
-  if(back==="door")s+=`<rect x="84" y="46" width="38" height="44" rx="3" fill="#BFE6FA" ${w}/><line x1="103" y1="46" x2="103" y2="90" stroke="${O}" stroke-width="2"/><path d="M88 50l8 0-10 14z" fill="#fff" opacity=".7"/>`;
-  else if(back==="oven")s+=`<path d="M78 90v-22a25 25 0 0 1 50 0v22z" fill="#8E3B22" ${w}/><path d="M88 90v-18a15 15 0 0 1 30 0v18z" fill="#3A1A0C"/><ellipse cx="103" cy="86" rx="13" ry="5" fill="#FFB02E"/><ellipse cx="103" cy="84" rx="7" ry="4" fill="#FFE27A"/>`;
-  else if(back==="glass")for(let x=36;x<170;x+=34)s+=`<rect x="${x}" y="45" width="30" height="42" rx="3" fill="#E6F7FF" opacity=".75" ${w}/><path d="M${x+5} 49l7 0-9 14z" fill="#fff"/>`;
-  else if(back==="crates")for(let x=38;x+34<=172;x+=45)s+=`<rect x="${x}" y="78" width="34" height="12" rx="2" fill="#D79A55" ${w}/><line x1="${x}" y1="84" x2="${x+34}" y2="84" stroke="${O}" stroke-width="1.2" opacity=".5"/>`;
-  else s+=`<path d="M30 52h146M30 64h146" stroke="#fff" stroke-width="2" opacity=".25"/>`;
-  // shelf plank
-  s+=`<path d="M30 72h146v6H30z" fill="${m[2]}" ${w}/>`;
-  // items: three on the shelf, two on the counter
-  const slots=[[64,72,22],[103,72,22],[142,72,22],[66,95,27],[132,95,27]];
+  const m=BOOTH_M[body]||BOOTH_M.wood,O=BOOTH_O,w=`stroke="${O}" stroke-width="3" stroke-linejoin="round"`,w2=`stroke="${O}" stroke-width="2" stroke-linejoin="round"`;
+  let s=`<svg class="booth3d" viewBox="0 0 200 170" aria-hidden="true">`;
+  // grass island
+  s+=`<ellipse cx="100" cy="154" rx="96" ry="15" fill="#4C9A2A" ${w}/><ellipse cx="100" cy="146" rx="96" ry="15" fill="#8FD957" ${w}/><ellipse cx="70" cy="141" rx="44" ry="5" fill="#fff" opacity=".35"/>`;
+  s+=`<path d="M14 147q3-8 5 0q3-9 5 0M178 146q3-8 5 0q3-9 5 0M150 156q2-6 4 0q2-7 4 0" fill="none" stroke="#3B8A20" stroke-width="2" stroke-linecap="round"/>`;
+  s+=`<circle cx="30" cy="152" r="3.2" fill="#FFE14D" ${w2}/><circle cx="172" cy="154" r="3.2" fill="#FF8FB1" ${w2}/>`;
+  // back board
+  s+=`<rect x="30" y="48" width="140" height="62" rx="14" fill="${m[3]}" ${w}/><rect x="38" y="54" width="60" height="5" rx="2.5" fill="#fff" opacity=".3"/>`;
+  if(back==="door")s+=`<rect x="80" y="56" width="40" height="54" rx="10" fill="#A8E3FF" ${w}/><line x1="100" y1="56" x2="100" y2="110" stroke="${O}" stroke-width="2.5"/><ellipse cx="89" cy="70" rx="4" ry="8" fill="#fff" opacity=".8"/>`;
+  else if(back==="oven")s+=`<path d="M70 110v-24a30 30 0 0 1 60 0v24z" fill="#B5502F" ${w}/><path d="M82 110v-20a18 18 0 0 1 36 0v20z" fill="#3A1A0C" ${w2}/><path d="M86 110q4-16 14-10q2-12 8-4q6 2 6 14z" fill="#FF9F1C"/><path d="M93 110q3-9 8-6q3-6 6 6z" fill="#FFE15C"/>`;
+  else if(back==="glass")for(let x=38;x<160;x+=42)s+=`<rect x="${x}" y="56" width="36" height="48" rx="9" fill="#E3F7FF" ${w2}/><ellipse cx="${x+10}" cy="70" rx="3.5" ry="8" fill="#fff"/>`;
+  else if(back==="crates")for(let x=38;x+38<=166;x+=44)s+=`<rect x="${x}" y="94" width="38" height="16" rx="5" fill="#E3A35A" ${w2}/><path d="M${x+4} 102h30" stroke="${O}" stroke-width="1.5" opacity=".45"/>`;
+  else s+=`<circle cx="60" cy="72" r="5" fill="#fff" opacity=".22"/><circle cx="140" cy="68" r="7" fill="#fff" opacity=".18"/>`;
+  // shelf
+  s+=`<rect x="34" y="86" width="132" height="10" rx="5" fill="${m[2]}" ${w}/>`;
+  const slots=[[64,87,27],[100,87,27],[136,87,27],[62,104,34],[138,104,34]];
   const it=(k)=>{const [x,y,f]=slots[k],e=items[k];if(e==null)return"";
-    if(on[k])return `<text class="be${pop===k?" bpop":""}" x="${x}" y="${y}" font-size="${f}" text-anchor="middle">${e}</text>`;
-    return `<g class="${nxt===k?"bnx":""}" opacity="${nxt===k?.95:.5}"><circle cx="${x}" cy="${y-f*.38}" r="${f*.46}" fill="#fff" fill-opacity=".55" stroke="${O}" stroke-width="1.6" stroke-dasharray="3 3"/><text x="${x}" y="${y-f*.38+5}" font-size="15" font-weight="900" text-anchor="middle" fill="${O}" font-family="sans-serif">+</text></g>`};
+    if(on[k])return `<ellipse cx="${x}" cy="${y+1}" rx="${f*.34}" ry="2.6" fill="#000" opacity=".2"/><text class="be ${pop===k?"bpop":"bob"}" style="animation-delay:${pop===k?0:-k*.47}s" x="${x}" y="${y}" font-size="${f}" text-anchor="middle">${e}</text>`;
+    const cy=y-f*.4,r=f*.42;
+    return `<g class="${nxt===k?"bnx":""}" opacity="${nxt===k?1:.6}"><circle cx="${x}" cy="${cy}" r="${r}" fill="#FFF4C7" stroke="#E0A400" stroke-width="2.4" stroke-dasharray="4 3"/><text x="${x}" y="${cy+6}" font-size="17" font-weight="900" text-anchor="middle" fill="#C98700" font-family="sans-serif">+</text></g>`};
   s+=it(0)+it(1)+it(2);
-  // posts
-  s+=`<rect x="16" y="36" width="9" height="66" rx="3" fill="${m[2]}" ${w}/><rect x="166" y="32" width="9" height="62" rx="3" fill="${m[1]}" ${w}/>`;
-  // counter: side, top, front
-  s+=`<path d="M164 98l22-13v40l-22 13z" fill="${m[1]}" ${w}/><path d="M12 98l20-13h154l-22 13z" fill="${m[2]}" ${w}/><path d="M22 95l10-6h140" stroke="#fff" stroke-width="2.4" fill="none" opacity=".7" stroke-linecap="round"/>`;
-  s+=`<rect x="12" y="98" width="152" height="40" rx="5" fill="${m[0]}" ${w}/><rect x="12" y="98" width="152" height="40" rx="5" fill="url(#bxShade)"/><rect x="12" y="98" width="152" height="6" rx="3" fill="${m[1]}" opacity=".55"/>`;
-  if(body==="cool")s+=`<rect x="22" y="108" width="132" height="24" rx="4" fill="#F2FBFF" opacity=".8" ${w}/><path d="M34 108l14 0-16 24h-6zM56 108h6l-16 24h-6z" fill="#fff"/>`;
-  else if(body==="brick")for(let r=0;r<3;r++)for(let x=14+(r%2)*11;x<160;x+=22)s+=`<rect x="${x}" y="${106+r*10}" width="19" height="7" rx="1.5" fill="#000" opacity=".1"/>`;
-  else if(body==="wood"||body==="red")s+=`<path d="M12 116h152M12 127h152" stroke="${O}" stroke-width="1.3" opacity=".3"/><circle cx="24" cy="110" r="1.6" fill="${O}" opacity=".45"/><circle cx="152" cy="110" r="1.6" fill="${O}" opacity=".45"/>`;
-  else if(body==="plum")s+=`<path d="M12 118h152" stroke="#F2C230" stroke-width="4"/>`;
-  else s+=`<rect x="22" y="110" width="132" height="20" rx="4" fill="${aw[0]}" opacity=".85"/>`;
+  // candy posts
+  for(const x of [20,166])s+=`<rect x="${x}" y="40" width="14" height="106" rx="7" fill="${m[2]}" ${w}/><rect x="${x+8}" y="44" width="3.5" height="98" rx="1.75" fill="${m[1]}" opacity=".35"/><rect x="${x+3}" y="46" width="3" height="40" rx="1.5" fill="#fff" opacity=".7"/>`;
+  // chunky counter
+  s+=`<rect x="14" y="108" width="172" height="38" rx="15" fill="${m[0]}" ${w}/><path d="M17 128h166v4a12 12 0 0 1-12 12H29a12 12 0 0 1-12-12z" fill="${m[1]}" opacity=".4"/>`;
+  if(body==="cool")s+=`<rect x="28" y="115" width="144" height="24" rx="9" fill="#F0FBFF" ${w2}/><path d="M42 115h12l-14 24h-9zM60 115h6l-14 24h-6z" fill="#fff"/><path d="M38 117h10l-12 20h-2z" fill="#BFE9FB" opacity=".6"/>`;
+  else if(body==="brick")for(let r=0;r<2;r++)for(let x=22+(r%2)*13;x<172;x+=26)s+=`<rect x="${x}" y="${114+r*12}" width="22" height="9" rx="4" fill="${m[1]}" opacity=".35"/>`;
+  else if(body==="wood")s+=`<path d="M58 112v30M100 112v30M142 112v30" stroke="${O}" stroke-width="2" opacity=".25" stroke-linecap="round"/><circle cx="36" cy="120" r="2.4" fill="${O}" opacity=".4"/><circle cx="164" cy="120" r="2.4" fill="${O}" opacity=".4"/>`;
+  else if(body==="red")s+=`<rect x="22" y="118" width="156" height="8" rx="4" fill="#fff" opacity=".9"/><circle cx="100" cy="122" r="9" fill="#FFD43B" ${w2}/><text x="100" y="126" font-size="11" font-weight="900" text-anchor="middle" fill="#B07800" font-family="sans-serif">$</text>`;
+  else if(body==="plum")for(let x=36;x<170;x+=32)s+=`<path d="M${x} 116l3 6 6.5 1-4.8 4.5 1.2 6.5-5.9-3.2-5.9 3.2 1.2-6.5-4.8-4.5 6.5-1z" fill="#FFD43B" ${w2.replace('"2"','"1.4"')}/>`;
+  else s+=`<rect x="26" y="116" width="148" height="18" rx="9" fill="${aw[0]}" ${w2}/><rect x="34" y="119" width="60" height="4" rx="2" fill="#fff" opacity=".55"/>`;
+  s+=`<circle cx="28" cy="118" r="3.2" fill="#fff" opacity=".85"/><circle cx="36" cy="116" r="1.7" fill="#fff" opacity=".85"/>`;
+  // thick rounded lip
+  s+=`<rect x="8" y="99" width="184" height="15" rx="7.5" fill="${m[2]}" ${w}/><rect x="16" y="102" width="96" height="4" rx="2" fill="#fff" opacity=".75"/>`;
   s+=it(3)+it(4);
-  // awning: stripes between a back edge and a wider front edge, scallops below, sheen on top
-  const n=8,tx=k=>32+152*k/n,bx=k=>8+176*k/n;
+  // puffy domed awning
+  const n=7,tx=k=>30+140*k/n,ty=k=>{const t=k/n;return 20-30*t*(1-t)},bx=k=>16+168*k/n,r=84/n;
   for(let k=0;k<n;k++){const c=aw[k%2];
-    s+=`<path d="M${tx(k)} 12L${tx(k+1)} 12L${bx(k+1)} 42L${bx(k)} 42z" fill="${c}"/>`;
-    s+=`<path d="M${bx(k)} 42a${88/n} ${88/n} 0 0 0 ${176/n} 0z" fill="${c}" ${w}/>`}
-  s+=`<path d="M32 12H184L184 42H8z" fill="url(#bxAwn)" ${w}/><path d="M36 15H180" stroke="#fff" stroke-width="2.5" opacity=".75" stroke-linecap="round"/>`;
-  if(back==="bulbs")for(let k=0;k<=n;k++)s+=`<circle cx="${bx(k)}" cy="42" r="3.4" fill="#FFE27A" ${w.replace("2.2","1.4")}/>`;
-  if(sign)s+=`<path d="M92 12V4M118 12V4" stroke="${O}" stroke-width="2"/><rect x="84" y="-14" width="42" height="22" rx="6" fill="#F8CF92" ${w}/><rect x="87" y="-11" width="36" height="5" rx="2.5" fill="#fff" opacity=".5"/><text class="be" x="105" y="4" font-size="15" text-anchor="middle">${sign}</text>`;
+    s+=`<path d="M${tx(k)} ${ty(k)}L${tx(k+1)} ${ty(k+1)}L${bx(k+1)} 46L${bx(k)} 46z" fill="${c}"/>`;
+    s+=`<path d="M${bx(k)} 46a${r} ${r*1.05} 0 0 0 ${2*r} 0z" fill="${c}" ${w}/><path d="M${bx(k)+2} 46h${2*r-4}" stroke="#000" stroke-width="5" opacity=".08"/>`}
+  s+=`<path d="M16 46L30 20Q100 -10 170 20L184 46z" fill="url(#bxAwn)" ${w}/>`;
+  s+=`<path d="M40 22Q100 -2 158 21" stroke="#fff" stroke-width="4.5" fill="none" opacity=".8" stroke-linecap="round"/><ellipse cx="56" cy="30" rx="11" ry="4" fill="#fff" opacity=".45" transform="rotate(-14 56 30)"/>`;
+  if(back==="bulbs")for(let k=0;k<n;k++)s+=`<circle cx="${bx(k)+r}" cy="${46+r*1.05}" r="3.6" fill="#FFE45C" ${w2}/>`;
+  if(sign)s+=`<circle cx="100" cy="2" r="17" fill="#FFC928" ${w}/><circle cx="100" cy="2" r="12.5" fill="#FFF0A8" ${w2}/><ellipse cx="94" cy="-6" rx="5" ry="2.5" fill="#fff" opacity=".9" transform="rotate(-25 94 -6)"/><text class="be" x="100" y="8" font-size="15" text-anchor="middle">${sign}</text>`;
+  if(sign&&on.every(Boolean))[[22,30,13,0],[180,70,11,.6],[10,92,9,1.1]].forEach(([x,y,f,d])=>{s+=`<text class="bsp" style="animation-delay:${d}s" x="${x}" y="${y}" font-size="${f}" text-anchor="middle" fill="#FFC928" stroke="${O}" stroke-width="1">✦</text>`});
   return s+`</svg>`;
 }
 const MKT_B={door:["cream",["#1F9D55","#FFFFFF"],"door"],prod:["wood",["#7CB342","#FFFFFF"],"crates"],bake:["brick",["#F08A3C","#FFF3D6"],"oven"],
