@@ -778,6 +778,16 @@ body{font-weight:500}
 .nav{padding-top:14px}
 @media (max-height:740px){.basket .bcart{font-size:38px}.basket .bslot{width:42px;height:40px;font-size:24px}}
 @media (max-width:380px){.basket .bslot{width:40px;height:40px;font-size:24px}.basket .bcart{font-size:38px}}
+
+/* v28: top bar clears the camera / Dynamic Island */
+.appbar{padding-top:max(8px, calc(env(safe-area-inset-top,0px) + 2px))}
+/* v28: back row clearly behind */
+.shelf .back span{filter:grayscale(.55) brightness(1.12) blur(.5px);opacity:.38;transform:scale(.74)}
+.board .shelf .back{bottom:calc(14px + var(--slot,46px)*.72)}
+.board.dark .shelf .back span{filter:none;opacity:.5;transform:scale(.7)}
+/* v28: bigger shelves */
+.board.pad{padding-inline:6px}
+.board .shelf{padding-inline:2px}
 </style>
 </head>
 <body>
@@ -1933,17 +1943,17 @@ function fitBoard(){
   const b=$("board");if(!b||!S.shelves||!S.shelves.length)return;
   // few shelves: two wide columns with bigger products; otherwise three
   const n=S.shelves.length,cols=n<=6?2:3,rows=Math.ceil(n/cols),cs=getComputedStyle(b);
-  b.style.gridTemplateColumns=`repeat(${cols},minmax(0,1fr))`;b.style.columnGap=(cols===2?14:10)+"px";
+  b.style.gridTemplateColumns=`repeat(${cols},minmax(0,1fr))`;b.style.columnGap=(cols===2?10:6)+"px";
   const H=b.clientHeight-(parseFloat(cs.paddingTop)||0)-(parseFloat(cs.paddingBottom)||0);
   const W=b.clientWidth-(parseFloat(cs.paddingLeft)||0)-(parseFloat(cs.paddingRight)||0);
   if(H<60||W<120)return;
   const gy=rows>3?12:16;
-  const iw=((W-(cols===2?14:20))/cols-10)/3;
-  let slot=Math.max(38,Math.round(Math.min(iw*1.3,70)));
+  const iw=((W-(cols===2?10:12))/cols-4)/3;
+  let slot=Math.max(40,Math.round(Math.min(iw*1.45,84)));
   const avail=Math.floor((H-gy*(rows-1))/rows);
-  let rowh=Math.min(avail,Math.round(slot*(cols===2?1.8:2.2)+12));
+  let rowh=Math.min(avail,Math.round(slot*(cols===2?1.9:2.3)+14));
   if(rowh>avail){rowh=Math.max(62,avail);slot=Math.max(36,Math.min(slot,Math.round((rowh-12)/1.8)))}
-  const isz=Math.max(22,Math.round(Math.min(slot*.8,iw*.98,48)));
+  const isz=Math.max(24,Math.round(Math.min(slot*.86,iw*1.12,58)));
   b.style.rowGap=gy+"px";b.style.setProperty("--rowh",rowh+"px");b.style.setProperty("--slot",slot+"px");b.style.setProperty("--isz",isz+"px");
 }
 addEventListener("resize",()=>{try{fitBoard()}catch(e){}});
