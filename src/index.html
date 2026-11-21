@@ -742,6 +742,42 @@ body{font-weight:500}
 .shelf.steady{animation:none!important}
 @media (prefers-reduced-motion:reduce){.board .shelf.wob,.board .shelf.wob.hot{animation:none}}
 @media (max-height:740px){.list.chips .chip{height:42px;font-size:24px}.basket .bcart{font-size:30px}.basket .bslot{width:48px;height:40px;font-size:26px}}
+
+/* v27: no list tiles; list products glow on the shelves */
+#listItems{display:none!important}
+.board .item.onl{filter:drop-shadow(0 0 2px #fff) drop-shadow(0 0 5px rgba(30,200,100,.95)) drop-shadow(0 0 2px rgba(30,200,100,.9))}
+/* v27: one-row top bar */
+.appbar{gap:6px;padding-block:8px}
+.appbar .mark,.appbar h1{display:none}
+#app .score{margin-right:0;padding:5px 10px 5px 6px;font-size:0;gap:4px;flex:none}
+#app .score b{font-size:18px}
+.appbar .banner{flex:1;min-width:0;margin:0;padding:4px 6px 4px 4px;border-radius:16px;gap:6px;box-shadow:0 3px 0 rgba(11,61,20,.13)}
+.appbar .banner .bemo{width:32px;height:32px;font-size:20px;line-height:32px;flex:none}
+.appbar .banner .t{display:flex;align-items:baseline;gap:5px;flex:1 0 auto;min-width:0}
+.appbar .banner .t b,.appbar .banner .t small{overflow:visible;text-overflow:clip}
+.appbar .banner .t b{font-size:19px;display:inline}
+.appbar .banner .t small{font-size:14px;font-weight:800;display:inline}
+.appbar #lvlPre,.appbar #lvlName{display:none!important}
+.appbar .banner .rushm{width:30px;height:30px;flex:none}
+.appbar .banner .timer{padding:3px 7px;font-size:17px;gap:2px;flex:none}
+.appbar .banner .tstars{font-size:9px}
+.appbar .banner .bemo{width:28px;height:28px;font-size:17px;line-height:28px}
+.appbar .banner .rushm{width:28px;height:28px}
+.appbar .iconbtn{width:36px;height:36px;font-size:20px;flex:none}
+/* v27: calmer back row */
+.shelf .back span{filter:saturate(.75) brightness(.97);opacity:.62;transform:scale(.88)}
+.board.dark .shelf .back span{filter:none;opacity:.5;transform:scale(.7)}
+/* v27: no words at the bottom */
+.basket>span:not(.bcart):not(.bslots){display:none}
+.basket{padding:6px 10px 6px 8px;gap:8px;border-radius:24px}
+.basket .bcart{font-size:46px}
+.bslots{gap:5px}
+.basket .bslot{width:46px;height:46px;font-size:28px;border-radius:14px}
+.navbtn{font-size:0!important;gap:0}
+.navbtn .n{font-size:12px}
+.nav{padding-top:14px}
+@media (max-height:740px){.basket .bcart{font-size:38px}.basket .bslot{width:42px;height:40px;font-size:24px}}
+@media (max-width:380px){.basket .bslot{width:40px;height:40px;font-size:24px}.basket .bcart{font-size:38px}}
 </style>
 </head>
 <body>
@@ -1231,7 +1267,7 @@ function newGame(l,mode){
   const base=mode==="daily"?0:store.get("score",0);
   S={level:l,mode,kind:lv.kind||"",gold:-1,theme:mode==="daily"?THEMES[5]:themeOf(l),shelves:lv.shelves,list:lv.list,time:lv.sp.time,total:lv.sp.time,score:base,startScore:base,
      sel:null,hist:[],undo:3,hint:1,shuf:1,frz:1,shelf:1,look:1,cut:1,lit:false,frzT:0,xsh:0,shN0:lv.shelves.length,combo:0,clears:0,moves:0,over:false,mult:1,fromList:!!forced,
-     tut:mode==="level"&&l===1&&!store.get("tutDone",false),basket:[],bcap:1,sale:-1,paused:false,rush:0,rushT:0,lastAct:Date.now()};
+     tut:mode==="level"&&l===1&&!store.get("tutDone",false),basket:[],bcap:3,sale:-1,paused:false,rush:0,rushT:0,lastAct:Date.now()};
   S.belt=lv.belt||null;S.beltN=4;S.exp=null;
   S.relax=mode==="level"&&store.get("relax",false)===true&&S.kind!=="moves"&&S.kind!=="bonus";
   if(l>=2||mode==="daily"){const types=[...new Set(S.shelves.flatMap(x=>x.layers.flat()).filter(x=>x!=null).map(x=>x<0?-x-1:x))];S.sale=types[(mode==="daily"?(+dayKey().replace(/-/g,""))%types.length:Math.floor(Math.random()*types.length))];}
@@ -1287,7 +1323,7 @@ function loadSave(){const sv=store.get("save",null);if(!sv)return null;if(sv.mod
 function resumeGame(sv){
   clearInterval(timerId);
   S={};SAVE_KEYS.forEach(k=>S[k]=sv[k]);
-  S.basket=Array.isArray(S.basket)?S.basket:(S.basket==null?[]:[S.basket]);S.bcap=S.bcap||1;S.frz=S.frz||0;S.shelf=S.shelf||0;S.look=S.look||0;S.cut=S.cut||0;S.xsh=S.xsh||0;S.frzT=0;S.shN0=S.shelves.length-S.xsh;
+  S.basket=Array.isArray(S.basket)?S.basket:(S.basket==null?[]:[S.basket]);S.bcap=Math.max(3,S.bcap||3);S.frz=S.frz||0;S.shelf=S.shelf||0;S.look=S.look||0;S.cut=S.cut||0;S.xsh=S.xsh||0;S.frzT=0;S.shN0=S.shelves.length-S.xsh;
   Object.assign(S,{rush:sv.rush||0,rushT:0,lastAct:Date.now(),sel:null,hist:[],combo:0,over:false,paused:false,tut:false,theme:sv.mode==="daily"?THEMES[5]:themeOf(sv.level)});
   render();startTimer();
 }
@@ -1312,7 +1348,7 @@ function tapBasket(e){
   const sl=e&&e.target&&e.target.closest?e.target.closest(".bslot"):null,bi=sl?[...$("bslots").children].indexOf(sl):-1;
   if(S.sel&&S.sel[0]==="b"){const same=bi<0||bi===S.sel[1]||bi>=S.basket.length;if(same){S.sel=null;render();return}S.sel=["b",bi];sfx.pick();render();return}
   if(S.sel){ // park selected item
-    if(S.basket.length>=S.bcap||(S.kind==="moves"&&S.time<=0)){sfx.bad();if(S.bcap<3&&!$("bPlus").hidden&&$("bPlus").animate)$("bPlus").animate([{transform:"scale(1)"},{transform:"scale(1.35)"},{transform:"scale(1)"}],{duration:420});return}
+    if(S.basket.length>=S.bcap||(S.kind==="moves"&&S.time<=0)){sfx.bad();if(S.bcap<6&&!$("bPlus").hidden&&$("bPlus").animate)$("bPlus").animate([{transform:"scale(1)"},{transform:"scale(1.35)"},{transform:"scale(1)"}],{duration:420});return}
     const [fs,fk]=S.sel;S.hist.push(snapshot());if(S.hist.length>20)S.hist.shift();
     const srcRect=slotRect(fs,fk);
     S.basket.push(front(fs)[fk]);front(fs)[fk]=null;S.sel=null;S.moves++;if(S.kind==="moves"){S.time--;S.mvT=Date.now()}sfx.drop();advance(fs);moveTick();render();
@@ -1400,12 +1436,12 @@ function openBox(){
 }
 // v26: wobbly shelves. Touching one steadies it; if its countdown runs out it drops a front product onto
 // another shelf (the one below first). Count and speed grow with the level.
-function wobP(){return S.level>=25&&S.mode!=="daily"?9:12}
+function wobP(){return S.level>=25&&S.mode!=="daily"?22:30}
 function wobInit(){
   S.wob={};if(S.tut||!S.shelves)return;
   const n=S.mode==="daily"?1:S.level>=25?3:S.level>=15?2:S.level>=8?1:0;if(!n)return;
   const c=S.shelves.map((_,i)=>i).filter(i=>!(S.shelves[i].lock>0));
-  for(let k=0;k<n&&c.length;k++){const i=c.splice(Math.floor(Math.random()*c.length),1)[0];S.wob[i]=wobP()+k*4}
+  for(let k=0;k<n&&c.length;k++){const i=c.splice(Math.floor(Math.random()*c.length),1)[0];S.wob[i]=wobP()+k*7}
   if(!store.get("tip_wob",false)){store.set("tip_wob",true);setTimeout(()=>{if(S&&!S.over)coach(T("Sallanan raf! Dokunmazsan bir ürünü başka rafa düşürür."),3600)},2600)}
 }
 function wobTick(){
@@ -1414,7 +1450,7 @@ function wobTick(){
     const si=+k,s=S.shelves[si];if(!s){delete S.wob[k];continue}if(s.lock>0)continue;
     if(s.layers.length<2&&!s.layers[0].some(x=>x!=null&&x>=0)){delete S.wob[k];render();continue}
     S.wob[k]--;if(S.wob[k]<=0){S.wob[k]=wobP();wobDrop(si)}
-    const el=$("board").children[si];if(el){el.classList.toggle("hot",S.wob[k]<=4);const b=el.querySelector(".wobn");if(b)b.textContent="⚠️ "+S.wob[k]}
+    const el=$("board").children[si];if(el){el.classList.toggle("hot",S.wob[k]<=5);const b=el.querySelector(".wobn");if(b)b.textContent="⚠️ "+S.wob[k]}
   }
 }
 function wobDrop(si){
@@ -1432,6 +1468,8 @@ function wobDrop(si){
   if(cl!=null)afterClear(tg,cl);
   setTimeout(()=>{if(!S.over)checkEnd()},450);
 }
+// v27: the info band sits in the top bar (one row)
+(function(){const a=document.querySelector(".appbar"),b=$("banner"),sc=a&&a.querySelector(".score");if(a&&b&&sc)sc.after(b)})();
 function advance(si){
   const s=S.shelves[si];
   while(s.layers.length>1&&s.layers[0].every(x=>x==null)){
@@ -1762,7 +1800,7 @@ function doMagnet(){
   const pts=150*(S.mult||1)*(S.kind==="bonus"?3:1);S.score+=pts;S.clears++;track("clears");stat("clears");stat("points",pts);
   if(t===S.sale){const mvk=S.kind==="moves",tb=mvk?3:10;S.time+=tb;S.total+=tb;S.sale=-1}
   if(t===S.gold)S.gold=-1;if(S.exp&&t===S.exp.t)S.exp=null;
-  const row=$("listItems").children[S.list.indexOf(it)],b=$("board");
+  const row=$("lvlSub"),b=$("board");
   (spots.length?spots:[0]).forEach(si=>{const el=b.children[si];if(!el)return;const r=el.getBoundingClientRect();flyTo(r.left+r.width/2,r.top+r.height/2,row,PRODUCTS[t][0])});
   sfx.ching();buzz(25);flashCombo("🧲 "+PRODUCTS[t][3]);
   // drop emptied rows so the next row comes forward
@@ -1889,7 +1927,7 @@ function renderTop(){
   const p=hot?S.rushT/8*100:(S.rush||0);
   $("rushM").style.setProperty("--p",p);$("rushM").classList.toggle("hot",!hot&&p>=75);
   $("rushFill").style.width=(hot?100:p)+"%";
-  if(hot)$("lvlSub").textContent=T("Kapış Kapış · 2x puan · {n} sn",{n:S.rushT});else if(S.frzT>0)$("lvlSub").textContent=T("❄️ Saat durdu · {n} sn",{n:S.frzT});
+  if(hot)$("lvlSub").textContent="🔥 "+S.rushT;else if(S.frzT>0)$("lvlSub").textContent="❄️ "+S.frzT;
 }
 function fitBoard(){
   const b=$("board");if(!b||!S.shelves||!S.shelves.length)return;
@@ -1918,14 +1956,14 @@ function render(){
   $("listItems").classList.toggle("chips",true);
   $("listItems").innerHTML=true?S.list.map(x=>`<span class="chip${x.done?" done":""}" style="background:${CATS[PRODUCTS[x.t][2]][2]}" title="${PRODUCTS[x.t][3]}">${PRODUCTS[x.t][0]}</span>`).join(""):S.list.map(x=>`<div class="row${x.done?" done":""}"><span class="cb"></span><span class="em" style="background:${CATS[PRODUCTS[x.t][2]][2]}">${PRODUCTS[x.t][0]}</span><span class="nm"><span>${PRODUCTS[x.t][3]}</span><small>${T("{n} adet",{n:3})} · ${CATS[PRODUCTS[x.t][2]][0]}</small></span></div>`).join("");
   S.justDone=null;
-  $("lvlSub").textContent=T("{n} üründen {d} tamam",{n:S.list.length,d:S.list.filter(x=>x.done).length});if(S.rushT>0||S.frzT>0)renderTop();
+  $("lvlSub").textContent=S.list.filter(x=>x.done).length+"/"+S.list.length;if(S.rushT>0||S.frzT>0)renderTop();
   const b=$("board");b.innerHTML="";b.classList.toggle("dark",S.kind==="dark"&&!S.lit);
   S.shelves.forEach((s,si)=>{
-    const el=document.createElement("div");el.className="shelf"+(s.lock>0?(s.ice?" locked iced":" locked"):"")+(S.belt&&S.belt.includes(si)?" belt":"")+(S.slid&&S.belt&&S.belt.includes(si)?" slide":"")+(S.wob&&S.wob[si]!=null&&!(s.lock>0)?" wob"+(S.wob[si]<=4?" hot":""):"");
+    const el=document.createElement("div");el.className="shelf"+(s.lock>0?(s.ice?" locked iced":" locked"):"")+(S.belt&&S.belt.includes(si)?" belt":"")+(S.slid&&S.belt&&S.belt.includes(si)?" slide":"")+(S.wob&&S.wob[si]!=null&&!(s.lock>0)?" wob"+(S.wob[si]<=5?" hot":""):"");
     if(!S.tut&&S.sel&&front(si).includes(null)&&S.sel[0]!==si)el.classList.add("target");
     const backL=s.layers[1];
     el.innerHTML=(backL?`<div class="back">${backL.map(x=>`<span>${x==null?"":S.kind==="dark"&&!S.lit?"❔":x<0?"📦":PRODUCTS[x][0]}</span>`).join("")}</div>`:"")+
-      `<div class="slots">${s.layers[0].map((x,k)=>`<div class="slot" data-k="${k}">${x!=null&&x<0?`<span class="item box" role="img" aria-label="${T("Kapalı koli")}">📦</span>`:x!=null?`<span class="item${x===S.sale?" sale":""}${x===S.gold?" gold":""}${S.exp&&x===S.exp.t?" exp":""}${S.sel&&S.sel[0]===si&&S.sel[1]===k?" sel":""}${S.justIn&&S.justIn[0]===si&&S.justIn[1]===k?" in":""}" data-t="${x}"${S.exp&&x===S.exp.t?` data-x="⏳${S.exp.n}"`:""}${x===S.sale?` data-b="${S.kind==="moves"?"👣+3":"⏱+10"}"`:""} role="button" aria-label="${PRODUCTS[x][3]}">${PRODUCTS[x][0]}</span>`:""}</div>`).join("")}</div>
+      `<div class="slots">${s.layers[0].map((x,k)=>`<div class="slot" data-k="${k}">${x!=null&&x<0?`<span class="item box" role="img" aria-label="${T("Kapalı koli")}">📦</span>`:x!=null?`<span class="item${S.list&&S.list.some(l=>l.t===x&&!l.done)?" onl":""}${x===S.sale?" sale":""}${x===S.gold?" gold":""}${S.exp&&x===S.exp.t?" exp":""}${S.sel&&S.sel[0]===si&&S.sel[1]===k?" sel":""}${S.justIn&&S.justIn[0]===si&&S.justIn[1]===k?" in":""}" data-t="${x}"${S.exp&&x===S.exp.t?` data-x="⏳${S.exp.n}"`:""}${x===S.sale?` data-b="${S.kind==="moves"?"👣+3":"⏱+10"}"`:""} role="button" aria-label="${PRODUCTS[x][3]}">${PRODUCTS[x][0]}</span>`:""}</div>`).join("")}</div>
       <div class="plank"></div>${s.lock>0?`<span class="shut${s.ice?" ice":""}">${s.ice?"🧊":"🔒"} ${s.lock}</span>`:""}${S.belt&&S.belt[0]===si?`<span class="beltn">🔄 ${S.beltN}</span>`:""}${S.wob&&S.wob[si]!=null&&!(s.lock>0)?`<span class="wobn">⚠️ ${S.wob[si]}</span>`:""}${s.layers.length>1?`<span class="layers">+${s.layers.length-1}</span>`:""}`;
     el.addEventListener("pointerup",e=>{if(S.wob&&S.wob[si]!=null&&!S.over&&!(s.lock>0)){S.wob[si]=wobP();el.classList.remove("hot");const wb=el.querySelector(".wobn");if(wb)wb.textContent="⚠️ "+S.wob[si];el.classList.add("steady");setTimeout(()=>el.classList.remove("steady"),600)}
       if(s.lock>0){if(S.over)return;sfx.bad();buzz(40);shake(si);coach(s.ice?T("Bu raf donmuş. Yanındaki bir raf temizlenince erir."):T("Bu raf kepenkli. Açılmasına kalan raf: {n}",{n:s.lock}),2200);return}
@@ -1940,7 +1978,7 @@ function render(){
   const bk=$("basket");
   $("bslots").innerHTML=Array.from({length:S.bcap||1},(_,i)=>{const x=(S.basket||[])[i];return `<span class="bslot${x!=null?" has":""}${S.sel&&S.sel[0]==="b"&&S.sel[1]===i?" sel":""}">${x!=null?PRODUCTS[x][0]:""}</span>`}).join("");
   bk.classList.toggle("ready",!!(S.sel&&S.sel[0]!=="b"&&S.basket.length<S.bcap));
-  $("bPlus").hidden=!(S.mode&&!S.tut&&S.bcap<3&&(S.level>=2||S.mode==="daily"));$("bPlus").classList.toggle("ad",!!SHOP&&!SHOP.premium());
+  $("bPlus").hidden=!(S.mode&&!S.tut&&S.bcap<6&&(S.level>=2||S.mode==="daily"));$("bPlus").classList.toggle("ad",!!SHOP&&!SHOP.premium());
   $("saleinfo").textContent=S.sale!=null&&S.sale>=0?(S.kind==="moves"?T("% {p}: +3 hamle",{p:PRODUCTS[S.sale][3]}):T("% {p}: +10 sn",{p:PRODUCTS[S.sale][3]})):"";
   if(S.tut)applyTutorial();
   if(!S.over)saveGame();
@@ -2002,7 +2040,7 @@ function clearFx(si,t,pts,onList){
   const sh=$("board").children[si];if(!sh)return;const r=sh.getBoundingClientRect(),x=r.left+r.width/2,y=r.top+r.height/2;
   burst(x,y,PRODUCTS[t][0],S.combo>1?16:12);
   floatText(x,r.top,"+"+pts,S.rushT>0);
-  if(onList){const i=S.list.findIndex(z=>z.t===t),row=$("listItems").children[i];sfx.ching();
+  if(onList){const i=S.list.findIndex(z=>z.t===t),row=$("lvlSub");sfx.ching();
     flyTo(x,y,row,PRODUCTS[t][0],()=>{const rr=$("listItems").children[i];if(rr){rr.classList.remove("tick");void rr.offsetWidth;rr.classList.add("tick")}})}
 }
 function introDrop(){
