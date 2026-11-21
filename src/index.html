@@ -788,6 +788,9 @@ body{font-weight:500}
 /* v28: bigger shelves */
 .board.pad{padding-inline:6px}
 .board .shelf{padding-inline:2px}
+
+/* v29: back row higher */
+.board .shelf .back{bottom:calc(24px + var(--slot,46px)*1.15)}
 </style>
 </head>
 <body>
@@ -1953,7 +1956,7 @@ function fitBoard(){
   const avail=Math.floor((H-gy*(rows-1))/rows);
   let rowh=Math.min(avail,Math.round(slot*(cols===2?1.9:2.3)+14));
   if(rowh>avail){rowh=Math.max(62,avail);slot=Math.max(36,Math.min(slot,Math.round((rowh-12)/1.8)))}
-  const isz=Math.max(24,Math.round(Math.min(slot*.86,iw*1.12,58)));
+  const isz=Math.max(23,Math.round(Math.min(slot*.86,iw*1.12,58)*.95));
   b.style.rowGap=gy+"px";b.style.setProperty("--rowh",rowh+"px");b.style.setProperty("--slot",slot+"px");b.style.setProperty("--isz",isz+"px");
 }
 addEventListener("resize",()=>{try{fitBoard()}catch(e){}});
