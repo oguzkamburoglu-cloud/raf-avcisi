@@ -688,6 +688,17 @@ body{font-weight:500}
 .list .row.done .em{filter:saturate(.6)}
 .chip.done{opacity:.5;background:#DFF5E6}
 .chip.done::after{display:none}
+/* v25: moving shelves on later levels (individual translate/rotate so other transform animations still work) */
+.board.mv1 .shelf{animation:mvbob 2.8s ease-in-out infinite;animation-delay:var(--mvd,0s)}
+.board.mv2 .shelf{animation:mvsway 3.4s ease-in-out infinite;animation-delay:var(--mvd,0s)}
+.board.mv3 .shelf{animation:mvswing 3s ease-in-out infinite;animation-delay:var(--mvd,0s);transform-origin:50% -20px}
+.board.mv1 .shelf:nth-child(even),.board.mv3 .shelf:nth-child(even){animation-delay:calc(var(--mvd,0s) - 1.4s)}
+.board.mv2 .shelf:nth-child(6n+4),.board.mv2 .shelf:nth-child(6n+5),.board.mv2 .shelf:nth-child(6n+6){animation-direction:reverse}
+.board.mv3 .shelf:nth-child(3n+2){animation-direction:reverse}
+@keyframes mvbob{0%,100%{translate:0 0}50%{translate:0 -4px}}
+@keyframes mvsway{0%,100%{translate:-7px 0}50%{translate:7px -3px}}
+@keyframes mvswing{0%,100%{translate:-5px 0;rotate:-2.5deg}50%{translate:5px -3px;rotate:2.5deg}}
+@media (prefers-reduced-motion:reduce){.board.mv1 .shelf,.board.mv2 .shelf,.board.mv3 .shelf{animation:none}}
 /* v25: big cartoon 3D joker tiles */
 .nav{padding-top:12px}
 .navbtn{gap:6px;--jc:#FFB547;--jd:#C9761A;--jl:#FFE2A8}
@@ -1854,7 +1865,7 @@ function render(){
   $("listItems").innerHTML=S.list.length>6?S.list.map(x=>`<span class="chip${x.done?" done":""}" title="${PRODUCTS[x.t][3]}">${PRODUCTS[x.t][0]}</span>`).join(""):S.list.map(x=>`<div class="row${x.done?" done":""}"><span class="cb"></span><span class="em" style="background:${CATS[PRODUCTS[x.t][2]][2]}">${PRODUCTS[x.t][0]}</span><span class="nm"><span>${PRODUCTS[x.t][3]}</span><small>${T("{n} adet",{n:3})} · ${CATS[PRODUCTS[x.t][2]][0]}</small></span></div>`).join("");
   S.justDone=null;
   $("lvlSub").textContent=T("{n} üründen {d} tamam",{n:S.list.length,d:S.list.filter(x=>x.done).length});if(S.rushT>0||S.frzT>0)renderTop();
-  const b=$("board");b.innerHTML="";b.classList.toggle("dark",S.kind==="dark"&&!S.lit);
+  const b=$("board");b.innerHTML="";b.classList.toggle("dark",S.kind==="dark"&&!S.lit);{const mv=S.tut?0:S.mode==="daily"?1:S.level>=25?3:S.level>=15?2:S.level>=8?1:0;["mv1","mv2","mv3"].forEach((c,i)=>b.classList.toggle(c,mv===i+1));if(mv)b.style.setProperty("--mvd",-(Date.now()%[2800,3400,3000][mv-1])/1000+"s")}
   S.shelves.forEach((s,si)=>{
     const el=document.createElement("div");el.className="shelf"+(s.lock>0?(s.ice?" locked iced":" locked"):"")+(S.belt&&S.belt.includes(si)?" belt":"")+(S.slid&&S.belt&&S.belt.includes(si)?" slide":"");
     if(!S.tut&&S.sel&&front(si).includes(null)&&S.sel[0]!==si)el.classList.add("target");
