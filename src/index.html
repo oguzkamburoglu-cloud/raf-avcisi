@@ -676,6 +676,41 @@ body{font-weight:500}
 .gond.l{left:1%}.gond.r{right:1%}
 .gond b{top:-4px}
 @media (prefers-reduced-motion:reduce){.booth3d .be.bob,.booth3d .bsp{animation:none}}
+
+/* v25: colourful back row */
+.shelf .back span{filter:saturate(1.15) drop-shadow(0 2px 0 rgba(0,0,0,.22));opacity:.95;transform:scale(.92)}
+.board .shelf .back span{font-size:calc(var(--isz,28px)*.78)}
+.board.dark .shelf .back span{filter:none;opacity:.5;transform:scale(.7)}
+/* v25: no check boxes on the list */
+.list .row .cb{display:none}
+.list .row{transition:background .3s,opacity .3s}
+.list .row.done{background:#DFF5E6;opacity:.72}
+.list .row.done .em{filter:saturate(.6)}
+.chip.done{opacity:.5;background:#DFF5E6}
+.chip.done::after{display:none}
+/* v25: big cartoon 3D joker tiles */
+.nav{padding-top:12px}
+.navbtn{gap:6px;--jc:#FFB547;--jd:#C9761A;--jl:#FFE2A8}
+#bUndo{--jc:#FFB547;--jd:#C9761A;--jl:#FFE2A8}
+#bLook{--jc:#5FC3FF;--jd:#1F7FC0;--jl:#CDEEFF}
+#bHint{--jc:#FF6B6B;--jd:#B8302F;--jl:#FFC4C0}
+#bShuffle{--jc:#B48CFF;--jd:#6E45C4;--jl:#E5D6FF}
+#bFreeze{--jc:#7FE0F2;--jd:#2A9FBA;--jl:#DDFAFF}
+#bShelf{--jc:#D9A066;--jd:#94602E;--jl:#F5D7B5}
+#bCut{--jc:#6BD58A;--jd:#2E9650;--jl:#CFF5DA}
+.navbtn .ic,.nav.many .navbtn .ic{position:relative;width:54px;height:50px;line-height:50px;font-size:31px;border-radius:17px;
+  background:linear-gradient(180deg,var(--jl) 0,var(--jc) 46%,var(--jc) 100%);
+  box-shadow:0 6px 0 var(--jd),0 9px 8px rgba(0,0,0,.22),inset 0 -4px 0 rgba(0,0,0,.12),inset 0 2px 0 rgba(255,255,255,.8);
+  border:2px solid rgba(0,0,0,.18);box-sizing:border-box;text-shadow:0 3px 0 rgba(0,0,0,.18);
+  transition:transform .08s,box-shadow .08s;margin-bottom:5px}
+.navbtn .ic::before{content:"";position:absolute;left:7px;right:7px;top:4px;height:13px;border-radius:10px 10px 14px 14px;
+  background:linear-gradient(180deg,rgba(255,255,255,.75),rgba(255,255,255,0));pointer-events:none}
+.navbtn:not(:disabled):active .ic{background:linear-gradient(180deg,var(--jl) 0,var(--jc) 46%,var(--jc) 100%);transform:translateY(5px);
+  box-shadow:0 1px 0 var(--jd),0 2px 3px rgba(0,0,0,.2),inset 0 -2px 0 rgba(0,0,0,.12),inset 0 2px 0 rgba(255,255,255,.8)}
+.navbtn:disabled{opacity:.45;filter:grayscale(.7)}
+.navbtn .n,.nav.many .navbtn .n{top:-6px;right:calc(50% - 34px);min-width:20px;height:20px;line-height:17px;font-size:12px;border-radius:11px;border:2px solid #fff;box-sizing:border-box;z-index:1;box-shadow:0 2px 0 rgba(0,0,0,.2)}
+.nav.many .navbtn{flex:1 0 66px}
+@media (max-height:740px){.navbtn .ic,.nav.many .navbtn .ic{width:46px;height:42px;line-height:42px;font-size:25px;border-radius:14px}.nav{padding-top:9px}}
 </style>
 </head>
 <body>
