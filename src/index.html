@@ -791,6 +791,12 @@ body{font-weight:500}
 
 /* v29: back row higher */
 .board .shelf .back{bottom:calc(24px + var(--slot,46px)*1.15)}
+
+/* v30: wobbly shelf only rocks, no sideways slide */
+.board .shelf.wob{animation:wobrock 2.4s ease-in-out infinite;transform-origin:50% 0}
+.board .shelf.wob.hot{animation:wobrockhot .5s ease-in-out infinite;transform-origin:50% 0}
+@keyframes wobrock{0%,100%{rotate:-2deg}50%{rotate:2deg}}
+@keyframes wobrockhot{0%,100%{rotate:-4.5deg}50%{rotate:4.5deg}}
 </style>
 </head>
 <body>
@@ -1451,7 +1457,7 @@ function openBox(){
 // another shelf (the one below first). Count and speed grow with the level.
 function wobP(){return S.level>=25&&S.mode!=="daily"?22:30}
 function wobInit(){
-  S.wob={};if(S.tut||!S.shelves)return;
+  S.wob={};if(S.tut||!S.shelves||(S.belt&&S.belt.length))return;
   const n=S.mode==="daily"?1:S.level>=25?3:S.level>=15?2:S.level>=8?1:0;if(!n)return;
   const c=S.shelves.map((_,i)=>i).filter(i=>!(S.shelves[i].lock>0));
   for(let k=0;k<n&&c.length;k++){const i=c.splice(Math.floor(Math.random()*c.length),1)[0];S.wob[i]=wobP()+k*7}
