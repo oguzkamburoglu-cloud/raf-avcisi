@@ -1,0 +1,37 @@
+{
+  "yardim_paketi_5": {
+    "itemType": "CONSUMABLE",
+    "price": 0.99,
+    "title": "Help pack",
+    "description": "5 of every joker",
+    "smallIconUrl": "http://localhost/yardim_paketi_5-114.png"
+  },
+  "premium": {
+    "itemType": "ENTITLED",
+    "price": 2.99,
+    "title": "Premium",
+    "description": "All rewards without ads and 10 of each help",
+    "smallIconUrl": "http://localhost/premium-114.png"
+  },
+  "baslangic_paketi": {
+    "itemType": "CONSUMABLE",
+    "price": 1.99,
+    "title": "Starter pack",
+    "description": "500 coins and 3 of every joker",
+    "smallIconUrl": "http://localhost/baslangic_paketi-114.png"
+  },
+  "para_1200": {
+    "itemType": "CONSUMABLE",
+    "price": 1.99,
+    "title": "1200 coins",
+    "description": "Buy jokers with coins",
+    "smallIconUrl": "http://localhost/para_1200-114.png"
+  },
+  "para_3500": {
+    "itemType": "CONSUMABLE",
+    "price": 4.99,
+    "title": "3500 coins",
+    "description": "Best value pack",
+    "smallIconUrl": "http://localhost/para_3500-114.png"
+  }
+}
