@@ -1,0 +1,90 @@
+name: Android (Amazon Appstore)
+
+# Builds a signed APK for the Amazon Appstore (Fire tablets): Amazon IAP instead of Google Play
+# Billing, no Play Games. The Google Play and iOS builds are not touched.
+# Manual: Actions › Android (Amazon Appstore) › Run workflow.
+on:
+  workflow_dispatch:
+    inputs:
+      version_name:
+        description: "Sürüm adı (ör. 1.4)"
+        required: true
+        default: "1.4"
+  pull_request:
+    paths:
+      - "plugins/amazon-iap/**"
+      - "scripts/amazon-prep.mjs"
+      - ".github/workflows/amazon.yml"
+      - "src/native.js"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - run: npm ci
+      - run: npm run sync
+      - name: Amazon derlemesine çevir
+        env:
+          AMAZON_PUBLIC_KEY_PEM: ${{ secrets.AMAZON_PUBLIC_KEY_PEM }}
+        run: node scripts/amazon-prep.mjs
+
+      - name: İmza anahtarını yerleştir
+        id: sign
+        env:
+          KEYSTORE_B64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          STORE_PW: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          KEY_PW: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          if [ -z "$KEYSTORE_B64" ] || [ "${{ github.event_name }}" = "pull_request" ]; then
+            echo "signed=false" >> "$GITHUB_OUTPUT"; exit 0
+          fi
+          echo "signed=true" >> "$GITHUB_OUTPUT"
+          echo "$KEYSTORE_B64" | base64 -d > "$RUNNER_TEMP/upload.jks"
+          cat > android/keystore.properties <<PROPS
+          storeFile=$RUNNER_TEMP/upload.jks
+          storePassword=$STORE_PW
+          keyAlias=$KEY_ALIAS
+          keyPassword=$KEY_PW
+          PROPS
+
+      # Amazon version codes only have to grow within Amazon; 1000+ keeps them apart from Play's
+      - name: APK derle
+        working-directory: android
+        run: |
+          VERSION_NAME="${{ github.event.inputs.version_name }}"
+          [ -z "$VERSION_NAME" ] && VERSION_NAME="1.4"
+          CODE=$((1000 + ${{ github.run_number }}))
+          if [ "${{ steps.sign.outputs.signed }}" = "true" ]; then
+            ./gradlew assembleRelease -PversionCode=$CODE -PversionName="$VERSION_NAME"
+          else
+            ./gradlew assembleDebug -PversionCode=$CODE -PversionName="$VERSION_NAME"
+          fi
+
+      - name: Paketi denetle (Play Billing / Play Games yok)
+        run: |
+          APK=$(ls android/app/build/outputs/apk/*/*.apk | head -1)
+          echo "APK: $APK"
+          if unzip -p "$APK" 'classes*.dex' | grep -a -q "com/android/billingclient"; then
+            echo "::error::Amazon APK'sında Google Play Billing kaldı"; exit 1
+          fi
+          if unzip -p "$APK" 'classes*.dex' | grep -a -q "com/google/android/gms/games"; then
+            echo "::error::Amazon APK'sında Play Games kaldı"; exit 1
+          fi
+          unzip -p "$APK" 'classes*.dex' | grep -a -q "com/amazon/device/iap" || { echo "::error::Amazon IAP yok"; exit 1; }
+          unzip -l "$APK" | grep -q AppstoreAuthenticationKey.pem && echo "Amazon genel anahtarı pakette." || echo "::warning::AppstoreAuthenticationKey.pem pakette yok"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: raf-avcisi-amazon-apk-${{ github.run_number }}
+          path: android/app/build/outputs/apk/*/*.apk
