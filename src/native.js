@@ -10,9 +10,21 @@
   if (!isNative) return;
   var P = C.Plugins || {};
   var platform = C.getPlatform();
+  // Amazon Appstore build (scripts/amazon-prep.mjs sets RAF_STORE): Amazon IAP instead of Google Play
+  // Billing, no Play Games, and no links to Google Play (Amazon does not allow them).
+  var amazon = window.RAF_STORE === "amazon";
+  // PickyList's Amazon Appstore page; empty = the PickyList store links are hidden in the Amazon build
+  var PICKYLIST_AMAZON_URL = "";
+  if (amazon) {
+    var css = document.createElement("style");
+    css.textContent = "#boardCard .lbnote{display:none!important}" +
+      (PICKYLIST_AMAZON_URL ? "" : ".plband,.plcta,.applink{display:none!important}");
+    document.head.appendChild(css);
+  }
 
   window.RAF_NATIVE = {
     platform: platform,
+    store: amazon ? "amazon" : (platform === "ios" ? "appstore" : "play"),
     // kind is the game's vibration pattern: 25 = shelf cleared, 40 = wrong move,
     // [30,40,30] = level won, 120 = time up (or the names clear/bad/win/lose)
     haptic: function (kind) {
@@ -97,7 +109,12 @@
     var a = e.target.closest && e.target.closest("a[href^='http']");
     if (!a) return;
     e.preventDefault();
-    window.location.href = a.href;
+    var href = a.href;
+    if (amazon && /play\.google\.com|apps\.apple\.com/.test(href)) {
+      if (!PICKYLIST_AMAZON_URL) return;
+      href = PICKYLIST_AMAZON_URL;
+    }
+    window.location.href = href;
   }, true);
 
   // PickyList opens the game with:  rafavcisi://oyun?from=pickylist&list=Domates,Kıyma
@@ -135,7 +152,7 @@
   // Product ids: create the same ids in Play Console and App Store Connect
   var PRODUCT_IDS = { pack: "yardim_paketi_5", premium: "premium", starter: "baslangic_paketi", coins1: "para_1200", coins2: "para_3500" };
 
-  var AdMob = P.AdMob, IAP = P.NativePurchases;
+  var AdMob = P.AdMob, IAP = amazon ? P.AmazonIap : P.NativePurchases;
   var adReady = false, adLoading = false, canAds = false, privacyReq = false;
   var prices = {};
   function lsGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }

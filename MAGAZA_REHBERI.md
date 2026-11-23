@@ -226,3 +226,36 @@ Oyunda şunlar var (yalnızca mağaza sürümünde, web sürümünde yok):
 
 ### 7d. Formlar
 Reklamlı sürümü yüklediğin gün: Play'de "Reklam içeriyor: Evet", veri güvenliği formu ve içerik derecelendirmesindeki "dijital satın alma" sorusu değişir. App Store'da Uygulama Gizliliği değişir. Cevaplar `store/MAGAZA_METINLERI.md`'nin sonunda. Güncel gizlilik politikasını (`store/gizlilik.html`) yayınlamayı unutma.
+
+## 8. Amazon Appstore (Fire tabletler)
+
+Fire tabletlerde Google Play hizmetleri yok. Bu yüzden Amazon için ayrı bir APK derlenir:
+satın almalar **Amazon IAP** ile (aynı 5 SKU), Play Games skor tabloları yok (oyun yalnızca oyuncunun
+kendi rekorlarını gösterir), Google Play / App Store bağlantıları gizli. Ödüllü reklam (AdMob) ve
+Firebase Analytics aynı kalır. Google Play ve iOS derlemeleri bu değişiklikten etkilenmez.
+
+Nasıl çalışır: `.github/workflows/amazon.yml` → `npm run sync` → `scripts/amazon-prep.mjs`
+(Play Billing ve Play Games modüllerini çıkarır, `plugins/amazon-iap`'ı ekler) → imzalı `app-release.apk`.
+Sürüm kodu 1000 + çalıştırma numarası (Amazon'da yalnızca kendi içinde artması gerekir).
+
+### 8a. Senin yapacakların (bir kez)
+1. https://developer.amazon.com adresinde ücretsiz geliştirici hesabı aç (vergi ve banka bilgileri: Payments).
+2. **Apps & Services › My Apps › Add New App › Android**: ad "Raf Avcısı", paket adı `com.listeal.rafavcisi`, kategori Games › Puzzles & Trivia.
+3. Uygulama sayfasında **App Settings › Public key** (ya da In-App Items yanında "View public key") →
+   `AppstoreAuthenticationKey.pem` dosyasını indir. İçeriğini GitHub'da
+   **Settings › Secrets and variables › Actions** altında `AMAZON_PUBLIC_KEY_PEM` adlı secret olarak ekle
+   (ya da dosyayı bana gönder, ben eklenmesini sağlarım). Bu olmadan Amazon'da satın alma çalışmaz.
+4. **In-App Items**: `store/amazon/AMAZON_METINLERI.md` sonundaki tablodaki 5 ürünü aynı SKU ile ekle
+   (`premium` = Entitlement, diğerleri Consumable). Simgeler `store/amazon/iap/`.
+5. Actions › **Android (Amazon Appstore)** › Run workflow (sürüm adı ör. 1.4). İndirilen
+   `raf-avcisi-amazon-apk-N` içindeki `app-release.apk`'yı uygulamanın **Upload Your App File** adımında yükle.
+   Cihaz desteğinde Fire tabletleri açık bırak, Fire TV'yi kapat.
+6. **Appstore Details**: başlık, kısa/uzun açıklama, madde işaretleri ve anahtar kelimeler
+   `store/amazon/AMAZON_METINLERI.md`'de 7 dilde; simge (512 ve 114), 5 ekran görüntüsü (1080×1920) ve
+   tanıtım görseli (1024×500) proje dosyalarında `raf-avcisi/amazon/<dil>/`.
+7. **Content Rating** ve **Availability & Pricing** (ücretsiz, tüm ülkeler) formlarını doldur; gizlilik politikası
+   https://raf-avcisi.web.app/gizlilik.html. Sonra **Submit App**.
+
+### 8b. Satın almayı denemek
+Amazon App Tester'ı Fire tablete kur, `store/amazon/amazon.sdktester.json`'u tabletin `/sdcard/` klasörüne
+kopyala ve APK'yı yükle; ya da yayından önce konsoldaki **Live App Testing** ile kendi hesabınla dene.
