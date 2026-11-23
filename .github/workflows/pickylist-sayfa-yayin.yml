@@ -1,0 +1,40 @@
+name: PickyList sayfaları (Firebase Hosting)
+
+# Publishes the pages under yayin/pickylist to the live site https://ailiste.web.app without a Mac.
+# The live version is cloned and only the files in that folder are laid over it, so every
+# other file on the site stays as it is. A push publishes only the files it changed;
+# a manual run publishes the whole folder.
+# Needs secret FIREBASE_SERVICE_ACCOUNT (the service account JSON, pasted whole).
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ["yayin/pickylist/**"]
+
+concurrency:
+  group: pickylist-sayfa-yayin
+  cancel-in-progress: false
+
+jobs:
+  yayinla:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+      - name: Yayınla
+        env:
+          SA: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          BEFORE: ${{ github.event.before }}
+        run: |
+          if [ -z "$SA" ]; then echo "::error::FIREBASE_SERVICE_ACCOUNT secret yok"; exit 1; fi
+          printf '%s' "$SA" > "$RUNNER_TEMP/sa.json"
+          export SA_JSON="$RUNNER_TEMP/sa.json"
+          python3 -m pip install --quiet google-auth requests
+          LIST=""
+          if [ "$GITHUB_EVENT_NAME" = "push" ] && git cat-file -e "$BEFORE^{commit}" 2>/dev/null; then
+            git -c core.quotepath=off diff --name-only --diff-filter=AMR "$BEFORE" "$GITHUB_SHA" -- yayin/pickylist > "$RUNNER_TEMP/degisen.txt"
+            LIST="$RUNNER_TEMP/degisen.txt"
+          fi
+          python3 -u scripts/sayfa_yayinla.py ailiste https://ailiste.web.app yayin/pickylist 0 $LIST
+          rm -f "$RUNNER_TEMP/sa.json"
