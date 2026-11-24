@@ -159,44 +159,83 @@
   function lsSet(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
   var premium = lsGet("raf_premium") === "1";
 
+  // v32: an ad that is not loaded yet no longer makes the button do nothing. The tap starts loading
+  // and waits up to AD_WAIT ms with a small spinner; a consent error no longer blocks ads for good.
+  var AD_WAIT = 9000, adWaiters = [], adStarted = false;
+  function adSettled(ok) {
+    var w = adWaiters; adWaiters = [];
+    w.forEach(function (f) { f(ok); });
+  }
   function loadAd() {
     if (!AdMob || !canAds || adReady || adLoading) return;
     adLoading = true;
     AdMob.prepareRewardVideoAd({ adId: AD_UNITS[platform], isTesting: ADS_TEST })
-      .then(function () { adReady = true; })
-      .catch(function () { adReady = false; setTimeout(loadAd, 30000); })
-      .then(function () { adLoading = false; });
+      .then(function () { adReady = true; lsSet("raf_ad_err", ""); })
+      .catch(function (e) {
+        adReady = false;
+        // keep the reason (e.g. code 1 = no ad to show) so it can be read from the settings screen
+        lsSet("raf_ad_err", String((e && (e.code || e.message)) || "?"));
+        setTimeout(loadAd, 30000);
+      })
+      .then(function () { adLoading = false; adSettled(adReady); });
+  }
+  function initAds() {
+    if (adStarted) return Promise.resolve();
+    adStarted = true; canAds = true;
+    return AdMob.initialize({ initializeForTesting: ADS_TEST }).then(loadAd).catch(function () { adStarted = false; });
   }
   function startAds() {
     if (!AdMob) return;
     AdMob.requestConsentInfo()
       .then(function (info) {
-        if (info.isConsentFormAvailable && info.status === "REQUIRED") return AdMob.showConsentForm();
+        if (info.isConsentFormAvailable && info.status === "REQUIRED") {
+          return AdMob.showConsentForm().catch(function () { return info; });
+        }
         return info;
       })
       .then(function (info) {
         privacyReq = info.privacyOptionsRequirementStatus === "REQUIRED";
-        canAds = !!info.canRequestAds;
-        if (canAds) return AdMob.initialize({ initializeForTesting: ADS_TEST }).then(loadAd);
+        if (info.canRequestAds) return initAds();
       })
-      .catch(function () {});
+      // consent info could not be read (offline, no privacy message set up): still start the SDK;
+      // outside the EEA/UK no consent is needed, inside it Google serves limited ads only
+      .catch(function () { return initAds(); });
+  }
+  function waitForAd() {
+    return new Promise(function (resolve) {
+      if (adReady) { resolve(true); return; }
+      if (!AdMob || !canAds) { if (AdMob && !adStarted) startAds(); }
+      var spin = document.createElement("div");
+      spin.setAttribute("aria-hidden", "true");
+      spin.style.cssText = "position:fixed;inset:0;z-index:99;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.25);font-size:44px";
+      spin.innerHTML = '<span style="background:#fff;border-radius:22px;padding:14px 18px;box-shadow:0 6px 18px rgba(0,0,0,.2)">🎬 <span style="display:inline-block;animation:rafspin 1s linear infinite">⏳</span></span><style>@keyframes rafspin{to{transform:rotate(360deg)}}</style>';
+      document.body.appendChild(spin);
+      var done = false;
+      function fin(ok) { if (done) return; done = true; spin.remove(); resolve(ok); }
+      adWaiters.push(fin);
+      setTimeout(function () { fin(adReady); }, AD_WAIT);
+      loadAd();
+    });
   }
   function showRewarded() {
     return new Promise(function (resolve) {
       if (premium) { resolve(true); return; }
-      if (!AdMob || !adReady) { loadAd(); resolve(false); return; }
-      var got = false, done = false, hs = [];
-      function finish(ok) {
-        if (done) return; done = true;
-        hs.forEach(function (h) { Promise.resolve(h).then(function (x) { x && x.remove(); }); });
-        adReady = false; loadAd();
-        if (window.RAF_ONRESUME) window.RAF_ONRESUME();
-        resolve(ok);
-      }
-      hs.push(AdMob.addListener("onRewardedVideoAdReward", function () { got = true; }));
-      hs.push(AdMob.addListener("onRewardedVideoAdDismissed", function () { finish(got); }));
-      hs.push(AdMob.addListener("onRewardedVideoAdFailedToShow", function () { finish(false); }));
-      AdMob.showRewardVideoAd().catch(function () { finish(got); });
+      if (!AdMob) { resolve(false); return; }
+      waitForAd().then(function (ready) {
+        if (!ready) { resolve(false); return; }
+        var got = false, done = false, hs = [];
+        function finish(ok) {
+          if (done) return; done = true;
+          hs.forEach(function (h) { Promise.resolve(h).then(function (x) { x && x.remove(); }); });
+          adReady = false; loadAd();
+          if (window.RAF_ONRESUME) window.RAF_ONRESUME();
+          resolve(ok);
+        }
+        hs.push(AdMob.addListener("onRewardedVideoAdReward", function () { got = true; }));
+        hs.push(AdMob.addListener("onRewardedVideoAdDismissed", function () { finish(got); }));
+        hs.push(AdMob.addListener("onRewardedVideoAdFailedToShow", function () { finish(false); }));
+        AdMob.showRewardVideoAd().catch(function () { adReady = false; finish(got); });
+      });
     });
   }
 
@@ -236,7 +275,8 @@
     buy: buy,
     restore: function () { return (IAP ? IAP.restorePurchases().catch(function () {}) : Promise.resolve()).then(checkPremium); },
     privacyRequired: function () { return privacyReq; },
-    privacyForm: function () { if (AdMob) AdMob.showPrivacyOptionsForm().catch(function () {}); }
+    privacyForm: function () { if (AdMob) AdMob.showPrivacyOptionsForm().catch(function () {}); },
+    adError: function () { return lsGet("raf_ad_err") || ""; }
   };
   startAds();
   loadProducts();
